@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "ansible-ee-builder"
+version = "0.0.1"
+description = "Build Execution Environments to be used with Ansible Automation Platform"
+authors = ["Calvin Remsburg <cremsburg.dev@gmail.com>"]
+license = "Apache 2.0"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+ansible-builder = "3.0.1"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: panos-exporter-config
+  namespace: pan-os-telemetry
+  labels:
+    app: panos-exporter
+data:
+  panos_exporter.yml: |
+    devices:
+      {{- range .Values.panosExporter.config.devices }}
+      {{ .ip }}:
+        username: {{ .username }}
+        password: {{ .password }}
+      {{- end }}

@@ -1,0 +1,24 @@
+ethernet_interfaces:
+  - name: "ethernet1/1"
+    mode: "layer3"
+    ip: ["WAN-IP-Prefix"]
+    dhcp: false
+    zone: "WAN"
+
+  - name: "ethernet1/2"
+    mode: "layer3"
+    ip: ["LAN-IP-Prefix"]
+    dhcp: false
+    zone: "LAN"
+
+  - name: "ethernet1/3"
+    mode: "layer3"
+    ip: ["DMZ-IP-Prefix"]
+    dhcp: false
+    zone: "DMZ"
+
+tunnel_interfaces:
+  - name: "tunnel.10"
+    ip: ["SAN-DAL-Tunnel-IP-Prefix"]
+    zone: "VPN"
+    vr_name: "default"

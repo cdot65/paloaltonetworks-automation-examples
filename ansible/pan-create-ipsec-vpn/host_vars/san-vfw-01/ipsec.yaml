@@ -1,0 +1,5 @@
+ipsec_tunnels:
+  - name: "Dallas-VPN"
+    tunnel: "tunnel.10"
+    gateway: "Dallas-IKE-GW"
+    profile: "remote-branch-ipsec-profile"

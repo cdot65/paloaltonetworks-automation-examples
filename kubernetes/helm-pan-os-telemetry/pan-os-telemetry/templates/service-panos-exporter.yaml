@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: panos-exporter
+  namespace: pan-os-telemetry
+  labels:
+    app: panos-exporter
+spec:
+  ports:
+    - port: 9654
+      targetPort: 9654
+  selector:
+    app: panos-exporter

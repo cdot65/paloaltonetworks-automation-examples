@@ -1,0 +1,9 @@
+---
+users:
+  - name: "admin"
+    phash: "$5$iwqpitoj$eWaMAzUAX.cuRmm0EAZ0TmGAp8mokFAz59nANHAMkhC"
+    superuser: "yes"
+
+  - name: "automation"
+    phash: "$5$bygoaxtf$2rNQn3L.ZWCslGNE2LNBnDPXzCuovQwsbLJGyMje9K9"
+    superuser: "yes"

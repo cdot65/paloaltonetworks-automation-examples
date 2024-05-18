@@ -1,0 +1,13 @@
+- name: Copy Certificates to Remote Hosts
+  hosts: all
+  gather_facts: false
+  become: false
+  tasks:
+    - name: Collect System Facts
+      # trunk-ignore(yamllint/empty-values)
+      ansible.builtin.setup:
+      become: true
+
+    - name: Send task to Ansible Automation Platform
+      ansible.builtin.import_role:
+        name: tls_remediation

@@ -1,0 +1,45 @@
+---
+vr:
+  - name: "default"
+    protocol:
+      bgp:
+        enable: "no"
+        dampening_profile:
+          - name: default
+        peer_group:
+          - name: "peer-group-4"
+            type: "ebgp"
+            enable: "yes"
+
+  # - name: "Blue"
+  #   ecmp: "yes"
+  #   protocol:
+  #     bgp:
+  #       enable: "yes"
+  #       graceful: "yes"
+  #       peer_group:
+  #         - name: "WAN"
+  #           enable: "yes"
+  #           type: "ebgp"
+  #           peer:
+  #             - name: "ISP1"
+  #               peer_ip: "74.51.192.1"
+  #               peer_as: "4200"
+  #               local_address: "ethernet1/1"
+  #       router_id: "74.51.192.2"
+  #       local_as: 4201
+  #       install_route: "yes"
+  #       policy:
+  #         export:
+  #           - name: "Connected"
+  #             enable: "yes"
+  #             match:
+  #               prefix:
+  #                 - name: "192.168.100.0/24"
+  #                   exact: "yes"
+  #               route_table: "unicast"
+  #             used_by:
+  #               - member: "WAN"
+  #       redistribution:
+  #         - name: "Connected"
+  #           af: "ipv4"

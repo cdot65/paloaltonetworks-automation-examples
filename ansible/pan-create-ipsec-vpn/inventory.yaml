@@ -1,0 +1,10 @@
+all:
+  children:
+    firewalls:
+      hosts:
+        dallas-vfw-01:
+        san-vfw-01:
+    panorama:
+      hosts:
+        redtail:
+          ansible_host: panorama.example.com

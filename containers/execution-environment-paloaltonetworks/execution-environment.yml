@@ -1,0 +1,24 @@
+---
+version: 3
+
+images:
+  base_image:
+    name: quay.io/fedora/fedora:latest
+
+dependencies:
+  ansible_core:
+    package_pip: ansible-core
+  ansible_runner:
+    package_pip: ansible-runner
+  system:
+    - openssh-clients
+    - sshpass
+  python:
+    - xmltodict
+  galaxy: requirements.yml
+
+additional_build_steps:
+
+  append_final:
+    - RUN python3 -m pip install https://github.com/PaloAltoNetworks/pan-os-python/archive/refs/tags/v1.11.0.tar.gz
+

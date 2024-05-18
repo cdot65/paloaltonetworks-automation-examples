@@ -1,0 +1,23 @@
+---
+# CREATE DHCP RESERVATIONS WITHIN PANORAMA
+- hosts: panorama
+  connection: local
+  gather_facts: False
+  become: False
+  collections:
+    - paloaltonetworks.panos
+    - ansible.utils
+
+  tasks:
+    - name: DHCP reservations
+      paloaltonetworks.panos.panos_config_element:
+        provider:
+          ip_address: "{{ ansible_host }}"
+          api_key: "{{ panorama_api_key }}"
+        xpath: "/config/devices/entry[@name='localhost.localdomain']/template/entry[@name='{{ item.template }}']/config/devices/entry[@name='localhost.localdomain']/network/dhcp/interface/entry[@name='{{ item.interface }}']/server/reserved"
+        element: |
+          "<entry name='{{ item.ip_address }}'>
+            <mac>{{ item.mac }}</mac>
+            <description>{{ item.description }}</description>
+          </entry>"
+      loop: "{{ dhcp_reservations }}"

@@ -1,0 +1,6 @@
+[flake8]
+# E501: PEP 8 recommends a maximum line length of 79 characters, but Black defaults to 88
+# W503: PEP 8 and Black support this functionality, so flake8 doesn't need to check it
+ignore = E501, W503
+max-line-length = 100
+exclude = tasks.py

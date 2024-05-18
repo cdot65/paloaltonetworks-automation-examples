@@ -1,0 +1,18 @@
+- name: Create ethernet interfaces
+  panos_interface:
+    provider: "{{ provider }}"
+    if_name: "{{ item.name }}"
+    mode: "{{ item.mode }}"
+    ip: "{{ item.ip }}"
+    enable_dhcp: "{{ item.dhcp }}"
+    zone_name: "{{ item.zone }}"
+  loop: "{{ ethernet_interfaces }}"
+
+- name: Create IPsec VPN tunnel interfaces
+  panos_tunnel:
+    provider: "{{ provider }}"
+    if_name: "{{ item.name }}"
+    ip: "{{ item.ip }}"
+    zone_name: "{{ item.zone }}"
+    vr_name: "{{ item.vr_name }}"
+  loop: "{{ tunnel_interfaces }}"

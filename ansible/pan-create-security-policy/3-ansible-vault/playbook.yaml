@@ -1,0 +1,37 @@
+# playbook.yaml
+---
+- name: Create Security Policy
+  hosts: panorama
+  connection: local
+  gather_facts: false
+  become: false
+
+  tasks:
+    - name: Add test pre-rule to Panorama
+      paloaltonetworks.panos.panos_security_rule:
+        provider:
+          # Use variable from inventory file
+          ip_address: "{{ ansible_host }}"
+          # Use variable from group_vars
+          username: "{{ panorama_credentials.username }}"
+          password: "{{ panorama_credentials.password }}"
+        # Use host_vars for policy information
+        rule_name: "{{ security_rule.rule_name }}"
+        description: "{{ security_rule.description }}"
+        source_zone: "{{ security_rule.source_zone }}"
+        destination_zone: "{{ security_rule.destination_zone }}"
+        source_ip: "{{ security_rule.source_ip }}"
+        source_user: "{{ security_rule.source_user }}"
+        destination_ip: "{{ security_rule.destination_ip }}"
+        category: "{{ security_rule.category }}"
+        application: "{{ security_rule.application }}"
+        service: "{{ security_rule.service }}"
+        hip_profiles: "{{ security_rule.hip_profiles }}"
+        # tag_name: "{{ security_rule.tag_name }}"
+        action: "{{ security_rule.action }}"
+        device_group: "{{ security_rule.device_group }}"
+      register: results
+
+    - name: Print results to console
+      ansible.builtin.debug:
+        msg: "{{ results }}"

@@ -1,0 +1,6 @@
+# group_vars/panorama.yaml
+
+# Variables related to all Panorama API connections
+panorama_credentials:
+  username: "this-is-just-a-placeholder"
+  password: "this-is-just-a-placeholder"
