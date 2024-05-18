@@ -2,7 +2,7 @@
   panos_static_route:
     provider:
       ip_address: "{{ ansible_host }}"
-      username: "panthis-is-just-a-placeholder"
+      username: "panofficehours"
       password: "paloalto1!"
     name: "{{ item.name }}"
     destination: "{{ item.destination }}"

@@ -95,11 +95,11 @@ panosExporter:
   config:
     devices:
       - ip: 192.168.255.11
-        username: this-is-just-a-placeholder
-        password: this-is-just-a-placeholder
+        username: officehours
+        password: paloalto123
       - ip: 192.168.255.12
-        username: this-is-just-a-placeholder
-        password: this-is-just-a-placeholder
+        username: officehours
+        password: paloalto123
   image:
     repository: ghcr.io/cdot65/panos-exporter
     tag: latest
@@ -131,7 +131,7 @@ prometheus:
     pullPolicy: Always
 
 grafana:
-  adminPassword: this-is-just-a-placeholder
+  adminPassword: paloalto123
   image:
     repository: ghcr.io/cdot65/panos-grafana
     tag: latest

@@ -177,7 +177,7 @@ This Django base template includes several powerful features to enhance your web
 - **Integration with SendGrid's API**: This enables sending transactional emails effortlessly using SendGrid.
 - **Custom Built Role-Based Access Control (RBAC)**: For more granular access control within your application.
 - **Django REST framework (DRF)**: Added to allow for the creation of REST API applications.
-- **Default User Credentials**: For easier initial setup, the default user is `admin` and the password is `this-is-just-a-placeholder`.
+- **Default User Credentials**: For easier initial setup, the default user is `admin` and the password is `paloalto123`.
 
 ## Execution Workflow
 

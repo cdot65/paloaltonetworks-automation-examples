@@ -15,7 +15,7 @@ python manage.py shell <<EOF
 from django.contrib.auth import get_user_model
 User = get_user_model()
 superuser = User.objects.get(email="automation@example.com")
-superuser.set_password("this-is-just-a-placeholder")
+superuser.set_password("paloalto123")
 superuser.save()
 EOF
 
