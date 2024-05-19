@@ -25,7 +25,7 @@ resource "panos_ethernet_interface" "guest" {
 }
 
 /* Virtual Routers -------------------------------------------------------- */
-resource "panos_virtual_router" "default_vr" {
+resource "panos_virtual_router" "lab_vr" {
   name = var.vr_name
   interfaces = [
     panos_ethernet_interface.mpls.name,
