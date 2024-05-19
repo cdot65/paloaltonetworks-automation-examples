@@ -163,3 +163,6 @@ web/django_base_project/django/.env
 go/firewall-commit/firewall-commit
 go/firewall-commit/go.mod
 go/firewall-commit/go.sum
+
+# DS Store files for macos finder
+.DS_Store
