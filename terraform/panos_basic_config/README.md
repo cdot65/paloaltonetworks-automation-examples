@@ -146,8 +146,16 @@ To execute our Terraform project, follow these steps:
 
 Here are some screenshots showcasing the execution of our PAN-OS configuration management:
 
+`terraform init`
+
 ![Screenshot 1](screenshots/screenshot1.png)
 
+`terraform plan`
+
 ![Screenshot 2](screenshots/screenshot2.png)
+
+`terraform apply`
+
+![Screenshot 3](screenshots/screenshot3.png)
 
 Feel free to explore the project and customize it according to your specific requirements. Happy automating! 😄
