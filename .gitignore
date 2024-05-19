@@ -160,3 +160,6 @@ cython_debug/
 #.idea/
 migration.code-workspace
 web/django_base_project/django/.env
+go/firewall-commit/firewall-commit
+go/firewall-commit/go.mod
+go/firewall-commit/go.sum
