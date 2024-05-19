@@ -1,10 +1,10 @@
-# Basic PAN-OS Configuration 📚
+# PAN-OS Basic Configuration 📚
 
 This README provides an overview of our Terraform project and guides you through the setup and execution process. 🚀
 
 ## Table of Contents
 
-- [Basic PAN-OS Configuration 📚](#basic-pan-os-configuration-)
+- [PAN-OS Basic Configuration 📚](#pan-os-basic-configuration-)
   - [Table of Contents](#table-of-contents)
   - [Overview](#overview)
   - [Prerequisites](#prerequisites)
