@@ -1,0 +1,7 @@
+extends: default
+
+rules:
+  line-length:
+    max: 90
+    # You can also disable the rule by setting it to "disable":
+    # allow: disable

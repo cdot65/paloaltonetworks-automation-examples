@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+  namespace: saute
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+    spec:
+      containers:
+      - name: frontend
+        image: ghcr.io/cdot65/saute-frontend:0.0.1
+        resources:
+          requests:
+            cpu: 400m
+            memory: 200Mi
+          limits:
+            cpu: 5000m
+            memory: 2000Mi
+        ports:
+        - containerPort: 80
+        envFrom:
+        - configMapRef:
+            name: frontend-config
+        volumeMounts:
+        - name: backend-data
+          mountPath: /code
+          readOnly: true
+      volumes:
+      - name: backend-data
+        persistentVolumeClaim:
+          claimName: backend-pvc

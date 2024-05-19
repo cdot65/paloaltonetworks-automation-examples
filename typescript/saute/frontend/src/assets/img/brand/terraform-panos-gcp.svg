@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="terraform-gcp" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 450 125">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #6b469c;
+        fill-rule: evenodd;
+      }
+
+      .cls-1, .cls-2, .cls-3, .cls-4 {
+        stroke-width: 0px;
+      }
+
+      .cls-2 {
+        fill: #4285f4;
+      }
+
+      .cls-3 {
+        fill: #aecbfa;
+      }
+
+      .cls-4 {
+        fill: #669df6;
+      }
+    </style>
+  </defs>
+  <g>
+    <polygon class="cls-1" points="104.94 30.53 131.93 46.12 131.93 77.28 104.94 61.7 104.94 30.53"/>
+    <polygon class="cls-1" points="134.89 46.12 134.89 77.28 161.88 61.7 161.88 30.53 134.89 46.12"/>
+    <polygon class="cls-1" points="75 13.14 75 44.3 101.99 59.88 101.99 28.72 75 13.14"/>
+    <polygon class="cls-1" points="104.95 96.28 131.93 111.86 131.93 80.9 131.93 80.7 104.95 65.11 104.95 96.28"/>
+  </g>
+  <g id="gcp">
+    <g>
+      <rect class="cls-3" x="317.56" y="49.25" width="26.51" height="26.51"/>
+      <rect class="cls-4" x="326.4" y="18.32" width="8.84" height="17.67"/>
+      <rect class="cls-4" x="308.73" y="18.32" width="8.84" height="17.67"/>
+      <rect class="cls-4" x="344.07" y="18.32" width="8.84" height="17.67"/>
+      <rect class="cls-2" x="326.4" y="89.01" width="8.84" height="17.67"/>
+      <rect class="cls-2" x="308.73" y="89.01" width="8.84" height="17.67"/>
+      <rect class="cls-2" x="344.07" y="89.01" width="8.84" height="17.67"/>
+      <rect class="cls-2" x="357.33" y="58.08" width="17.67" height="8.84"/>
+      <rect class="cls-2" x="357.33" y="75.75" width="17.67" height="8.84"/>
+      <rect class="cls-2" x="357.33" y="40.41" width="17.67" height="8.84"/>
+      <rect class="cls-4" x="286.64" y="58.08" width="17.67" height="8.84"/>
+      <rect class="cls-4" x="286.64" y="75.75" width="17.67" height="8.84"/>
+      <rect class="cls-4" x="286.64" y="40.41" width="17.67" height="8.84"/>
+      <path class="cls-3" d="m299.89,31.57v61.85h61.85V31.57h-61.85Zm53.02,53.02h-44.18v-44.18h44.18v44.18Z"/>
+      <polygon class="cls-4" points="317.56 75.75 344.07 75.75 330.82 62.5 317.56 75.75"/>
+      <polygon class="cls-2" points="330.82 62.5 344.07 75.75 344.07 49.25 330.82 62.5"/>
+    </g>
+  </g>
+</svg>

@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Saute</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="#">Saute</a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav">
+            <li class="nav-item">
+              <a class="nav-link" href="#project-overview">Project Overview</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#deployment">Deployment</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#usage">Usage</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+    <div class="container mt-4">
+      <section id="project-overview">
+        <h2 id="introduction">Introduction</h2>
+        <p>
+          Saute is a web application consisting of separate backend and frontend
+          components. Its goal is to provide a simple and intuitive interface
+          for managing products from Palo Alto Networks.
+        </p>
+        <p>
+          The backend is built using Django and PostgreSQL, while the frontend
+          is developed with Angular. The backend provides a robust REST API, and
+          the frontend consumes this API to offer a seamless user experience.
+        </p>
+        <p>
+          The Saute now also includes an Operational module, which allows users
+          to generate reports for Panorama devices.
+        </p>
+        <h3 id="screenshot">Screenshot</h3>
+        <p><img src="docs/images/dashboard.png" alt="Dashboard" /></p>
+        <h2 id="backend-overview">Backend Overview</h2>
+        <p>
+          The backend is designed using Django and Django Rest Framework (DRF),
+          featuring a modular architecture with well-structured applications.
+          This setup lays a strong foundation for future development.
+        </p>
+        <h2 id="frontend-overview">Frontend Overview</h2>
+        <p>
+          The frontend is developed using Angular, providing a seamless user
+          experience while interacting with the backend REST API.
+        </p>
+      </section>
+
+      <section id="deployment">
+        <h2 id="project-dependencies">Project Dependencies</h2>
+        <p>
+          To work with this project, you&#39;ll need the following software
+          installed on your system:
+        </p>
+        <ul>
+          <li>Docker</li>
+          <li>Docker Compose</li>
+          <li>Python 3.9</li>
+          <li>Node.js (for the frontend)</li>
+        </ul>
+        <h2 id="deployment-steps">Deployment Steps</h2>
+        <p>
+          To deploy both backend and frontend using Docker and Docker Compose,
+          follow these steps:
+        </p>
+        <ol>
+          <li>
+            <p>
+              Ensure Docker and Docker Compose are installed on your system.
+            </p>
+          </li>
+          <li>
+            <p>
+              Create an <code>.env</code> file in the backend directory and
+              update it accordingly.
+            </p>
+            <pre><code class="lang-bash"> cp backend/<span class="hljs-selector-class">.env</span><span class="hljs-selector-class">.example</span> backend/<span class="hljs-selector-class">.env</span>
+             vim .backend/.env
+            </code></pre>
+            <pre><code class="lang-conf"> <span class="hljs-attr">DJANGO_ALLOWED_HOSTS=['localhost',</span> '<span class="hljs-number">127.0</span>.<span class="hljs-number">0.1</span>', '*']
+             <span class="hljs-attr">DJANGO_DEBUG=True</span>
+             <span class="hljs-attr">DJANGO_SECRET_KEY=qKJ9h-ph4VY7zJIQnnRuvR-MARWs-b2tOdRtJZpeXfc</span>
+             <span class="hljs-attr">POSTGRES_USER=django_user</span>
+             <span class="hljs-attr">POSTGRES_PASSWORD=django_password</span>
+             <span class="hljs-attr">POSTGRES_DB=postgres</span>
+             <span class="hljs-attr">POSTGRES_HOST=db</span>
+             <span class="hljs-attr">POSTGRES_PORT=5432</span>
+            </code></pre>
+          </li>
+          <li>
+            <p>Build the Docker images and start the containers.</p>
+            <pre><code class="lang-bash"> docker-compose up <span class="hljs-comment">--build</span>
+            </code></pre>
+          </li>
+          <li>
+            <p>
+              Wait for the web application to start (you can check the logs to
+              ensure everything is running smoothly):
+            </p>
+            <pre><code class="lang-bash"> docker-compose logs <span class="hljs-_">-f</span>
+            </code></pre>
+          </li>
+          <li>
+            <p>Perform database migrations.</p>
+            <pre><code class="lang-bash"> docker-compose <span class="hljs-keyword">exec</span> backend <span class="hljs-keyword">python</span> manage.py makemigrations
+             docker-compose <span class="hljs-keyword">exec</span> backend <span class="hljs-keyword">python</span> manage.py migrate
+            </code></pre>
+          </li>
+          <li>
+            <p>Create a superuser.</p>
+            <pre><code class="lang-bash"> docker-compose <span class="hljs-keyword">exec</span> backend <span class="hljs-keyword">python</span> manage.py createsuperuser
+            </code></pre>
+          </li>
+        </ol>
+        <p>Your application should now be up and running! 🎉</p>
+        <h2 id="technical-features">Technical Features</h2>
+        <h3 id="backend-features">Backend Features</h3>
+        <ul>
+          <li>Django Rest Framework (DRF) for creating a RESTful API</li>
+          <li>Django Allauth for user authentication and registration</li>
+          <li>PostgreSQL as the database</li>
+          <li>
+            Docker and Docker Compose for easy and reproducible deployment
+          </li>
+          <li>API documentation using Redoc and Swagger</li>
+        </ul>
+        <h3 id="frontend-features">Frontend Features</h3>
+        <ul>
+          <li>Angular framework for building a dynamic and responsive UI</li>
+          <li>Angular Material for a modern, sleek design</li>
+          <li>Integration with the backend REST API</li>
+          <li>Routing and route guards for secure navigation</li>
+          <li>
+            Operational module for generating reports for Panorama devices
+          </li>
+        </ul>
+        <h2 id="working-with-the-backend-application">
+          Working with the Backend Application
+        </h2>
+        <h3 id="django-admin-panel">Django Admin Panel</h3>
+        <p>
+          The Django admin panel is a powerful built-in tool for managing your
+          application&#39;s data. With the admin panel, you can easily manage
+          users, groups, and other models in your application. To access the
+          admin panel:
+        </p>
+        <ol>
+          <li>
+            <p>Create a superuser (if you haven&#39;t already):</p>
+            <pre><code class="lang-bash"> docker-compose <span class="hljs-keyword">exec</span> backend <span class="hljs-keyword">python</span> manage.py createsuperuser
+            </code></pre>
+            <p>
+              Follow the prompts to create a superuser with a username, email,
+              and password.
+            </p>
+          </li>
+          <li>
+            <p>
+              Access the admin panel by visiting
+              <code>http://localhost:8000/admin</code> in your browser.
+            </p>
+          </li>
+          <li>
+            <p>Log in with the superuser credentials you created earlier.</p>
+          </li>
+          <li>
+            <p>
+              You can now manage users, groups, and other models through the
+              admin panel. Click on the model you want to manage and add, edit,
+              or delete entries as needed.
+            </p>
+          </li>
+        </ol>
+        <h3 id="important-api-endpoints">Important API Endpoints</h3>
+        <p>
+          The backend application provides several important API endpoints that
+          you can use to interact with the data. Some of the key endpoints are:
+        </p>
+        <ol>
+          <li>
+            <p>User Registration: <code>/api/v1/accounts/register/</code></p>
+            <pre><code class="lang-yaml"> - <span class="hljs-function"><span class="hljs-keyword">Method</span>:</span> POST
+             - Description: <span class="hljs-keyword">Register</span> a <span class="hljs-keyword">new</span> user <span class="hljs-keyword">with</span> a username, email, <span class="hljs-keyword">and</span> password.
+            </code></pre>
+          </li>
+          <li>
+            <p>User Login: <code>/api/v1/accounts/login/</code></p>
+            <pre><code class="lang-yaml"> - <span class="hljs-function"><span class="hljs-keyword">Method</span>:</span> POST
+             - Description: Log <span class="hljs-keyword">in</span> an existing user <span class="hljs-keyword">with</span> their username <span class="hljs-keyword">and</span> password. Returns an authentication token.
+            </code></pre>
+          </li>
+          <li>
+            <p>User Logout: <code>/api/v1/accounts/logout/</code></p>
+            <pre><code class="lang-yaml"> - <span class="hljs-function"><span class="hljs-keyword">Method</span>:</span> POST
+             - Description: Log <span class="hljs-keyword">out</span> the currently logged-<span class="hljs-keyword">in</span> user.
+            </code></pre>
+          </li>
+          <li>
+            <p>User Details: <code>/api/v1/accounts/user/</code></p>
+            <pre><code class="lang-yaml"> - <span class="hljs-function"><span class="hljs-keyword">Method</span>:</span> GET
+             - Description: Retrieve the details <span class="hljs-keyword">of</span> the currently logged-<span class="hljs-keyword">in</span> user.
+            </code></pre>
+          </li>
+          <li>
+            <p>List Panoramas: <code>/api/v1/panorama/inventory/</code></p>
+            <pre><code class="lang-yaml"> - <span class="hljs-function"><span class="hljs-keyword">Method</span>:</span> GET
+             - Description: Retrieve a list <span class="hljs-keyword">of</span> all panoramas.
+            </code></pre>
+          </li>
+          <li>
+            <p>Create Panorama: <code>/api/v1/inventory/</code></p>
+            <pre><code class="lang-yaml"> - <span class="hljs-function"><span class="hljs-keyword">Method</span>:</span> POST
+             - Description: <span class="hljs-keyword">Create</span> a <span class="hljs-keyword">new</span> panorama.
+            </code></pre>
+          </li>
+          <li>
+            <p>
+              Retrieve, Update, or Delete a Panorama:
+              <code>/api/v1/inventory/:id/</code>
+            </p>
+            <pre><code class="lang-yaml"> - <span class="hljs-function"><span class="hljs-keyword">Method</span>:</span> GET, PUT, DELETE
+             - Description: Retrieve, update, <span class="hljs-keyword">or</span> delete a specific panorama based <span class="hljs-keyword">on</span> its ID.
+            </code></pre>
+            <p>
+              Replace <code>:id</code> with the actual ID of the panorama you
+              want to retrieve, update, or delete. These endpoints can be used
+              with tools like Postman, Insomnia, or even with JavaScript fetch
+              or Axios in the frontend to interact with the backend application.
+            </p>
+          </li>
+          <li>
+            <p>
+              Generate Panorama Rules Report: <code>/api/v1/report/rules</code>
+            </p>
+            <pre><code class="lang-yaml"> - <span class="hljs-function"><span class="hljs-keyword">Method</span>:</span> POST
+             - Description: Generates a rules report <span class="hljs-keyword">for</span> the selected Panorama device, takes `pan_url` <span class="hljs-keyword">and</span> `api_key` <span class="hljs-keyword">in</span> the payload.
+            </code></pre>
+          </li>
+        </ol>
+        <h2 id="working-with-the-frontend-application">
+          Working with the Frontend Application
+        </h2>
+        <h3 id="angular-basics">Angular Basics</h3>
+        <p>
+          The frontend of this project is built using Angular, a popular web
+          application framework. To work with the frontend, you should be
+          familiar with Angular&#39;s key concepts, such as components,
+          services, and routing. You can learn more about Angular from the
+          <a href="https://angular.io/docs">official documentation</a>.
+        </p>
+        <h3 id="important-components-and-routes">
+          Important Components and Routes
+        </h3>
+        <p>
+          The frontend application consists of several components that work
+          together to provide a seamless user experience. Some of the key
+          components and their associated routes are:
+        </p>
+        <ol>
+          <li>
+            <p>DashboardComponent (<code>/</code>)</p>
+            <ul>
+              <li>
+                Description: This component serves as the dashboard of the
+                application. Users can navigate to different parts of the
+                application from here.
+              </li>
+            </ul>
+          </li>
+          <li>
+            <p>LoginComponent (<code>/login</code>)</p>
+            <ul>
+              <li>
+                Description: This component handles user authentication,
+                allowing users to log in with their username and password. Upon
+                successful login, the user is redirected to the Homepage
+                component.
+              </li>
+            </ul>
+          </li>
+          <li>
+            <p>InventoryComponent (<code>/inventory</code>)</p>
+            <ul>
+              <li>
+                Description: This component is the main entry point for the
+                inventory features, but also provides the tables of subsequent
+                inventory components. Will contain navigation options for the
+                Panorama and Prisma components.
+              </li>
+            </ul>
+          </li>
+          <li>
+            <p>FirewallComponent (<code>/inventory/firewall</code>)</p>
+            <ul>
+              <li>
+                Description: This component displays a list of PAN-OS firewalls
+                and allows users to create new ones. It fetches data from the
+                backend API and requires the user to be logged in. It also
+                provides a detail view for each firewall entry, accessible via
+                the URL pattern <code>/inventory/firewall/:id</code>, where
+                <code>:id</code> is the ID of the firewall.
+              </li>
+            </ul>
+          </li>
+          <li>
+            <p>PanoramaComponent (<code>/inventory/panorama</code>)</p>
+            <ul>
+              <li>
+                Description: This component displays a list of panoramas and
+                allows users to create new ones. It fetches data from the
+                backend API and requires the user to be logged in. It also
+                provides a detail view for each panorama entry, accessible via
+                the URL pattern <code>/inventory/panorama/:id</code>, where
+                <code>:id</code> is the ID of the panorama.
+              </li>
+            </ul>
+          </li>
+          <li>
+            <p>PrismaComponent (<code>/inventory/prisma</code>)</p>
+            <ul>
+              <li>
+                Description: This component is dedicated to Prisma-specific
+                features, displaying a list of Prisma tenants and allowing users
+                to create new ones. It fetches data from the backend API and
+                requires the user to be logged in. It also provides a detail
+                view for each Prisma tenant entry, accessible via the URL
+                pattern <code>/inventory/prisma/:id</code>, where
+                <code>:id</code> is the ID of the Prisma tenant.
+              </li>
+            </ul>
+          </li>
+          <li>
+            <p>
+              PanoramaReportsComponent
+              (<code>/operational/panorama-reports</code>)
+            </p>
+            <ul>
+              <li>
+                Description: This component allows users to generate reports for
+                Panorama devices. Users can select a Panorama device from a list
+                and initiate the report generation process. It fetches data from
+                the backend API and requires the user to be logged in.
+              </li>
+            </ul>
+          </li>
+        </ol>
+        <p>
+          To navigate between these components, use the Angular Router. The
+          router enables navigation from one component to the next as users
+          perform tasks in the application. The RouterModule and Routes are
+          imported in the <code>app.module.ts</code> file, and the routes are
+          defined in the <code>app-routing.module.ts</code> file.
+        </p>
+        <h3 id="interacting-with-the-backend-api">
+          Interacting with the Backend API
+        </h3>
+        <p>
+          The frontend interacts with the backend API using Angular&#39;s
+          HttpClient. The AuthService and other services are responsible for
+          making API calls to the backend. These services are injected into
+          components using Angular&#39;s dependency injection system.
+        </p>
+        <p>
+          For example, in the LoginComponent, the AuthService is used to log in
+          a user by making a POST request to the
+          <code>/api/v1/accounts/login/</code> endpoint. Upon successful login,
+          the authentication token is stored in a cookie, and the user is
+          redirected to the Homepage component.
+        </p>
+        <p>
+          To add more functionality or interact with additional API endpoints,
+          create new services or modify existing ones. Then, inject those
+          services into the components that require the new functionality.
+        </p>
+      </section>
+
+      <section id="usage">
+        <!-- Add usage content here -->
+      </section>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+  </body>
+</html>

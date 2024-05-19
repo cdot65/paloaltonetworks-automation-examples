@@ -1,0 +1,72 @@
+{
+  "name": "saute-frontend",
+  "version": "0.2.0",
+  "copyright": "Copyright 2023 cdot65 Calvin Remsburg",
+  "license": "MIT",
+  "author": "Calvin Remsburg",
+  "homepage": "https://github.com/cdot65/saute",
+  "config": {
+    "coreui_library_short_version": "4.3",
+    "coreui_library_docs_url": "https://github.com/cdot65/saute/"
+  },
+  "scripts": {
+    "ng": "ng",
+    "start": "ng serve",
+    "build": "ng build",
+    "watch": "ng build --watch --configuration development",
+    "test": "ng test"
+  },
+  "private": true,
+  "dependencies": {
+    "@angular/animations": "^15.2.8",
+    "@angular/cdk": "^15.2.8",
+    "@angular/common": "^15.2.8",
+    "@angular/compiler": "^15.2.8",
+    "@angular/core": "^15.2.8",
+    "@angular/forms": "^15.2.8",
+    "@angular/language-service": "^15.2.8",
+    "@angular/material": "^15.2.8",
+    "@angular/platform-browser": "^15.2.8",
+    "@angular/platform-browser-dynamic": "^15.2.8",
+    "@angular/router": "^15.2.8",
+    "@coreui/angular": "~4.4.7",
+    "@coreui/angular-chartjs": "~4.4.7",
+    "@coreui/chartjs": "^3.1.1",
+    "@coreui/coreui": "~4.2.6",
+    "@coreui/icons": "^3.0.1",
+    "@coreui/icons-angular": "~4.4.7",
+    "@coreui/utils": "^2.0.1",
+    "@ngstack/code-editor": "^5.0.0",
+    "chart.js": "^3.9.1",
+    "monaco-editor": "^0.39.0",
+    "ng-process-env": "^16.0.6",
+    "ngx-cookie-service": "^15.0.0",
+    "ngx-json-viewer": "^3.2.1",
+    "ngx-pagination": "^6.0.3",
+    "ngx-perfect-scrollbar": "^10.1.1",
+    "openai": "^3.2.1",
+    "rxjs": "~7.8.1",
+    "sweetalert2": "^11.7.3",
+    "tslib": "^2.3.0",
+    "zone.js": "~0.13.0"
+  },
+  "devDependencies": {
+    "@angular-devkit/build-angular": "^15.2.7",
+    "@angular/cli": "^15.2.7",
+    "@angular/compiler-cli": "^15.2.8",
+    "@angular/localize": "^15.2.8",
+    "@types/jasmine": "^4.3.1",
+    "@types/node": "^18.16.2",
+    "jasmine-core": "~4.6.0",
+    "karma": "~6.4.2",
+    "karma-chrome-launcher": "~3.2.0",
+    "karma-coverage": "~2.2.0",
+    "karma-jasmine": "~5.1.0",
+    "karma-jasmine-html-reporter": "~2.0.0",
+    "typescript": "~4.9.5"
+  },
+  "engines": {
+    "node": "^14.20.0 || ^16.13.0 || ^18.10.0",
+    "npm": ">= 6"
+  }
+}

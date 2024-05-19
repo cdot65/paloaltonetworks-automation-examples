@@ -1,0 +1,48 @@
+<c-row>
+    <c-col
+        *ngFor="let widget of personaPersonas; index as i"
+        md="12"
+        lg="12"
+        xl="12"
+    >
+        <div
+            (click)="widgetClick(widget)"
+            class="widget-link"
+            style="cursor: pointer"
+        >
+            <c-widget-stat-d class="mb-4">
+                <c-card-header [ngStyle]="widget.capBg">
+                    <ng-container *ngIf="widget.iconPath; else coreUIIcon">
+                        <img
+                            [src]="widget.iconPath"
+                            class="my-8 text-white"
+                            height="140"
+                        />
+                    </ng-container>
+                    <ng-template #coreUIIcon>
+                        <svg
+                            [name]="widget.icon"
+                            cIcon
+                            class="my-4 text-white"
+                            height="52"
+                        ></svg>
+                    </ng-template>
+                </c-card-header>
+                <c-card-body>
+                    <div class="text-dark">
+                        <h4>{{ widget.title }}</h4>
+                        <p>{{ widget.task }}</p>
+                        <!-- Display hashtags -->
+                        <div class="hashtags">
+                            <span
+                                *ngFor="let hashtag of widget.hashtags"
+                                class="hashtag"
+                                >{{ hashtag }}</span
+                            >
+                        </div>
+                    </div>
+                </c-card-body>
+            </c-widget-stat-d>
+        </div>
+    </c-col>
+</c-row>

@@ -1,0 +1,30 @@
+<c-card-group class="mb-4">
+    <c-row>
+        <c-col
+            *ngFor="let operationsEntry of operationsData; index as i"
+            md="4"
+            lg="4"
+            xl="4"
+            class="card-margin-bottom"
+        >
+            <c-card class="h-100">
+                <c-card-header>
+                    <h5 cCardTitle class="align-center">
+                        {{ operationsEntry.title }}
+                    </h5>
+                </c-card-header>
+                <a
+                    [routerLink]="operationsEntry.buttonLink"
+                    class="automationEntry-link"
+                >
+                    <img cCardImg="bottom" [src]="operationsEntry.imagePath" />
+                    <c-card-body>
+                        <p cCardText class="align-center">
+                            {{ operationsEntry.description }}
+                        </p>
+                    </c-card-body>
+                </a>
+            </c-card>
+        </c-col>
+    </c-row>
+</c-card-group>

@@ -1,0 +1,221 @@
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <br />
+            <div class="card flex-container">
+                <h4 class="card-header center text-primary">
+                    Chatting with {{ selectedWidget.name }}
+                </h4>
+                <div class="center-container">
+                    <div class="avatar-container">
+                        <img
+                            [src]="selectedWidget.iconPath"
+                            height="100"
+                            width="100"
+                            class="avatar"
+                            alt="avatar"
+                        />
+                    </div>
+                    <div class="button-group">
+                        <button
+                            [cModalToggle]="bio.id"
+                            cButton
+                            style="margin-left: 10px"
+                        >
+                            Lore
+                        </button>
+                        <c-modal
+                            #bio
+                            [scrollable]="true"
+                            alignment="center"
+                            id="bio"
+                            size="xl"
+                        >
+                            <c-modal-header>
+                                <h5 cModalTitle>
+                                    {{ selectedWidget.name }}'s Biography
+                                </h5>
+                            </c-modal-header>
+                            <c-modal-body>
+                                <p *ngFor="let paragraph of selectedWidget.bio">
+                                    {{ paragraph }}
+                                </p>
+                            </c-modal-body>
+                        </c-modal>
+                        <button
+                            [cModalToggle]="tipsModal.id"
+                            cButton
+                            style="margin-left: 10px"
+                        >
+                            Tips
+                        </button>
+                        <c-modal
+                            #tipsModal
+                            [scrollable]="true"
+                            alignment="center"
+                            id="tipsModal"
+                            size="xl"
+                        >
+                            <c-modal-header>
+                                <h5 cModalTitle>
+                                    Let's get the conversation started
+                                </h5>
+                                <button
+                                    [cModalToggle]="tipsModal.id"
+                                    cButtonClose
+                                ></button>
+                            </c-modal-header>
+                            <c-modal-body>
+                                <p
+                                    *ngFor="
+                                        let paragraph of selectedWidget.iceBreakers
+                                    "
+                                >
+                                    {{ paragraph }}
+                                </p>
+                            </c-modal-body>
+
+                            <c-modal-footer>
+                                <button
+                                    [cModalToggle]="tipsModal.id"
+                                    cButton
+                                    color="secondary"
+                                >
+                                    Understood
+                                </button>
+                            </c-modal-footer>
+                        </c-modal>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <c-row class="center-container task-details">
+                        <c-col lg="8" xs="12">
+                            <div class="card">
+                                <div class="card-header">
+                                    Conversation Details
+                                </div>
+                                <div class="card-body">
+                                    <p
+                                        class="card-text"
+                                        [ngStyle]="{
+                                            'white-space': 'pre-line'
+                                        }"
+                                    >
+                                        {{
+                                            selectedWidget.task
+                                                | slice : 0 : 2000
+                                        }}
+                                    </p>
+                                    <p>
+                                        {{ selectedWidget.name }} is here to
+                                        help you with
+                                        <i>{{ selectedWidget.title }}</i
+                                        >.
+                                    </p>
+                                    <c-form-check inline>
+                                        <input
+                                            cFormCheckInput
+                                            id="radioinline1"
+                                            [(ngModel)]="selectedModel"
+                                            name="radioinline"
+                                            type="radio"
+                                            value="gpt-3.5-turbo"
+                                            checked
+                                        />
+                                        <label
+                                            cFormCheckLabel
+                                            for="radioinline1"
+                                            >ChatGPT3.5</label
+                                        >
+                                    </c-form-check>
+                                    <c-form-check inline>
+                                        <input
+                                            cFormCheckInput
+                                            id="radioinline2"
+                                            [(ngModel)]="selectedModel"
+                                            name="radioinline"
+                                            type="radio"
+                                            value="gpt-4"
+                                        />
+                                        <label
+                                            cFormCheckLabel
+                                            for="radioinline2"
+                                            >ChatGPT4</label
+                                        >
+                                    </c-form-check>
+                                    <c-form-check inline>
+                                        <input
+                                            cFormCheckInput
+                                            disabled
+                                            id="radioinline3"
+                                            [(ngModel)]="selectedModel"
+                                            name="radioinline"
+                                            type="radio"
+                                            value="llama"
+                                        />
+                                        <label
+                                            cFormCheckLabel
+                                            for="radioinline3"
+                                            >LLaMa (disabled)</label
+                                        >
+                                    </c-form-check>
+                                </div>
+                            </div>
+                        </c-col>
+                    </c-row>
+                    <div class="row">
+                        <div class="col-md-2"></div>
+                        <div class="col-md-8">
+                            <div class="frame-box" #chatBox>
+                                <div
+                                    *ngFor="let item of chatConversation"
+                                    class="message"
+                                    [ngClass]="item.cssClass"
+                                >
+                                    <img
+                                        [src]="
+                                            item.cssClass === 'bot'
+                                                ? selectedWidget.iconPath
+                                                : 'assets/img/avatars/calvin.png'
+                                        "
+                                        class="message-avatar"
+                                    />
+                                    <div class="message-bubble">
+                                        <div class="message-text">
+                                            {{ getText(item.response) }}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <img
+                                        src="../../../assets/spinning-loading.gif"
+                                        *ngIf="showTyping"
+                                        width="50px"
+                                        height="50px"
+                                    />
+                                </div>
+                            </div>
+                            <br />
+                            <textarea
+                                row="3"
+                                cols="15"
+                                class="form-control"
+                                [(ngModel)]="promptText"
+                                placeholder="Introduce yourself to begin the conversation"
+                            ></textarea>
+                            <br />
+                            <button
+                                class="btn btn-primary push-right"
+                                (click)="sendChatMessage()"
+                            >
+                                Send
+                            </button>
+                        </div>
+                        <div class="col-md-2"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

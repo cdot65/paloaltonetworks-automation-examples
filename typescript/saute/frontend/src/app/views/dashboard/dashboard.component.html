@@ -1,0 +1,95 @@
+<c-col xs="12">
+    <c-card class="mb-3">
+        <c-card-header ngPreserveWhitespaces>
+            <strong>Automation Catalog</strong>
+            <!-- <small>pills</small> -->
+        </c-card-header>
+        <c-card-body>
+            <div class="nav-pills-container">
+                <c-nav variant="pills">
+                    <c-nav-item>
+                        <a
+                            [cTabContent]="tabContent3"
+                            [routerLink]
+                            [tabPaneIdx]="0"
+                            cNavLink
+                        >
+                            <svg cIcon class="me-2" name="cibSkyliner"></svg>
+                            Deploy
+                        </a>
+                    </c-nav-item>
+                    <c-nav-item>
+                        <a
+                            [cTabContent]="tabContent3"
+                            [routerLink]
+                            [tabPaneIdx]="1"
+                            cNavLink
+                        >
+                            <svg cIcon class="me-2" name="cilCog"></svg>
+                            Configuration
+                        </a>
+                    </c-nav-item>
+                    <c-nav-item>
+                        <a
+                            [cTabContent]="tabContent3"
+                            [routerLink]
+                            [tabPaneIdx]="2"
+                            cNavLink
+                        >
+                            <svg cIcon class="me-2" name="cilCode"></svg>
+                            Operations
+                        </a>
+                    </c-nav-item>
+                    <c-nav-item>
+                        <a
+                            [cTabContent]="tabContent3"
+                            [routerLink]
+                            [tabPaneIdx]="3"
+                            cNavLink
+                        >
+                            <svg cIcon class="me-2" name="cilUser"></svg>
+                            Assessments
+                        </a>
+                    </c-nav-item>
+                </c-nav>
+            </div>
+            <c-tab-content
+                #tabContent3="cTabContent"
+                cRounded="bottom"
+                [activeTabPaneIdx]="0"
+            >
+                <c-tab-pane
+                    aria-labelledby="automation-deploy"
+                    class="p-3 preview"
+                    role="tabpanel"
+                >
+                    <app-deploy-widget></app-deploy-widget>
+                </c-tab-pane>
+
+                <c-tab-pane
+                    aria-labelledby="automation-configuration"
+                    class="p-3 preview"
+                    role="tabpanel"
+                >
+                    <app-configuration-widget></app-configuration-widget>
+                </c-tab-pane>
+
+                <c-tab-pane
+                    aria-labelledby="automation-operations"
+                    class="p-3 preview"
+                    role="tabpanel"
+                >
+                    <app-operations-widget></app-operations-widget>
+                </c-tab-pane>
+
+                <c-tab-pane
+                    aria-labelledby="automation-assessment"
+                    class="p-3 preview"
+                    role="tabpanel"
+                >
+                    <app-assessment-widget></app-assessment-widget>
+                </c-tab-pane>
+            </c-tab-content>
+        </c-card-body>
+    </c-card>
+</c-col>

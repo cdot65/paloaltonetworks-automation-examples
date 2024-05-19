@@ -1,0 +1,102 @@
+<c-row>
+    <c-col xs="12">
+        <c-card class="mb-4">
+            <c-card-header ngPreserveWhitespaces>
+                <strong>Administrator Report</strong>
+            </c-card-header>
+            <c-card-body>
+                <p class="text-medium-emphasis small">
+                    This Python script fetches a list of administrators from a
+                    Panorama instance (Palo Alto Networks) and returns it in
+                    JSON format. It imports necessary libraries, sets up
+                    logging, and receives its parameters from our Panorama
+                    object.
+                </p>
+                <app-automation-interface
+                    [scriptName]="'admin_assessment/app.py'"
+                >
+                    <form
+                        #customStylesForm="ngForm"
+                        (ngSubmit)="onSubmitForm(customStylesForm)"
+                        [ngClass]="{ 'was-validated': customStylesForm.valid }"
+                        cForm
+                        class="row g-3 needs-validation"
+                    >
+                        <c-col md="8">
+                            <label cLabel for="validationServer04"
+                                >Panorama Instance</label
+                            >
+                            <select
+                                cSelect
+                                id="validationServer04"
+                                [(ngModel)]="selectedPanorama"
+                                name="selectedPanorama"
+                                #selectedPanoramaControl="ngModel"
+                                required
+                            >
+                                <option [ngValue]="null" disabled selected>
+                                    Select a Panorama
+                                </option>
+                                <option
+                                    *ngFor="let panorama of panoramas"
+                                    [ngValue]="panorama"
+                                >
+                                    {{ panorama.hostname }}
+                                </option>
+                            </select>
+                            <c-form-feedback
+                                [valid]="
+                                    selectedPanoramaControl.valid &&
+                                    selectedPanoramaControl.touched
+                                        ? true
+                                        : undefined
+                                "
+                            >
+                                Looks good!</c-form-feedback
+                            >
+                        </c-col>
+                        <c-col md="8">
+                            <label cLabel for="validationServer05">Email</label>
+                            <div>
+                                <input
+                                    type="email"
+                                    cInput
+                                    id="validationServer05"
+                                    [(ngModel)]="email"
+                                    name="email"
+                                    #emailControl="ngModel"
+                                    required
+                                    email
+                                />
+                                <c-form-feedback
+                                    [valid]="
+                                        emailControl.valid &&
+                                        emailControl.touched
+                                            ? true
+                                            : undefined
+                                    "
+                                >
+                                    Looks good!</c-form-feedback
+                                >
+                                <c-form-feedback invalid>
+                                    Please provide a valid email.
+                                </c-form-feedback>
+                            </div>
+                        </c-col>
+                        <c-col xs="12">
+                            <button
+                                cButton
+                                class="me-1"
+                                color="primary"
+                                type="submit"
+                                [disabled]="!customStylesForm.valid"
+                            >
+                                Submit form
+                            </button>
+                        </c-col>
+                    </form>
+                </app-automation-interface>
+            </c-card-body>
+        </c-card>
+    </c-col>
+</c-row>

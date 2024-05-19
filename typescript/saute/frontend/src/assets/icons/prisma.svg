@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="prisma" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 400 287">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: none;
+      }
+
+      .cls-2 {
+        clip-path: url(#clippath);
+      }
+
+      .cls-3 {
+        fill: #2ac3e9;
+      }
+    </style>
+    <clipPath id="clippath">
+      <rect class="cls-1" x="57.5" y="1" width="285" height="285"/>
+    </clipPath>
+  </defs>
+  <g class="cls-2">
+    <polygon class="cls-3" points="236.74 190.81 236.74 58.87 305.67 190.81 236.74 190.81"/>
+    <polygon class="cls-3" points="236.74 .8 178.7 58.87 167.13 70.41 94.27 143.3 236.74 285.8 236.74 190.81 167.81 190.81 236.74 58.87 236.74 .8"/>
+  </g>
+</svg>

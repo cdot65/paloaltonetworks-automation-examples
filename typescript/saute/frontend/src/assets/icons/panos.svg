@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="panos" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 287">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #f04e23;
+      }
+    </style>
+  </defs>
+  <polygon class="cls-1" points="171.46 201.49 314.68 57.75 257.55 .41 200.41 57.75 228.85 86.28 85.7 230.05 142.77 287.42 199.9 230.05 171.46 201.49"/>
+  <polygon class="cls-1" points=".18 144.2 143.38 .39 200.48 57.73 57.28 201.54 .18 144.2"/>
+  <polygon class="cls-1" points="199.87 230.14 343.08 86.34 400.18 143.68 256.97 287.48 199.87 230.14"/>
+</svg>

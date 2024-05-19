@@ -1,0 +1,129 @@
+<!-- Panorama creation form -->
+<c-row>
+    <c-col xs="12">
+        <c-card class="mb-4">
+            <c-card-header>
+                <strong>Create Panorama Entry</strong>
+            </c-card-header>
+            <c-card-body>
+                <!-- The form uses a FormGroup named 'panoramaForm' -->
+                <!-- onSubmit() is called when the form is submitted -->
+                <form
+                    [formGroup]="panoramaForm"
+                    (ngSubmit)="onSubmit()"
+                    cForm
+                    class="row g-3"
+                >
+                    <!-- Input for panorama name with validation -->
+                    <c-col md="6">
+                        <label cLabel for="name">Panorama Hostname</label>
+                        <div class="has-validation">
+                            <input
+                                cFormControl
+                                id="hostname"
+                                type="text"
+                                formControlName="hostname"
+                            />
+                            <!-- Shows an error message if panorama with entered hostname already exists -->
+                            <div
+                                class="error-message"
+                                *ngIf="panoramaForm.get('hostname')?.errors?.['panoramaExists'] || isPending('hostname')"
+                            >
+                                {{
+                                    isPending("hostname")
+                                        ? "Checking..."
+                                        : "Panorama with this hostname already exists."
+                                }}
+                            </div>
+                        </div>
+                    </c-col>
+                    <!-- Select with an option for each panorama platform -->
+                    <c-col md="6">
+                        <label cLabel for="platform">Panorama Platform</label>
+                        <select
+                            aria-label="Default select example"
+                            cSelect
+                            cFormControl
+                            id="platform"
+                            formControlName="platform"
+                        >
+                            <option
+                                *ngFor="
+                                    let platform of panoramaPlatforms$ | async
+                                "
+                                [value]="platform.name"
+                            >
+                                {{ platform.name }}
+                            </option>
+                        </select>
+                    </c-col>
+                    <!-- Input for panorama ipv4 address without validation -->
+                    <c-col md="6">
+                        <label cLabel for="name">IPv4 Address</label>
+                        <input
+                            cFormControl
+                            id="ipv4_address"
+                            type="text"
+                            formControlName="ipv4_address"
+                            placeholder="192.168.1.1"
+                        />
+                    </c-col>
+                    <!-- Input for panorama ipv4 address without validation -->
+                    <c-col md="6">
+                        <label cLabel for="name">IPv6 Address</label>
+                        <input
+                            cFormControl
+                            id="ipv6_address"
+                            type="text"
+                            formControlName="ipv6_address"
+                            placeholder="2001:0db8:85a3::8a2e:0370:7334"
+                        />
+                    </c-col>
+                    <!-- Input for panorama API key without validation -->
+                    <c-col md="12">
+                        <label cLabel for="name">API Key</label>
+                        <input
+                            cFormControl
+                            id="api_key"
+                            type="text"
+                            formControlName="api_key"
+                            placeholder="LUFRPT13V2VnaWRRbVY2Y3VSTTNoaXdMbDFocHpueEk9dE94Y215djY0U1hZMk9aU3RYa1o4MHF4UWtVQzVxR29paGQxSHU3T0VRQU52RXM1QXRSQkoxOWRUWHg1N1Bueg=="
+                        />
+                    </c-col>
+                    <!-- Input for optional notes -->
+                    <c-col md="12">
+                        <label cLabel for="notes">Notes</label>
+                        <textarea
+                            cFormControl
+                            id="notes"
+                            type="text"
+                            formControlName="notes"
+                            rows="3"
+                        ></textarea>
+                    </c-col>
+                    <!-- Save and Cancel buttons -->
+                    <!-- Save button is disabled if the form is not valid -->
+                    <c-col xs="12">
+                        <button
+                            cButton
+                            class="me-1"
+                            color="primary"
+                            type="submit"
+                            [disabled]="!panoramaForm.valid"
+                        >
+                            Save
+                        </button>
+                        <button
+                            (click)="onCancel()"
+                            cButton
+                            color="secondary"
+                            type="button"
+                        >
+                            Cancel
+                        </button>
+                    </c-col>
+                </form>
+            </c-card-body>
+        </c-card>
+    </c-col>
+</c-row>
