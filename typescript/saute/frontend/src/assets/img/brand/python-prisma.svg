@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="python-prisma" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 450 125">
+  <defs>
+    <style>
+      .cls-1 {
+        clip-path: url(#clippath);
+      }
+
+      .cls-2 {
+        fill: none;
+      }
+
+      .cls-2, .cls-3, .cls-4, .cls-5 {
+        stroke-width: 0px;
+      }
+
+      .cls-3 {
+        fill: url(#linear-gradient);
+      }
+
+      .cls-4 {
+        fill: url(#linear-gradient-2);
+      }
+
+      .cls-5 {
+        fill: #2ac3e9;
+      }
+    </style>
+    <linearGradient id="linear-gradient" x1="467.66" y1="-27.26" x2="467.69" y2="-27.28" gradientTransform="translate(-864758.69 -50496.27) scale(1849.27 -1853.39)" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#387eb8"/>
+      <stop offset="1" stop-color="#366994"/>
+    </linearGradient>
+    <linearGradient id="linear-gradient-2" x1="467.33" y1="-26.94" x2="467.36" y2="-26.96" gradientTransform="translate(-864114.09 -49868.9) scale(1849.27 -1853.39)" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#ffe052"/>
+      <stop offset="1" stop-color="#ffc331"/>
+    </linearGradient>
+    <clipPath id="clippath">
+      <rect class="cls-2" x="271" y="12.49" width="100" height="100"/>
+    </clipPath>
+  </defs>
+  <g>
+    <path class="cls-3" d="m118.08,12.5c-25.52,0-23.93,11.07-23.93,11.07l.03,11.47h24.35v3.44h-34.02s-16.33-1.85-16.33,23.9,14.25,24.84,14.25,24.84h8.51v-11.95s-.46-14.25,14.03-14.25h24.15s13.57.22,13.57-13.11v-22.05s2.06-13.34-24.61-13.34Zm-13.43,7.71c2.42,0,4.38,1.96,4.38,4.37,0,0,0,0,0,0,0,2.42-1.96,4.38-4.37,4.38,0,0,0,0,0,0-2.42,0-4.38-1.96-4.38-4.37,0,0,0,0,0,0,0-2.42,1.96-4.38,4.37-4.38,0,0,0,0,0,0Z"/>
+    <path class="cls-4" d="m118.8,112.5c25.52,0,23.93-11.07,23.93-11.07l-.03-11.46h-24.35v-3.44h34.02s16.33,1.85,16.33-23.9-14.25-24.84-14.25-24.84h-8.51v11.95s.46,14.25-14.03,14.25h-24.15s-13.57-.22-13.57,13.12v22.05s-2.06,13.34,24.61,13.34h0Zm13.43-7.71c-2.42,0-4.38-1.96-4.38-4.37h0c0-2.43,1.96-4.39,4.37-4.39h0c2.42,0,4.38,1.96,4.38,4.37h0c0,2.43-1.96,4.39-4.37,4.39h0Z"/>
+  </g>
+  <g class="cls-1">
+    <polygon class="cls-5" points="333.9 79.16 333.9 32.87 358.09 79.16 333.9 79.16"/>
+    <polygon class="cls-5" points="333.89 12.49 313.53 32.87 309.47 36.92 283.9 62.49 333.89 112.49 333.89 79.16 309.71 79.16 333.89 32.87 333.89 12.49"/>
+  </g>
+</svg>

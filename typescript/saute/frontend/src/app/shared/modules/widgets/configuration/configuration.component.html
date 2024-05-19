@@ -1,0 +1,33 @@
+<c-card-group class="mb-4">
+    <c-row>
+        <c-col
+            *ngFor="let configurationEntry of configurationData; index as i"
+            md="4"
+            lg="4"
+            xl="4"
+            class="card-margin-bottom"
+        >
+            <c-card class="h-100">
+                <c-card-header>
+                    <h5 cCardTitle class="align-center">
+                        {{ configurationEntry.title }}
+                    </h5>
+                </c-card-header>
+                <a
+                    [routerLink]="configurationEntry.buttonLink"
+                    class="automationEntry-link"
+                >
+                    <img
+                        cCardImg="bottom"
+                        [src]="configurationEntry.imagePath"
+                    />
+                    <c-card-body>
+                        <p cCardText class="align-center">
+                            {{ configurationEntry.description }}
+                        </p>
+                    </c-card-body>
+                </a>
+            </c-card>
+        </c-col>
+    </c-row>
+</c-card-group>

@@ -1,0 +1,466 @@
+<c-card class="mb-4">
+    <c-card-header>
+        <strong>Create an automation script</strong>
+    </c-card-header>
+    <c-card-body>
+        <c-accordion
+            [alwaysOpen]="true"
+            class="shadow accordion-custom rounded-2"
+        >
+            <c-accordion-item
+                *ngFor="let item of items; let i = index"
+                [visible]="i === 0"
+            >
+                <ng-template cTemplateId="accordionHeader">
+                    Build the script
+                </ng-template>
+                <ng-template cTemplateId="accordionBody">
+                    <div class="message">
+                        <div class="message message-details flex-wrap pb-3">
+                            <form
+                                [formGroup]="scriptForm"
+                                (ngSubmit)="onSubmit()"
+                                cForm
+                            >
+                                <c-row
+                                    class="justify-content-center align-items-center"
+                                    style="height: 100%"
+                                >
+                                    <c-col class="ms-auto" sm="12">
+                                        <div class="message">
+                                            <div
+                                                class="message message-details flex-wrap pb-3"
+                                            >
+                                                <form
+                                                    [formGroup]="scriptForm"
+                                                    (ngSubmit)="onSubmit()"
+                                                    cForm
+                                                >
+                                                    <c-row
+                                                        class="justify-content-center align-items-center"
+                                                        style="height: 100%"
+                                                    >
+                                                        <c-col
+                                                            class="ms-auto"
+                                                            sm="12"
+                                                        >
+                                                            <c-row
+                                                                *ngIf="
+                                                                    selectedLanguage ||
+                                                                    selectedTarget
+                                                                "
+                                                            >
+                                                                <c-col
+                                                                    class="d-flex align-items-center justify-content-start"
+                                                                >
+                                                                    Generate a
+                                                                    <c-dropdown
+                                                                        class="ms-1"
+                                                                    >
+                                                                        <button
+                                                                            [routerLink]="[]"
+                                                                            cButton
+                                                                            cDropdownToggle
+                                                                            [ngStyle]="{
+                                                                                'background-color':
+                                                                                    getColor(
+                                                                                        selectedLanguage
+                                                                                    )
+                                                                            }"
+                                                                        >
+                                                                            {{
+                                                                                selectedLanguage ||
+                                                                                    "Language"
+                                                                            }}
+                                                                            <svg
+                                                                                cIcon
+                                                                                name="cil-code"
+                                                                            ></svg>
+                                                                        </button>
+                                                                        <div
+                                                                            cDropdownMenu
+                                                                        >
+                                                                            <a
+                                                                                [routerLink]="[]"
+                                                                                cDropdownItem
+                                                                                class="d-flex"
+                                                                                (click)="
+                                                                                    selectedLanguage =
+                                                                                        'Ansible'
+                                                                                "
+                                                                            >
+                                                                                <c-badge
+                                                                                    class="ms-auto align-self-end"
+                                                                                    [ngStyle]="{
+                                                                                        'background-color':
+                                                                                            getColor(
+                                                                                                'Ansible'
+                                                                                            )
+                                                                                    }"
+                                                                                    >Ansible</c-badge
+                                                                                >
+                                                                            </a>
+                                                                            <a
+                                                                                [routerLink]="[]"
+                                                                                cDropdownItem
+                                                                                class="d-flex"
+                                                                                (click)="
+                                                                                    selectedLanguage =
+                                                                                        'bash'
+                                                                                "
+                                                                            >
+                                                                                <c-badge
+                                                                                    class="ms-auto align-self-end"
+                                                                                    [ngStyle]="{
+                                                                                        'background-color':
+                                                                                            getColor(
+                                                                                                'bash'
+                                                                                            )
+                                                                                    }"
+                                                                                    >bash</c-badge
+                                                                                >
+                                                                            </a>
+                                                                            <a
+                                                                                [routerLink]="[]"
+                                                                                cDropdownItem
+                                                                                class="d-flex"
+                                                                                (click)="
+                                                                                    selectedLanguage =
+                                                                                        'Powershell'
+                                                                                "
+                                                                            >
+                                                                                <c-badge
+                                                                                    class="ms-auto align-self-end"
+                                                                                    [ngStyle]="{
+                                                                                        'background-color':
+                                                                                            getColor(
+                                                                                                'Powershell'
+                                                                                            )
+                                                                                    }"
+                                                                                    >Powershell</c-badge
+                                                                                >
+                                                                            </a>
+                                                                            <a
+                                                                                [routerLink]="[]"
+                                                                                cDropdownItem
+                                                                                class="d-flex"
+                                                                                (click)="
+                                                                                    selectedLanguage =
+                                                                                        'Python'
+                                                                                "
+                                                                            >
+                                                                                <c-badge
+                                                                                    class="ms-auto align-self-end"
+                                                                                    [ngStyle]="{
+                                                                                        'background-color':
+                                                                                            getColor(
+                                                                                                'Python'
+                                                                                            )
+                                                                                    }"
+                                                                                    >Python</c-badge
+                                                                                >
+                                                                            </a>
+                                                                            <a
+                                                                                [routerLink]="[]"
+                                                                                cDropdownItem
+                                                                                class="d-flex"
+                                                                                (click)="
+                                                                                    selectedLanguage =
+                                                                                        'Terraform'
+                                                                                "
+                                                                            >
+                                                                                <c-badge
+                                                                                    class="ms-auto align-self-end"
+                                                                                    [ngStyle]="{
+                                                                                        'background-color':
+                                                                                            getColor(
+                                                                                                'Terraform'
+                                                                                            )
+                                                                                    }"
+                                                                                    >Terraform</c-badge
+                                                                                >
+                                                                            </a>
+                                                                        </div>
+                                                                    </c-dropdown>
+                                                                    script to
+                                                                    automate
+                                                                    <c-dropdown
+                                                                        class="ms-1"
+                                                                    >
+                                                                        <button
+                                                                            [routerLink]="[]"
+                                                                            cButton
+                                                                            cDropdownToggle
+                                                                            [ngStyle]="{
+                                                                                'background-color':
+                                                                                    getColor(
+                                                                                        selectedTarget
+                                                                                    )
+                                                                            }"
+                                                                        >
+                                                                            {{
+                                                                                selectedTarget ||
+                                                                                    "Target"
+                                                                            }}
+                                                                            <svg
+                                                                                cIcon
+                                                                                name="cil-cloud"
+                                                                            ></svg>
+                                                                        </button>
+                                                                        <div
+                                                                            cDropdownMenu
+                                                                        >
+                                                                            <a
+                                                                                [routerLink]="[]"
+                                                                                cDropdownItem
+                                                                                class="d-flex"
+                                                                                (click)="
+                                                                                    selectedTarget =
+                                                                                        'PAN-OS'
+                                                                                "
+                                                                            >
+                                                                                <c-badge
+                                                                                    class="ms-auto align-self-end"
+                                                                                    [ngStyle]="{
+                                                                                        'background-color':
+                                                                                            getColor(
+                                                                                                'PAN-OS'
+                                                                                            )
+                                                                                    }"
+                                                                                    >PAN-OS</c-badge
+                                                                                >
+                                                                            </a>
+                                                                            <a
+                                                                                [routerLink]="[]"
+                                                                                cDropdownItem
+                                                                                class="d-flex"
+                                                                                (click)="
+                                                                                    selectedTarget =
+                                                                                        'Panorama'
+                                                                                "
+                                                                            >
+                                                                                <c-badge
+                                                                                    class="ms-auto align-self-end"
+                                                                                    [ngStyle]="{
+                                                                                        'background-color':
+                                                                                            getColor(
+                                                                                                'Panorama'
+                                                                                            )
+                                                                                    }"
+                                                                                    >Panorama</c-badge
+                                                                                >
+                                                                            </a>
+                                                                            <a
+                                                                                [routerLink]="[]"
+                                                                                cDropdownItem
+                                                                                class="d-flex"
+                                                                                (click)="
+                                                                                    selectedTarget =
+                                                                                        'Prisma Access'
+                                                                                "
+                                                                            >
+                                                                                <c-badge
+                                                                                    class="ms-auto align-self-end"
+                                                                                    [ngStyle]="{
+                                                                                        'background-color':
+                                                                                            getColor(
+                                                                                                'Prisma Access'
+                                                                                            )
+                                                                                    }"
+                                                                                    >Prisma
+                                                                                    Access</c-badge
+                                                                                >
+                                                                            </a>
+                                                                            <a
+                                                                                [routerLink]="[]"
+                                                                                cDropdownItem
+                                                                                class="d-flex"
+                                                                                (click)="
+                                                                                    selectedTarget =
+                                                                                        'Prisma Cloud'
+                                                                                "
+                                                                            >
+                                                                                <c-badge
+                                                                                    class="ms-auto align-self-end"
+                                                                                    [ngStyle]="{
+                                                                                        'background-color':
+                                                                                            getColor(
+                                                                                                'Prisma Cloud'
+                                                                                            )
+                                                                                    }"
+                                                                                    >Prisma
+                                                                                    Cloud</c-badge
+                                                                                >
+                                                                            </a>
+                                                                        </div>
+                                                                    </c-dropdown>
+                                                                    <div
+                                                                        class="button-group ms-auto"
+                                                                    >
+                                                                        <button
+                                                                            [cModalToggle]="
+                                                                                examples.id
+                                                                            "
+                                                                            cButton
+                                                                            style="
+                                                                                margin-left: 10px;
+                                                                            "
+                                                                        >
+                                                                            Examples
+                                                                        </button>
+                                                                        <c-modal
+                                                                            #examples
+                                                                            [scrollable]="
+                                                                                true
+                                                                            "
+                                                                            alignment="center"
+                                                                            id="examples"
+                                                                            size="xl"
+                                                                        >
+                                                                            <c-modal-header>
+                                                                                <h5
+                                                                                    cModalTitle
+                                                                                >
+                                                                                    Examples
+                                                                                </h5>
+                                                                            </c-modal-header>
+                                                                            <c-modal-body
+                                                                                ><p
+                                                                                    [innerHTML]="
+                                                                                        chatGptTips
+                                                                                    "
+                                                                                ></p
+                                                                            ></c-modal-body>
+                                                                        </c-modal>
+                                                                        <button
+                                                                            [cModalToggle]="
+                                                                                disclaimerNotice.id
+                                                                            "
+                                                                            cButton
+                                                                            style="
+                                                                                margin-left: 10px;
+                                                                            "
+                                                                        >
+                                                                            Disclaimer
+                                                                        </button>
+                                                                        <c-modal
+                                                                            #disclaimerNotice
+                                                                            [scrollable]="
+                                                                                true
+                                                                            "
+                                                                            alignment="center"
+                                                                            id="disclaimerNotice"
+                                                                            size="xl"
+                                                                        >
+                                                                            <c-modal-header>
+                                                                                <h5
+                                                                                    cModalTitle
+                                                                                >
+                                                                                    DISCLAIMER
+                                                                                    AND
+                                                                                    NOTICE
+                                                                                    OF
+                                                                                    LIABILITY
+                                                                                </h5>
+                                                                                <button
+                                                                                    [cModalToggle]="
+                                                                                        disclaimerNotice.id
+                                                                                    "
+                                                                                    cButtonClose
+                                                                                ></button>
+                                                                            </c-modal-header>
+                                                                            <c-modal-body>
+                                                                                <p
+                                                                                    [innerHTML]="
+                                                                                        disclaimer
+                                                                                    "
+                                                                                ></p>
+                                                                            </c-modal-body>
+
+                                                                            <c-modal-footer>
+                                                                                <button
+                                                                                    [cModalToggle]="
+                                                                                        disclaimerNotice.id
+                                                                                    "
+                                                                                    cButton
+                                                                                    color="secondary"
+                                                                                >
+                                                                                    Understood
+                                                                                </button>
+                                                                            </c-modal-footer>
+                                                                        </c-modal>
+                                                                    </div>
+                                                                </c-col>
+                                                            </c-row>
+                                                            <hr />
+                                                            <div
+                                                                class="mb-3 mt-4"
+                                                            >
+                                                                <textarea
+                                                                    formControlName="message"
+                                                                    cFormControl
+                                                                    id="message"
+                                                                    name="body"
+                                                                    placeholder="Describe your desired outcome of the script here"
+                                                                    rows="6"
+                                                                ></textarea>
+                                                            </div>
+                                                            <div
+                                                                class="mt-1 d-flex justify-content-center"
+                                                            >
+                                                                <button
+                                                                    cButton
+                                                                    class="me-1"
+                                                                    color="primary"
+                                                                    type="submit"
+                                                                >
+                                                                    Create
+                                                                    Script
+                                                                </button>
+                                                            </div>
+                                                        </c-col>
+                                                    </c-row>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </c-col>
+                                </c-row>
+                            </form>
+                        </div>
+                    </div>
+
+                    <button
+                        cButton
+                        class="m-1 w-100"
+                        disabled
+                        *ngIf="isLoading"
+                    >
+                        <c-spinner aria-hidden="true" size="sm"></c-spinner>
+                        Sending to ChatGPT, this will take at least one full
+                        minute...
+                    </button>
+                </ng-template>
+            </c-accordion-item>
+
+            <!-- New Accordion Item for the Job Details -->
+            <c-accordion-item *ngIf="jobDetails || isLoading">
+                <ng-template cTemplateId="accordionHeader">
+                    <strong>{{ scriptStatus }}</strong>
+                </ng-template>
+                <ng-template cTemplateId="accordionBody">
+                    <c-progress class="mb-3" *ngIf="progressValue < 100">
+                        <c-progress-bar
+                            [animated]="true"
+                            color="info"
+                            [value]="progressValue"
+                            variant="striped"
+                        ></c-progress-bar>
+                    </c-progress>
+                    <pre
+                        *ngIf="jsonData"
+                    ><code [innerHTML]="jsonData"></code></pre>
+                </ng-template>
+            </c-accordion-item>
+        </c-accordion>
+    </c-card-body>
+</c-card>

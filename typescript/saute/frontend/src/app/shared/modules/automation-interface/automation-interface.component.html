@@ -1,0 +1,59 @@
+<div class="example mb-3">
+    <c-nav variant="tabs">
+        <c-nav-item>
+            <a
+                [active]="activeTab === 'execute'"
+                (click)="activeTab = 'execute'"
+                cNavLink
+            >
+                <svg cIcon class="me-2" name="cilMediaPlay"></svg>
+                Execute
+            </a>
+        </c-nav-item>
+        <c-nav-item>
+            <a
+                [active]="activeTab === 'code'"
+                (click)="activeTab = 'code'"
+                cNavLink
+            >
+                <svg cIcon class="me-2" name="cilCode"></svg>
+                Code
+            </a>
+        </c-nav-item>
+        <c-nav-item>
+            <a
+                [active]="activeTab === 'api'"
+                (click)="activeTab = 'api'"
+                cNavLink
+            >
+                <svg cIcon class="me-2" name="cilCode"></svg>
+                API
+            </a>
+        </c-nav-item>
+    </c-nav>
+    <div class="tab-content rounded-bottom">
+        <div
+            *ngIf="activeTab === 'execute'"
+            class="tab-pane active show p-3 preview fade"
+        >
+            <ng-content></ng-content>
+        </div>
+        <div
+            *ngIf="activeTab === 'code'"
+            class="tab-pane active show p-3 preview fade"
+        >
+            <div class="col-md-8">
+                <ngs-code-editor
+                    [theme]="theme"
+                    [codeModel]="codeModel"
+                    [options]="options"
+                    (valueChanged)="onCodeChanged($event)"
+                    class="code-editor-container"
+                ></ngs-code-editor>
+            </div>
+        </div>
+        <div *ngIf="activeTab === 'api'" class="tab-pane show p-3 preview fade">
+            <!-- API content here -->
+        </div>
+    </div>
+</div>

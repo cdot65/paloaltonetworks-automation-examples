@@ -1,0 +1,17 @@
+:host {
+  display: block;
+}
+c-button-toolbar {
+  display: flex;
+  justify-content: space-between;
+}
+
+.dropdown-group, .button-group {
+  display: flex;
+  justify-content: space-between;
+}
+
+.dropdown-group c-dropdown:not(:first-child),
+.button-group button:not(:first-child) {
+  margin-left: 10px;
+}

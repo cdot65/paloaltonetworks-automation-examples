@@ -1,0 +1,99 @@
+.push-right {
+  margin-left: 90%;
+}
+
+.person {
+  font-style: italic;
+  font-weight: bold;
+  color: purple;
+  justify-content: flex-end;
+}
+
+.bot {
+  font-weight: bold;
+  color: #2f2f2f;
+  justify-content: flex-start;
+}
+
+
+.message {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.message-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+
+.message-bubble {
+  background-color: #eceff1;
+  border-radius: 16px;
+  padding: 10px 15px;
+  max-width: 80%;
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+.person .message-bubble {
+  background-color: #42a5f5;
+  color: white;
+}
+
+.message-text {
+  white-space: pre-wrap;
+}
+
+.frame-box{
+  border: dotted 2px #33333350; padding: 20px;
+  min-height: 400px;
+  overflow-y: auto;
+}
+
+.padding{
+  padding: 5px;
+}
+
+.flex-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+}
+
+.center-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.avatar-container {
+  margin-top: 1em;  // Add some space between the avatar and title.
+}
+
+.avatar {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%; // makes the image circular
+  border: 3px solid white; // adds a border around the image
+  box-shadow: 0 0 10px rgba(0,0,0,0.5); // adds a shadow for a floating effect
+}
+
+.button-group {
+  margin-top: 1em;
+}
+
+.btn-primary {
+  background-color: #736448;
+}
+
+.btn-primary:hover {
+  background-color: #594d35;
+}
+
+.task-details {
+  margin-bottom: 1em;
+}

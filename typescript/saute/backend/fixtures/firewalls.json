@@ -1,0 +1,16 @@
+[
+  {
+    "model": "saute.firewall",
+    "fields": {
+      "api_key": "867-5309",
+      "author": "1",
+      "hostname": "example.firewall.cdot.io",
+      "notes": "Example branch firewall",
+      "ipv4_address": "192.168.1.1",
+      "ipv6_address": "2001:db8::1",
+      "platform": 30,
+      "created_at": "2023-09-14T10:00:00Z",
+      "updated_at": "2023-09-14T10:00:00Z"
+    }
+  }
+]

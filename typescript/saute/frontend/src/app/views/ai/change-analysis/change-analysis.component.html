@@ -1,0 +1,357 @@
+<c-card class="mb-4">
+    <c-card-header>
+        <strong>Change Analysis</strong>
+    </c-card-header>
+    <c-card-body>
+        <c-accordion
+            [alwaysOpen]="true"
+            class="shadow accordion-custom rounded-2"
+        >
+            <c-accordion-item
+                *ngFor="let item of items; let i = index"
+                [visible]="i === 0"
+            >
+                <ng-template cTemplateId="accordionHeader">
+                    Select the snapshots to compare
+                </ng-template>
+                <ng-template cTemplateId="accordionBody">
+                    <div class="message">
+                        <div class="message message-details flex-wrap pb-3">
+                            <form
+                                [formGroup]="comparisonForm"
+                                (ngSubmit)="onSubmit()"
+                                cForm
+                            >
+                                <c-row
+                                    class="justify-content-center align-items-center"
+                                    style="height: 100%"
+                                >
+                                    <c-col class="ms-auto" sm="12">
+                                        <div class="message">
+                                            <div
+                                                class="message message-details flex-wrap pb-3"
+                                            >
+                                                <form
+                                                    [formGroup]="comparisonForm"
+                                                    (ngSubmit)="onSubmit()"
+                                                    cForm
+                                                >
+                                                    <c-row
+                                                        class="justify-content-center align-items-center"
+                                                        style="height: 100%"
+                                                    >
+                                                        <c-col
+                                                            class="ms-auto"
+                                                            sm="12"
+                                                        >
+                                                            <c-row>
+                                                                <c-col>
+                                                                    This tool
+                                                                    will compare
+                                                                    the
+                                                                    snapshots
+                                                                    taken and
+                                                                    report the
+                                                                    differences
+                                                                    between them
+                                                                    in
+                                                                    human-friendly
+                                                                    terms.
+                                                                    Results can
+                                                                    be shared
+                                                                    through
+                                                                    email or
+                                                                    ServiceNow
+                                                                    tickets.
+                                                                </c-col>
+                                                            </c-row>
+                                                            <hr />
+                                                            <c-button-toolbar
+                                                                role="toolbar"
+                                                            >
+                                                                <div
+                                                                    class="dropdown-group"
+                                                                >
+                                                                    <c-dropdown
+                                                                        class="ms-1"
+                                                                    >
+                                                                        <button
+                                                                            [routerLink]="[]"
+                                                                            cButton
+                                                                            cDropdownToggle
+                                                                            color="light"
+                                                                        >
+                                                                            <b
+                                                                                >{{
+                                                                                    beforeSnapshotDate
+                                                                                }}</b
+                                                                            >
+                                                                        </button>
+                                                                        <div
+                                                                            cDropdownMenu
+                                                                        >
+                                                                            <button
+                                                                                *ngFor="
+                                                                                    let job of assuranceJobs
+                                                                                "
+                                                                                (click)="
+                                                                                    selectBeforeSnapshot(
+                                                                                        job
+                                                                                    )
+                                                                                "
+                                                                                class="dropdown-item"
+                                                                            >
+                                                                                {{
+                                                                                    job.created_at
+                                                                                }}
+                                                                            </button>
+                                                                        </div>
+                                                                    </c-dropdown>
+                                                                    <c-dropdown
+                                                                        class="ms-1"
+                                                                    >
+                                                                        <button
+                                                                            [routerLink]="[]"
+                                                                            cButton
+                                                                            cDropdownToggle
+                                                                            color="light"
+                                                                        >
+                                                                            <b
+                                                                                >{{
+                                                                                    afterSnapshotDate
+                                                                                }}</b
+                                                                            >
+                                                                        </button>
+                                                                        <div
+                                                                            cDropdownMenu
+                                                                        >
+                                                                            <button
+                                                                                *ngFor="
+                                                                                    let job of assuranceJobs
+                                                                                "
+                                                                                (click)="
+                                                                                    selectAfterSnapshot(
+                                                                                        job
+                                                                                    )
+                                                                                "
+                                                                                class="dropdown-item"
+                                                                            >
+                                                                                {{
+                                                                                    job.created_at
+                                                                                }}
+                                                                            </button>
+                                                                        </div>
+                                                                    </c-dropdown>
+                                                                </div>
+                                                                <div
+                                                                    class="dropdown-group"
+                                                                >
+                                                                    <c-dropdown
+                                                                        class="ms-1"
+                                                                    >
+                                                                        <button
+                                                                            [routerLink]="[]"
+                                                                            cButton
+                                                                            cDropdownToggle
+                                                                            color="light"
+                                                                        >
+                                                                            <b
+                                                                                >{{
+                                                                                    expertiseLevel
+                                                                                }}</b
+                                                                            >
+                                                                        </button>
+                                                                        <div
+                                                                            cDropdownMenu
+                                                                        >
+                                                                            <button
+                                                                                *ngFor="
+                                                                                    let level of [
+                                                                                        'beginner',
+                                                                                        'apprentice',
+                                                                                        'professional',
+                                                                                        'expert'
+                                                                                    ]
+                                                                                "
+                                                                                (click)="
+                                                                                    selectExpertiseLevel(
+                                                                                        level
+                                                                                    )
+                                                                                "
+                                                                                class="dropdown-item"
+                                                                            >
+                                                                                {{
+                                                                                    level
+                                                                                }}
+                                                                            </button>
+                                                                        </div>
+                                                                    </c-dropdown>
+                                                                </div>
+                                                                <div
+                                                                    class="button-group"
+                                                                >
+                                                                    <button
+                                                                        [cModalToggle]="
+                                                                            examples.id
+                                                                        "
+                                                                        cButton
+                                                                        style="
+                                                                            margin-left: 10px;
+                                                                        "
+                                                                    >
+                                                                        Examples
+                                                                    </button>
+                                                                    <c-modal
+                                                                        #examples
+                                                                        [scrollable]="
+                                                                            true
+                                                                        "
+                                                                        alignment="center"
+                                                                        id="examples"
+                                                                        size="xl"
+                                                                    >
+                                                                        <c-modal-header>
+                                                                            <h5
+                                                                                cModalTitle
+                                                                            >
+                                                                                Examples
+                                                                            </h5>
+                                                                        </c-modal-header>
+                                                                        <c-modal-body
+                                                                            ><p
+                                                                                [innerHTML]="
+                                                                                    chatGptTips
+                                                                                "
+                                                                            ></p
+                                                                        ></c-modal-body>
+                                                                    </c-modal>
+                                                                    <button
+                                                                        [cModalToggle]="
+                                                                            disclaimerNotice.id
+                                                                        "
+                                                                        cButton
+                                                                        style="
+                                                                            margin-left: 10px;
+                                                                        "
+                                                                    >
+                                                                        Disclaimer
+                                                                    </button>
+                                                                    <c-modal
+                                                                        #disclaimerNotice
+                                                                        [scrollable]="
+                                                                            true
+                                                                        "
+                                                                        alignment="center"
+                                                                        id="disclaimerNotice"
+                                                                        size="xl"
+                                                                    >
+                                                                        <c-modal-header>
+                                                                            <h5
+                                                                                cModalTitle
+                                                                            >
+                                                                                DISCLAIMER
+                                                                                AND
+                                                                                NOTICE
+                                                                                OF
+                                                                                LIABILITY
+                                                                            </h5>
+                                                                            <button
+                                                                                [cModalToggle]="
+                                                                                    disclaimerNotice.id
+                                                                                "
+                                                                                cButtonClose
+                                                                            ></button>
+                                                                        </c-modal-header>
+                                                                        <c-modal-body>
+                                                                            <p
+                                                                                [innerHTML]="
+                                                                                    disclaimer
+                                                                                "
+                                                                            ></p>
+                                                                        </c-modal-body>
+
+                                                                        <c-modal-footer>
+                                                                            <button
+                                                                                [cModalToggle]="
+                                                                                    disclaimerNotice.id
+                                                                                "
+                                                                                cButton
+                                                                                color="secondary"
+                                                                            >
+                                                                                Understood
+                                                                            </button>
+                                                                        </c-modal-footer>
+                                                                    </c-modal>
+                                                                </div>
+                                                            </c-button-toolbar>
+                                                            <div
+                                                                class="mb-3 mt-4"
+                                                            >
+                                                                <textarea
+                                                                    formControlName="message"
+                                                                    cFormControl
+                                                                    id="message"
+                                                                    name="body"
+                                                                    placeholder="Compare the two snapshots and let me know if anything important changed. Provide the feedback in detailed bullet points."
+                                                                    rows="6"
+                                                                ></textarea>
+                                                            </div>
+                                                            <div
+                                                                class="mt-1 d-flex justify-content-center"
+                                                            >
+                                                                <button
+                                                                    cButton
+                                                                    class="me-1"
+                                                                    color="primary"
+                                                                    type="submit"
+                                                                >
+                                                                    Compare
+                                                                    Snapshots
+                                                                </button>
+                                                            </div>
+                                                        </c-col>
+                                                    </c-row>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </c-col>
+                                </c-row>
+                            </form>
+                        </div>
+                    </div>
+
+                    <button
+                        cButton
+                        class="m-1 w-100"
+                        disabled
+                        *ngIf="isLoading"
+                    >
+                        <c-spinner aria-hidden="true" size="sm"></c-spinner>
+                        Sending to ChatGPT, this will take at least one full
+                        minute...
+                    </button>
+                </ng-template>
+            </c-accordion-item>
+
+            <!-- New Accordion Item for the Job Details -->
+            <c-accordion-item *ngIf="jobDetails || isLoading">
+                <ng-template cTemplateId="accordionHeader">
+                    <strong>{{ comparisonAnalysis }}</strong>
+                </ng-template>
+                <ng-template cTemplateId="accordionBody">
+                    <c-progress class="mb-3" *ngIf="progressValue < 100">
+                        <c-progress-bar
+                            [animated]="true"
+                            color="info"
+                            [value]="progressValue"
+                            variant="striped"
+                        ></c-progress-bar>
+                    </c-progress>
+                    <pre
+                        *ngIf="jsonData"
+                    ><code [innerHTML]="jsonData"></code></pre>
+                </ng-template>
+            </c-accordion-item>
+        </c-accordion>
+    </c-card-body>
+</c-card>

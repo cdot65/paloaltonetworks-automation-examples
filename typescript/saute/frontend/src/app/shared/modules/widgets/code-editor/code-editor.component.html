@@ -1,0 +1,15 @@
+<c-card>
+    <c-card-header>
+        <h4>Code Editor Widget</h4>
+    </c-card-header>
+    <c-card-body>
+        <ngs-code-editor
+            [theme]="theme"
+            [codeModel]="codeModel"
+            [options]="options"
+            (valueChanged)="onCodeChanged($event)"
+            class="code-editor-container"
+        >
+        </ngs-code-editor>
+    </c-card-body>
+</c-card>

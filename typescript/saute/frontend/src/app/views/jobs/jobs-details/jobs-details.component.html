@@ -1,0 +1,40 @@
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <strong>Job Details</strong>
+                </div>
+                <div class="card-body">
+                    <p><strong>Job ID:</strong> {{ data?.id }}</p>
+                    <p><strong>Task ID:</strong> {{ data?.task_id }}</p>
+                    <p><strong>Type:</strong> {{ data?.job_type }}</p>
+                    <p><strong>Created At:</strong> {{ data?.created_at }}</p>
+                    <ng-container *ngIf="isJobCompleted; else pendingJob">
+                        <div class="json-viewer-wrapper">
+                            <ng-container
+                                *ngIf="
+                                    data?.job_type === 'create_script';
+                                    else jsonString
+                                "
+                            >
+                                <pre><code [innerHTML]="data?.json_data"></code></pre>
+                            </ng-container>
+                            <ng-template #jsonString>
+                                <pre>{{ data?.json_data | json }}</pre>
+                            </ng-template>
+                        </div>
+                    </ng-container>
+                    <ng-template #pendingJob>
+                        <p>Pending Job Completion...</p>
+                    </ng-template>
+                </div>
+                <div class="card-footer">
+                    <button class="btn btn-primary" (click)="close()">
+                        Close
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

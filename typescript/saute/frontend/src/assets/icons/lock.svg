@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="lock" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 287">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: none;
+        stroke: #e6e6e6;
+        stroke-miterlimit: 10;
+        stroke-width: 20px;
+      }
+    </style>
+  </defs>
+  <rect class="cls-1" x="105.03" y="126.54" width="189.95" height="142.46" rx="4" ry="4"/>
+  <path class="cls-1" d="m261.05,126.54h-122.11v-47.49c0-33.72,27.33-61.05,61.05-61.05h0c33.72,0,61.05,27.33,61.05,61.05v47.49Z"/>
+</svg>

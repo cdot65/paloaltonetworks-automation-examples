@@ -1,0 +1,90 @@
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <strong>Jobs List</strong>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <input
+                                type="text"
+                                class="form-control"
+                                (input)="applyFilter($event)"
+                                placeholder="Search for jobs"
+                            />
+                        </div>
+                    </div>
+                    <table
+                        class="table table-striped table-hover"
+                        style="width: 100%"
+                    >
+                        <thead>
+                            <tr>
+                                <th (click)="sortData('task_id')">Task ID</th>
+                                <th (click)="sortData('job_type')">Job Type</th>
+                                <th (click)="sortData('created_at')">
+                                    Created At
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr
+                                *ngFor="let job of jobsData"
+                                [routerLink]="['/jobs/details', job.task_id]"
+                                class="job-row"
+                            >
+                                <td>{{ job.task_id }}</td>
+                                <td>{{ job.job_type }}</td>
+                                <td>{{ job.created_at }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="d-flex justify-content-between mt-4">
+                        <div>
+                            <select
+                                class="form-select"
+                                [(ngModel)]="pageSize"
+                                (change)="changePageSize(pageSize)"
+                            >
+                                <option
+                                    *ngFor="let option of pageSizeOptions"
+                                    [value]="option"
+                                >
+                                    {{ option }}
+                                </option>
+                            </select>
+                        </div>
+                        <div>
+                            <nav aria-label="Page navigation example">
+                                <ul class="pagination">
+                                    <li
+                                        class="page-item"
+                                        [ngClass]="{
+                                            disabled: currentPage === 1
+                                        }"
+                                        (click)="changePage(currentPage - 1)"
+                                    >
+                                        <a class="page-link">Previous</a>
+                                    </li>
+                                    <li
+                                        class="page-item"
+                                        [ngClass]="{
+                                            disabled:
+                                                currentPage ===
+                                                ceil(jobsData.length / pageSize)
+                                        }"
+                                        (click)="changePage(currentPage + 1)"
+                                    >
+                                        <a class="page-link">Next</a>
+                                    </li>
+                                </ul>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,60 @@
+---
+version: "3.9"
+
+services:
+    backend:
+        build:
+            context: ./backend
+            dockerfile: Dockerfile
+        command: ./start.sh
+        volumes:
+            - ./backend:/code
+        ports:
+            - "8000:8000"
+        depends_on:
+            - db
+        env_file:
+            - ./backend/.env
+
+    frontend:
+        build:
+            context: ./frontend
+            dockerfile: Dockerfile
+        ports:
+            - "8080:80"
+        depends_on:
+            - backend
+
+    db:
+        image: postgres:14
+        volumes:
+            - postgres_data:/var/lib/postgresql/data/
+        environment:
+            - "POSTGRES_HOST_AUTH_METHOD=trust"
+        env_file:
+            - ./backend/.env
+        ports:
+            - "5432:5432"
+
+    worker:
+        build:
+            context: ./backend
+            dockerfile: Dockerfile
+        command: celery -A django_project worker -l debug
+        deploy:
+            replicas: 2
+        volumes:
+            - ./backend:/code
+        depends_on:
+            - backend
+            - redis
+        env_file:
+            - ./backend/.env
+
+    redis:
+        image: redis:7.0.5-alpine
+        expose:
+            - 6379
+
+volumes:
+    postgres_data:

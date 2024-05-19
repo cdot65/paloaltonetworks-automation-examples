@@ -1,0 +1,32 @@
+[
+  {
+    "model": "saute.panoramaplatform",
+    "fields": {
+      "name": "M-100"
+    }
+  },
+  {
+    "model": "saute.panoramaplatform",
+    "fields": {
+      "name": "M-200"
+    }
+  },
+  {
+    "model": "saute.panoramaplatform",
+    "fields": {
+      "name": "M-500"
+    }
+  },
+  {
+    "model": "saute.panoramaplatform",
+    "fields": {
+      "name": "M-600"
+    }
+  },
+  {
+    "model": "saute.panoramaplatform",
+    "fields": {
+      "name": "Virtual"
+    }
+  }
+]

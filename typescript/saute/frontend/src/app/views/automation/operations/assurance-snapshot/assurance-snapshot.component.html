@@ -1,0 +1,647 @@
+<c-card class="mb-4">
+    <c-card-header>
+        <strong>Snapshot State</strong>
+    </c-card-header>
+    <c-card-body>
+        <p>
+            Select which data this Python script should snapshot from a
+            firewall.
+        </p>
+        <!-- Primary input -->
+        <div class="message message-details flex-wrap pb-3">
+            <form [formGroup]="snapshotForm" (ngSubmit)="onSubmit()" cForm>
+                <c-button-toolbar role="toolbar">
+                    <div class="dropdown-group">
+                        <c-dropdown class="ms-1">
+                            <button
+                                type="button"
+                                [routerLink]="[]"
+                                cButton
+                                cDropdownToggle
+                                color="light"
+                            >
+                                <b>{{ buttonTextFirewall }}</b>
+                            </button>
+                            <div cDropdownMenu>
+                                <button
+                                    type="button"
+                                    *ngFor="let each of firewalls"
+                                    (click)="selectFirewall(each)"
+                                    class="dropdown-item"
+                                >
+                                    {{ each.hostname }}
+                                </button>
+                            </div>
+                        </c-dropdown>
+                    </div>
+                    <div class="button-group">
+                        <button
+                            [cModalToggle]="examples.id"
+                            cButton
+                            style="margin-left: 10px"
+                        >
+                            View Script
+                        </button>
+                        <c-modal
+                            #examples
+                            [scrollable]="true"
+                            alignment="center"
+                            id="examples"
+                            size="xl"
+                            class="bg-dark"
+                        >
+                            <c-modal-header>
+                                <h5 cModalTitle>
+                                    Snapshot Assurance Python Script
+                                </h5>
+                            </c-modal-header>
+                            <c-modal-body>
+                                <pre [innerHTML]="help"></pre>
+                            </c-modal-body>
+                        </c-modal>
+                        <button
+                            cButton
+                            class="me-1"
+                            color="primary"
+                            type="submit"
+                            [disabled]="!isFormValid()"
+                        >
+                            Execute Snapshot
+                        </button>
+                    </div>
+                </c-button-toolbar>
+
+                <div
+                    formGroupName="buttonSnapshotGroup"
+                    class="mb-3 mt-4 d-flex justify-content-between"
+                >
+                    <!-- All options -->
+                    <c-button-group class="full-width-btn-group">
+                        <input
+                            class="btn-check"
+                            formControlName="all"
+                            id="all"
+                            type="checkbox"
+                        />
+                        <label
+                            [class.active]="
+                                snapshotForm
+                                    .get('buttonSnapshotGroup')
+                                    .get('all').value
+                            "
+                            cButton
+                            cFormCheckLabel
+                            [attr.color]="
+                                snapshotForm
+                                    .get('buttonSnapshotGroup')
+                                    .get('all').value
+                                    ? 'danger'
+                                    : 'secondary'
+                            "
+                            for="all"
+                            variant="outline"
+                            [ngStyle]="{
+                                color: snapshotForm
+                                    .get('buttonSnapshotGroup')
+                                    .get('all').value
+                                    ? ''
+                                    : '#fff'
+                            }"
+                            >All</label
+                        >
+
+                        <!-- ARP Table -->
+                        <input
+                            class="btn-check"
+                            formControlName="arp_table"
+                            id="arp_table"
+                            type="checkbox"
+                        />
+                        <label
+                            [class.active]="
+                                snapshotForm
+                                    .get('buttonSnapshotGroup')
+                                    .get('arp_table').value
+                            "
+                            cButton
+                            cFormCheckLabel
+                            [attr.color]="
+                                snapshotForm
+                                    .get('buttonSnapshotGroup')
+                                    .get('arp_table').value
+                                    ? 'success'
+                                    : 'secondary'
+                            "
+                            for="arp_table"
+                            variant="outline"
+                            [ngStyle]="{
+                                color: snapshotForm
+                                    .get('buttonSnapshotGroup')
+                                    .get('all').value
+                                    ? ''
+                                    : '#fff'
+                            }"
+                            >ARP Table</label
+                        >
+
+                        <!-- Content Version -->
+                        <input
+                            class="btn-check"
+                            formControlName="content_version"
+                            id="content_version"
+                            type="checkbox"
+                        />
+                        <label
+                            [class.active]="
+                                snapshotForm
+                                    .get('buttonSnapshotGroup')
+                                    .get('content_version').value
+                            "
+                            cButton
+                            cFormCheckLabel
+                            [attr.color]="
+                                snapshotForm
+                                    .get('buttonSnapshotGroup')
+                                    .get('content_version').value
+                                    ? 'info'
+                                    : 'secondary'
+                            "
+                            variant="outline"
+                            for="content_version"
+                            [ngStyle]="{
+                                color: snapshotForm
+                                    .get('buttonSnapshotGroup')
+                                    .get('all').value
+                                    ? ''
+                                    : '#fff'
+                            }"
+                            >Content Version</label
+                        >
+
+                        <!-- IPsec VPN Tunnels -->
+                        <input
+                            class="btn-check"
+                            formControlName="ip_sec_tunnels"
+                            id="ip_sec_tunnels"
+                            type="checkbox"
+                        />
+                        <label
+                            [class.active]="
+                                snapshotForm
+                                    .get('buttonSnapshotGroup')
+                                    .get('ip_sec_tunnels').value
+                            "
+                            cButton
+                            cFormCheckLabel
+                            [attr.color]="
+                                snapshotForm
+                                    .get('buttonSnapshotGroup')
+                                    .get('ip_sec_tunnels').value
+                                    ? 'info'
+                                    : 'secondary'
+                            "
+                            variant="outline"
+                            for="ip_sec_tunnels"
+                            [ngStyle]="{
+                                color: snapshotForm
+                                    .get('buttonSnapshotGroup')
+                                    .get('all').value
+                                    ? ''
+                                    : '#fff'
+                            }"
+                            >IPsec VPN Tunnels</label
+                        >
+
+                        <!-- License -->
+                        <input
+                            class="btn-check"
+                            formControlName="license"
+                            id="license"
+                            type="checkbox"
+                        />
+                        <label
+                            [class.active]="
+                                snapshotForm
+                                    .get('buttonSnapshotGroup')
+                                    .get('license').value
+                            "
+                            cButton
+                            cFormCheckLabel
+                            [attr.color]="
+                                snapshotForm
+                                    .get('buttonSnapshotGroup')
+                                    .get('license').value
+                                    ? 'info'
+                                    : 'secondary'
+                            "
+                            variant="outline"
+                            for="license"
+                            [ngStyle]="{
+                                color: snapshotForm
+                                    .get('buttonSnapshotGroup')
+                                    .get('all').value
+                                    ? ''
+                                    : '#fff'
+                            }"
+                            >License</label
+                        >
+
+                        <!-- NICS -->
+                        <input
+                            class="btn-check"
+                            formControlName="nics"
+                            id="nics"
+                            type="checkbox"
+                        />
+                        <label
+                            [class.active]="
+                                snapshotForm
+                                    .get('buttonSnapshotGroup')
+                                    .get('nics').value
+                            "
+                            cButton
+                            cFormCheckLabel
+                            [attr.color]="
+                                snapshotForm
+                                    .get('buttonSnapshotGroup')
+                                    .get('nics').value
+                                    ? 'info'
+                                    : 'secondary'
+                            "
+                            variant="outline"
+                            for="nics"
+                            [ngStyle]="{
+                                color: snapshotForm
+                                    .get('buttonSnapshotGroup')
+                                    .get('all').value
+                                    ? ''
+                                    : '#fff'
+                            }"
+                            >Network Interfaces</label
+                        >
+
+                        <!-- Route Table -->
+                        <input
+                            class="btn-check"
+                            formControlName="routes"
+                            id="routes"
+                            type="checkbox"
+                        />
+                        <label
+                            [class.active]="
+                                snapshotForm
+                                    .get('buttonSnapshotGroup')
+                                    .get('routes').value
+                            "
+                            cButton
+                            cFormCheckLabel
+                            [attr.color]="
+                                snapshotForm
+                                    .get('buttonSnapshotGroup')
+                                    .get('routes').value
+                                    ? 'info'
+                                    : 'secondary'
+                            "
+                            variant="outline"
+                            for="routes"
+                            [ngStyle]="{
+                                color: snapshotForm
+                                    .get('buttonSnapshotGroup')
+                                    .get('all').value
+                                    ? ''
+                                    : '#fff'
+                            }"
+                            >Route Table</label
+                        >
+
+                        <!-- Session Stats -->
+                        <input
+                            class="btn-check"
+                            formControlName="session_stats"
+                            id="session_stats"
+                            type="checkbox"
+                        />
+                        <label
+                            [class.active]="
+                                snapshotForm
+                                    .get('buttonSnapshotGroup')
+                                    .get('session_stats').value
+                            "
+                            cButton
+                            cFormCheckLabel
+                            [attr.color]="
+                                snapshotForm
+                                    .get('buttonSnapshotGroup')
+                                    .get('session_stats').value
+                                    ? 'info'
+                                    : 'secondary'
+                            "
+                            variant="outline"
+                            for="session_stats"
+                            [ngStyle]="{
+                                color: snapshotForm
+                                    .get('buttonSnapshotGroup')
+                                    .get('all').value
+                                    ? ''
+                                    : '#fff'
+                            }"
+                        >
+                            Session Stats</label
+                        >
+                    </c-button-group>
+                </div>
+            </form>
+        </div>
+
+        <div *ngIf="isLoading">
+            <button type="button" cButton class="m-1 w-100" disabled>
+                <c-spinner aria-hidden="true" size="sm"></c-spinner>
+                Sending to PAN-OS API, this will take a couple of seconds...
+            </button>
+            <c-progress class="mb-3" *ngIf="progressValue < 100">
+                <c-progress-bar
+                    [animated]="true"
+                    color="info"
+                    [value]="progressValue"
+                    variant="striped"
+                ></c-progress-bar>
+            </c-progress>
+        </div>
+
+        <c-accordion
+            [alwaysOpen]="true"
+            class="shadow accordion-custom rounded-2"
+        >
+            <!-- New Accordion Item for the Job Details -->
+            <c-accordion-item
+                #item1="cAccordionItem"
+                [visible]="isReportVisible"
+            >
+                <ng-template cTemplateId="accordionHeader">
+                    <strong>Result</strong>
+                </ng-template>
+                <div *ngIf="parsedJsonData && parsedJsonData.arp_table">
+                    <h5>ARP Table</h5>
+                    <!-- ARP Table -->
+                    <table
+                        cTable
+                        class="table table-striped table-hover"
+                        style="width: 100%"
+                    >
+                        <!-- Table Header -->
+                        <thead cTableColor="dark">
+                            <tr>
+                                <th scope="col">IP</th>
+                                <th scope="col">MAC</th>
+                                <th scope="col">TTL</th>
+                                <th scope="col">Port</th>
+                                <th scope="col">Status</th>
+                                <th scope="col">Interface</th>
+                            </tr>
+                        </thead>
+
+                        <!-- Table Body -->
+                        <tbody>
+                            <!-- Loop through each ARP table entry using Angular's *ngFor directive -->
+                            <tr
+                                *ngFor="
+                                    let key of objectKeys(
+                                        parsedJsonData.arp_table
+                                    )
+                                "
+                            >
+                                <td>{{ parsedJsonData.arp_table[key].ip }}</td>
+                                <td>{{ parsedJsonData.arp_table[key].mac }}</td>
+                                <td>{{ parsedJsonData.arp_table[key].ttl }}</td>
+                                <td>
+                                    {{ parsedJsonData.arp_table[key].port }}
+                                </td>
+                                <td>
+                                    {{ parsedJsonData.arp_table[key].status }}
+                                </td>
+                                <td>
+                                    {{
+                                        parsedJsonData.arp_table[key].interface
+                                    }}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <!-- Check if parsedJsonData.content_version exists -->
+                <div *ngIf="parsedJsonData && parsedJsonData.content_version">
+                    <h5>Content Version</h5>
+
+                    <!-- Content Version Table -->
+                    <table
+                        cTable
+                        class="table table-striped table-hover"
+                        style="width: 100%"
+                    >
+                        <!-- Table Header -->
+                        <thead cTableColor="dark">
+                            <tr>
+                                <th scope="col">Version</th>
+                            </tr>
+                        </thead>
+
+                        <!-- Table Body -->
+                        <tbody>
+                            <tr>
+                                <td>
+                                    {{ parsedJsonData.content_version.version }}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <!-- Check if parsedJsonData.license exists -->
+                <div *ngIf="parsedJsonData && parsedJsonData.license">
+                    <h5>License</h5>
+
+                    <!-- License Table -->
+                    <table
+                        cTable
+                        class="table table-striped table-hover"
+                        style="width: 100%"
+                    >
+                        <!-- Table Header -->
+                        <thead cTableColor="dark">
+                            <tr>
+                                <th scope="col">Issued</th>
+                                <th scope="col">Serial</th>
+                                <th scope="col">Expired</th>
+                                <th scope="col">Expires</th>
+                                <th scope="col">Feature</th>
+                                <!-- <th scope="col">Authcode</th> -->
+                                <th scope="col">Description</th>
+                            </tr>
+                        </thead>
+
+                        <!-- Table Body -->
+                        <tbody>
+                            <!-- Loop through each license entry using Angular's *ngFor directive -->
+                            <tr
+                                *ngFor="
+                                    let key of objectKeys(
+                                        parsedJsonData.license
+                                    )
+                                "
+                            >
+                                <td>
+                                    {{ parsedJsonData.license[key].issued }}
+                                </td>
+                                <td>
+                                    {{ parsedJsonData.license[key].serial }}
+                                </td>
+                                <td>
+                                    {{ parsedJsonData.license[key].expired }}
+                                </td>
+                                <td>
+                                    {{ parsedJsonData.license[key].expires }}
+                                </td>
+                                <td>
+                                    {{ parsedJsonData.license[key].feature }}
+                                </td>
+                                <!-- <td>
+                                    {{ parsedJsonData.license[key].authcode }}
+                                </td> -->
+                                <td>
+                                    {{
+                                        parsedJsonData.license[key].description
+                                    }}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <!-- Check if parsedJsonData.nics exists -->
+                <div *ngIf="parsedJsonData && parsedJsonData.nics">
+                    <h5>Network Interfaces</h5>
+
+                    <!-- NICs Table -->
+                    <table
+                        cTable
+                        class="table table-striped table-hover"
+                        style="width: 100%"
+                    >
+                        <!-- Table Header -->
+                        <thead cTableColor="dark">
+                            <tr>
+                                <th scope="col">Interface</th>
+                                <th scope="col">Status</th>
+                            </tr>
+                        </thead>
+
+                        <!-- Table Body -->
+                        <tbody>
+                            <!-- Loop through each NIC entry using Angular's *ngFor directive -->
+                            <tr
+                                *ngFor="
+                                    let key of objectKeys(parsedJsonData.nics)
+                                "
+                            >
+                                <td>{{ key }}</td>
+                                <td>{{ parsedJsonData.nics[key] }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <!-- Check if parsedJsonData.routes exists -->
+                <div *ngIf="parsedJsonData && parsedJsonData.routes">
+                    <h5>Routes</h5>
+
+                    <!-- Routes Table -->
+                    <table
+                        cTable
+                        class="table table-striped table-hover"
+                        style="width: 100%"
+                    >
+                        <!-- Table Header -->
+                        <thead cTableColor="dark">
+                            <tr>
+                                <th scope="col">Age</th>
+                                <th scope="col">Flags</th>
+                                <th scope="col">Metric</th>
+                                <th scope="col">Next Hop</th>
+                                <th scope="col">Interface</th>
+                                <th scope="col">Destination</th>
+                                <th scope="col">Route Table</th>
+                                <th scope="col">Virtual Router</th>
+                            </tr>
+                        </thead>
+
+                        <!-- Table Body -->
+                        <tbody>
+                            <!-- Loop through each Route entry using Angular's *ngFor directive -->
+                            <tr
+                                *ngFor="
+                                    let key of objectKeys(parsedJsonData.routes)
+                                "
+                            >
+                                <td>{{ parsedJsonData.routes[key].age }}</td>
+                                <td>{{ parsedJsonData.routes[key].flags }}</td>
+                                <td>{{ parsedJsonData.routes[key].metric }}</td>
+                                <td>
+                                    {{ parsedJsonData.routes[key].nexthop }}
+                                </td>
+                                <td>
+                                    {{ parsedJsonData.routes[key].interface }}
+                                </td>
+                                <td>
+                                    {{ parsedJsonData.routes[key].destination }}
+                                </td>
+                                <td>
+                                    {{
+                                        parsedJsonData.routes[key][
+                                            "route-table"
+                                        ]
+                                    }}
+                                </td>
+                                <td>
+                                    {{
+                                        parsedJsonData.routes[key][
+                                            "virtual-router"
+                                        ]
+                                    }}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <!-- Check if parsedJsonData.session_stats exists -->
+                <div *ngIf="parsedJsonData && parsedJsonData.session_stats">
+                    <h5>Session Stats</h5>
+                    <!-- Session Stats Table -->
+                    <table
+                        cTable
+                        class="table table-striped table-hover"
+                        style="width: 100%"
+                    >
+                        <!-- Table Header -->
+                        <thead cTableColor="dark">
+                            <tr>
+                                <th scope="col">Attribute</th>
+                                <th scope="col">Value</th>
+                            </tr>
+                        </thead>
+                        <!-- Table Body -->
+                        <tbody>
+                            <!-- Loop through each Session Stats entry using Angular's *ngFor directive -->
+                            <tr
+                                *ngFor="
+                                    let key of objectKeys(
+                                        parsedJsonData.session_stats
+                                    )
+                                "
+                            >
+                                <td>{{ key }}</td>
+                                <td>{{ parsedJsonData.session_stats[key] }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </c-accordion-item>
+        </c-accordion>
+    </c-card-body>
+</c-card>

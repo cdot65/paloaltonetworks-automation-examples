@@ -1,0 +1,30 @@
+<c-card-group class="mb-4">
+    <c-row>
+        <c-col
+            *ngFor="let assessmentEntry of assessmentData; index as i"
+            md="4"
+            lg="4"
+            xl="4"
+            class="card-margin-bottom"
+        >
+            <c-card class="h-100">
+                <c-card-header>
+                    <h5 cCardTitle class="align-center">
+                        {{ assessmentEntry.title }}
+                    </h5>
+                </c-card-header>
+                <a
+                    [routerLink]="assessmentEntry.buttonLink"
+                    class="automationEntry-link"
+                >
+                    <img cCardImg="bottom" [src]="assessmentEntry.imagePath" />
+                    <c-card-body>
+                        <p cCardText class="align-center">
+                            {{ assessmentEntry.description }}
+                        </p>
+                    </c-card-body>
+                </a>
+            </c-card>
+        </c-col>
+    </c-row>
+</c-card-group>

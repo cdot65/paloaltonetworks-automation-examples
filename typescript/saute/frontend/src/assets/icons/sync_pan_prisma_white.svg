@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="diffsync" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 400 287">
+  <defs>
+    <style>
+      .cls-1, .cls-2 {
+        fill: none;
+      }
+
+      .cls-3 {
+        clip-path: url(#clippath);
+      }
+
+      .cls-4 {
+        fill: #f04e23;
+      }
+
+      .cls-5 {
+        fill: #fff;
+      }
+
+      .cls-6 {
+        fill: #2ac3e9;
+      }
+
+      .cls-2 {
+        stroke: #000;
+        stroke-linecap: round;
+        stroke-miterlimit: 10;
+        stroke-width: 4px;
+      }
+    </style>
+    <clipPath id="clippath">
+      <rect class="cls-1" x="254.91" y="61.41" width="165.09" height="165.09"/>
+    </clipPath>
+  </defs>
+  <g>
+    <polygon class="cls-5" points="70.7 167.71 129.81 108.38 106.23 84.71 82.64 108.38 94.38 120.15 35.3 179.49 58.85 203.17 82.43 179.49 70.7 167.71"/>
+    <polygon class="cls-5" points="0 144.06 59.11 84.71 82.67 108.37 23.57 167.73 0 144.06"/>
+    <polygon class="cls-5" points="82.42 179.53 141.53 120.18 165.09 143.85 105.99 203.2 82.42 179.53"/>
+  </g>
+  <g class="cls-3">
+    <polygon class="cls-6" points="358.73 171.36 358.73 94.93 398.67 171.36 358.73 171.36"/>
+    <polygon class="cls-6" points="358.73 61.29 325.11 94.93 318.41 101.62 276.2 143.84 358.73 226.39 358.73 171.36 318.81 171.36 358.73 94.93 358.73 61.29"/>
+  </g>
+  <g>
+    <line class="cls-4" x1="170.5" y1="144" x2="270.5" y2="143.99"/>
+    <g>
+      <line class="cls-2" x1="170.5" y1="144" x2="241.8" y2="143.99"/>
+      <polygon points="235.96 163.94 270.5 143.99 235.96 124.05 235.96 163.94"/>
+    </g>
+  </g>
+</svg>

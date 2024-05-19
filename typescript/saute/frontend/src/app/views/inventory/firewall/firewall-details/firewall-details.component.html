@@ -1,0 +1,128 @@
+<c-row>
+    <c-col xs="12">
+        <c-card class="mb-4">
+            <c-card-header>
+                <strong>Edit Firewall Entry</strong>
+            </c-card-header>
+            <c-card-body>
+                <form
+                    [formGroup]="firewallForm"
+                    (ngSubmit)="updateEntry(firewallForm.value)"
+                    cForm
+                    class="row g-3 needs-validation"
+                >
+                    <!-- Input for firewall name with validation -->
+                    <c-col md="6">
+                        <label cLabel for="name">Firewall Hostname</label>
+                        <div class="has-validation">
+                            <input
+                                cFormControl
+                                id="hostname"
+                                type="text"
+                                formControlName="hostname"
+                            />
+                            <!-- Shows an error message if firewall with entered hostname already exists -->
+                            <div
+                                class="error-message"
+                                *ngIf="firewallForm.get('hostname')?.errors?.['firewallExists'] || isPending('hostname')"
+                            >
+                                {{
+                                    isPending("hostname")
+                                        ? "Checking..."
+                                        : "Firewall with this hostname already exists."
+                                }}
+                            </div>
+                        </div>
+                    </c-col>
+                    <!-- Select with an option for each firewall platform -->
+                    <c-col md="6">
+                        <label cLabel for="platform">Firewall Platform</label>
+                        <select
+                            aria-label="Default select example"
+                            cSelect
+                            cFormControl
+                            id="platform"
+                            formControlName="platform"
+                        >
+                            <option
+                                *ngFor="
+                                    let platform of firewallPlatforms$ | async
+                                "
+                                [value]="platform.name"
+                            >
+                                {{ platform.name }}
+                            </option>
+                        </select>
+                    </c-col>
+                    <c-col md="6">
+                        <label cLabel for="ipv4_address">IPv4 Address</label>
+                        <input
+                            cFormControl
+                            id="ipv4_address"
+                            required
+                            type="text"
+                            formControlName="ipv4_address"
+                        />
+                        <c-form-feedback [valid]="false"
+                            >Please provide an IPv4 address.</c-form-feedback
+                        >
+                    </c-col>
+                    <c-col md="6">
+                        <label cLabel for="ipv6_address">IPv6 Address</label>
+                        <!-- Removed the "required" attribute to make this field optional -->
+                        <input
+                            cFormControl
+                            id="ipv6_address"
+                            type="text"
+                            formControlName="ipv6_address"
+                        />
+                    </c-col>
+                    <c-col md="12">
+                        <label cLabel for="api_key">API Token</label>
+                        <input
+                            cFormControl
+                            id="api_key"
+                            required
+                            type="text"
+                            formControlName="api_key"
+                        />
+                        <c-form-feedback [valid]="false"
+                            >Please provide an API token.</c-form-feedback
+                        >
+                    </c-col>
+                    <c-col md="12">
+                        <label cLabel for="notes">Notes</label>
+                        <textarea
+                            cFormControl
+                            id="notes"
+                            type="text"
+                            formControlName="notes"
+                            rows="3"
+                        ></textarea>
+                        <c-form-feedback [valid]="false"
+                            >Please provide notes.</c-form-feedback
+                        >
+                    </c-col>
+                    <c-col xs="12">
+                        <button
+                            cButton
+                            class="me-1"
+                            color="primary"
+                            type="submit"
+                        >
+                            Save
+                        </button>
+                        <button
+                            (click)="onCancel()"
+                            cButton
+                            color="secondary"
+                            type="button"
+                        >
+                            Cancel
+                        </button>
+                    </c-col>
+                </form>
+            </c-card-body>
+        </c-card>
+    </c-col>
+</c-row>

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="terraform-azure" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 450 125">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: url(#linear-gradient);
+      }
+
+      .cls-1, .cls-2, .cls-3, .cls-4, .cls-5 {
+        stroke-width: 0px;
+      }
+
+      .cls-2 {
+        fill: #6b469c;
+        fill-rule: evenodd;
+      }
+
+      .cls-3 {
+        fill: url(#linear-gradient-2);
+      }
+
+      .cls-4 {
+        fill: url(#linear-gradient-3);
+      }
+
+      .cls-5 {
+        fill: #0078d4;
+      }
+    </style>
+    <linearGradient id="linear-gradient" x1="-2653.59" y1="-121.84" x2="-2663.78" y2="-151.96" gradientTransform="translate(8600.43 -359.4) scale(3.12 -3.12)" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#114a8b"/>
+      <stop offset="1" stop-color="#0669bc"/>
+    </linearGradient>
+    <linearGradient id="linear-gradient-2" x1="-2650.41" y1="-135.88" x2="-2652.76" y2="-136.68" gradientTransform="translate(8600.43 -359.4) scale(3.12 -3.12)" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#000" stop-opacity=".3"/>
+      <stop offset=".1" stop-color="#000" stop-opacity=".2"/>
+      <stop offset=".3" stop-color="#000" stop-opacity=".1"/>
+      <stop offset=".6" stop-color="#000" stop-opacity=".1"/>
+      <stop offset="1" stop-color="#000" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="linear-gradient-3" x1="-2651.63" y1="-120.94" x2="-2640.44" y2="-150.75" gradientTransform="translate(8600.43 -359.4) scale(3.12 -3.12)" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#3ccbf4"/>
+      <stop offset="1" stop-color="#2892df"/>
+    </linearGradient>
+  </defs>
+  <g>
+    <polygon class="cls-2" points="104.94 30.53 131.93 46.12 131.93 77.28 104.94 61.7 104.94 30.53"/>
+    <polygon class="cls-2" points="134.89 46.12 134.89 77.28 161.88 61.7 161.88 30.53 134.89 46.12"/>
+    <polygon class="cls-2" points="75 13.14 75 44.3 101.99 59.88 101.99 28.72 75 13.14"/>
+    <polygon class="cls-2" points="104.95 96.28 131.93 111.86 131.93 80.9 131.93 80.7 104.95 65.11 104.95 96.28"/>
+  </g>
+  <g id="azure">
+    <g>
+      <path class="cls-1" d="m306,13.71h30.63l-31.79,94.26c-.16.48-.4.93-.7,1.34-.3.41-.67.77-1.08,1.06s-.87.53-1.35.68-.99.24-1.5.24h-23.84c-.77,0-1.54-.18-2.23-.54-.69-.35-1.28-.87-1.74-1.5-.45-.63-.75-1.36-.86-2.12-.12-.77-.05-1.55.2-2.28l29.62-87.82c.16-.48.4-.93.7-1.34.3-.41.67-.77,1.08-1.06.41-.3.87-.53,1.35-.68.48-.16.99-.24,1.5-.24h0s0,0,0,0Z"/>
+      <path class="cls-5" d="m362.46,111.29h-27.5c-.31,0-.61-.03-.92-.09-.3-.06-.6-.14-.88-.25s-.56-.25-.82-.42c-.26-.16-.5-.35-.73-.56l-31.21-29.15c-.33-.31-.56-.71-.66-1.15-.2-.9.16-1.84.93-2.36.37-.25.82-.39,1.27-.39h48.57l11.95,34.36h0Z"/>
+      <path class="cls-3" d="m336.74,13.71l-21.44,63.23h35.03s12.02,34.35,12.02,34.35h-27.4c-.28,0-.57-.03-.85-.08s-.55-.12-.82-.22c-.53-.19-1.03-.48-1.47-.84l-21.07-19.66-5.9,17.39c-.15.43-.36.85-.62,1.23-.52.76-1.24,1.37-2.08,1.77-.42.2-.86.34-1.31.42h-24.45c-.78,0-1.55-.18-2.25-.54-1.41-.73-2.38-2.1-2.59-3.67-.1-.78-.02-1.57.24-2.3l29.57-87.68c.15-.49.39-.95.69-1.37.3-.42.66-.78,1.08-1.09s.87-.54,1.36-.7c.49-.16,1-.24,1.51-.24h30.74,0Z"/>
+      <path class="cls-4" d="m374.74,104.85c.25.73.32,1.52.2,2.28-.11.77-.41,1.49-.86,2.12-.92,1.28-2.39,2.03-3.96,2.03h-34.14c.77,0,1.54-.19,2.23-.54.69-.35,1.28-.87,1.74-1.5s.75-1.36.86-2.12.05-1.55-.2-2.28l-29.62-87.83c-.33-.97-.95-1.81-1.78-2.4-.41-.3-.87-.53-1.35-.68s-.99-.23-1.49-.23h34.13c.51,0,1.01.08,1.49.23.48.16.94.39,1.35.68.41.3.78.65,1.08,1.06s.54.86.7,1.34l29.62,87.83h0Z"/>
+    </g>
+  </g>
+</svg>
