@@ -22,7 +22,7 @@ ethernet_interfaces = {
 }
 
 /* Virtual Routers -------------------------------------------------------- */
-vr_name = "lab"
+vr_name = "test"
 
 /* Security Zones --------------------------------------------------------- */
 zones = {
