@@ -1,8 +1,8 @@
 /* Firewall Connectivity -------------------------------------------------- */
 firewall = {
-  fw_ip    = "this-is-just-a-placeholder"
-  username = "this-is-just-a-placeholder"
-  password = "this-is-just-a-placeholder"
+  fw_ip    = "austin-fw3.cdot.io"
+  username = "officehours"
+  password = "paloalto123"
 }
 
 /* Ethernet Interfaces ---------------------------------------------------- */
@@ -22,7 +22,7 @@ ethernet_interfaces = {
 }
 
 /* Virtual Routers -------------------------------------------------------- */
-vr_name = "test"
+vr_name = "lab"
 
 /* Security Zones --------------------------------------------------------- */
 zones = {
