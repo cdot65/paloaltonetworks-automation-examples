@@ -94,7 +94,7 @@ You can view the logical workflow of the `pan-os-upgrade` subcommands by viewing
 ```console
 ❯ pan-os-upgrade batch
 Panorama hostname or IP: panorama1.cdot.io
-Panorama username: this-is-just-a-placeholder
+Panorama username: officehours
 Panorama password:
 Firewall target version (ex: 10.1.2): 10.1.3-h3
 Dry Run? [Y/n]: n
