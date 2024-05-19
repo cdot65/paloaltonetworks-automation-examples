@@ -166,3 +166,8 @@ go/firewall-commit/go.sum
 
 # DS Store files for macos finder
 .DS_Store
+.terraform.lock.hcl
+terraform.tfstate
+terraform.tfstate.backup
+terraform.tfstate.backup.*
+.terraform
