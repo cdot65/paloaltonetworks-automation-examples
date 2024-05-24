@@ -1,0 +1,11 @@
+---
+vr_name: "example"
+router_id: "172.16.255.1"
+local_as: 65000
+bgp_name: "MPLS"
+neighbors:
+  - name: "peer1"
+    asn: 65001
+    iface: "ethernet1/8"
+    local_ip: "10.10.10.1/24"
+    peer_ip: "10.10.10.2"
