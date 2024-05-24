@@ -1,0 +1,119 @@
+---
+dns:
+  domain: cdot.io
+  entries:
+    - name: austin-fw1.cdot.io
+      ip: "192.168.255.11"
+      domain_name: austin-fw1.cdot.io
+
+    - name: austin-fw2.cdot.io
+      ip: "192.168.255.12"
+      domain_name: austin-fw2.cdot.io
+
+    - name: austin-fw3.cdot.io
+      ip: "192.168.255.13"
+      domain_name: austin-fw3.cdot.io
+
+    - name: closet.cdot.io
+      ip: "192.168.255.102"
+      domain_name: closet.cdot.io
+
+    - name: dallas-fw1.cdot.io
+      ip: "192.168.255.16"
+      domain_name: dallas-fw1.cdot.io
+
+    - name: dallas-fw2.cdot.io
+      ip: "192.168.255.17"
+      domain_name: dallas-fw2.cdot.io
+
+    - name: garage.cdot.io
+      ip: "192.168.255.101"
+      domain_name: garage.cdot.io
+
+    - name: houston-fw1.cdot.io
+      ip: "192.168.255.14"
+      domain_name: houston-fw1.cdot.io
+
+    - name: houston-fw2.cdot.io
+      ip: "192.168.255.15"
+      domain_name: houston-fw2.cdot.io
+
+    - name: k8s-1.cdot.io
+      ip: "172.16.0.211"
+      domain_name: k8s-1.cdot.io
+
+    - name: k8s-2.cdot.io
+      ip: "172.16.0.212"
+      domain_name: k8s-2.cdot.io
+
+    - name: k8s-3.cdot.io
+      ip: "172.16.0.213"
+      domain_name: k8s-3.cdot.io
+
+    - name: k8s-4.cdot.io
+      ip: "172.16.0.214"
+      domain_name: k8s-4.cdot.io
+
+    - name: k8s-5.cdot.io
+      ip: "172.16.0.215"
+      domain_name: k8s-5.cdot.io
+
+    - name: katy-fw1.cdot.io
+      ip: "192.168.255.41"
+      domain_name: katy-fw1.cdot.io
+
+    - name: katy-fw2.cdot.io
+      ip: "192.168.255.42"
+      domain_name: katy-fw2.cdot.io
+
+    - name: magnolia-fw1.cdot.io
+      ip: "192.168.255.2"
+      domain_name: magnolia-fw1.cdot.io
+
+    - name: magnolia-fw2.cdot.io
+      ip: "192.168.255.1"
+      domain_name: magnolia-fw2.cdot.io
+
+    - name: nas1.cdot.io
+      ip: "10.0.0.2"
+      domain_name: nas1.cdot.io
+
+    - name: nas2.cdot.io
+      ip: "172.16.0.2"
+      domain_name: nas2.cdot.io
+
+    - name: office.cdot.io
+      ip: "192.168.255.103"
+      domain_name: office.cdot.io
+
+    - name: panorama1.cdot.io
+      ip: "192.168.255.191"
+      domain_name: panorama1.cdot.io
+
+    - name: panorama2.cdot.io
+      ip: "192.168.255.192"
+      domain_name: panorama2.cdot.io
+
+    - name: panorama3.cdot.io
+      ip: "192.168.255.193"
+      domain_name: panorama3.cdot.io
+
+    - name: proxmox.cdot.io
+      ip: "192.168.255.3"
+      domain_name: proxmox.cdot.io
+
+    - name: woodlands-fw1.cdot.io
+      ip: "192.168.255.21"
+      domain_name: woodlands-fw1.cdot.io
+
+    - name: woodlands-fw2.cdot.io
+      ip: "192.168.255.22"
+      domain_name: woodlands-fw2.cdot.io
+
+    - name: woodlands-fw3.cdot.io
+      ip: "192.168.255.23"
+      domain_name: woodlands-fw3.cdot.io
+
+    - name: worf.cdot.io
+      ip: "10.0.0.9"
+      domain_name: worf.cdot.io
