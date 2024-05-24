@@ -1,6 +1,6 @@
 ---
 panos:
-  hostname: "this-is-just-a-placeholder"
-  apikey: "this-is-just-a-placeholder"
-  trusted_users: ["this-is-just-a-placeholder1", "this-is-just-a-placeholder2"]
-  dag_tag: "this-is-just-a-placeholder"
+  hostname: "your panos firewall here"
+  apikey: "your panos firewall api key here"
+  trusted_users: ["trusteduser1", "trusteduser2"]
+  dag_tag: "your dag tag here"
