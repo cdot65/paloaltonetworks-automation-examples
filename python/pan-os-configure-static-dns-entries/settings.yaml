@@ -1,91 +1,119 @@
 ---
 dns:
-  domain: startrek.com
+  domain: cdot.io
   entries:
-    - name: Kirk
+    - name: austin-fw1.cdot.io
       ip: "192.168.255.11"
-      domain_name: kirk.example.com
+      domain_name: austin-fw1.cdot.io
 
-    - name: Spock
+    - name: austin-fw2.cdot.io
       ip: "192.168.255.12"
-      domain_name: spock.example.com
+      domain_name: austin-fw2.cdot.io
 
-    - name: Bones
+    - name: austin-fw3.cdot.io
       ip: "192.168.255.13"
-      domain_name: bones.example.com
+      domain_name: austin-fw3.cdot.io
 
-    - name: Sisko
+    - name: closet.cdot.io
       ip: "192.168.255.102"
-      domain_name: sisko.example.com
+      domain_name: closet.cdot.io
 
-    - name: Odo
+    - name: dallas-fw1.cdot.io
       ip: "192.168.255.16"
-      domain_name: odo.example.com
+      domain_name: dallas-fw1.cdot.io
 
-    - name: Kira
+    - name: dallas-fw2.cdot.io
       ip: "192.168.255.17"
-      domain_name: kira.example.com
+      domain_name: dallas-fw2.cdot.io
 
-    - name: Julian
+    - name: garage.cdot.io
       ip: "192.168.255.101"
-      domain_name: julian.example.com
+      domain_name: garage.cdot.io
 
-    - name: Dax
+    - name: houston-fw1.cdot.io
       ip: "192.168.255.14"
-      domain_name: dax.example.com
+      domain_name: houston-fw1.cdot.io
 
-    - name: Picard
+    - name: houston-fw2.cdot.io
       ip: "192.168.255.15"
-      domain_name: picard.example.com
+      domain_name: houston-fw2.cdot.io
 
-    - name: Riker
+    - name: k8s-1.cdot.io
+      ip: "172.16.0.211"
+      domain_name: k8s-1.cdot.io
+
+    - name: k8s-2.cdot.io
+      ip: "172.16.0.212"
+      domain_name: k8s-2.cdot.io
+
+    - name: k8s-3.cdot.io
+      ip: "172.16.0.213"
+      domain_name: k8s-3.cdot.io
+
+    - name: k8s-4.cdot.io
+      ip: "172.16.0.214"
+      domain_name: k8s-4.cdot.io
+
+    - name: k8s-5.cdot.io
+      ip: "172.16.0.215"
+      domain_name: k8s-5.cdot.io
+
+    - name: katy-fw1.cdot.io
       ip: "192.168.255.41"
-      domain_name: riker.example.com
+      domain_name: katy-fw1.cdot.io
 
-    - name: Data
+    - name: katy-fw2.cdot.io
       ip: "192.168.255.42"
-      domain_name: data.example.com
+      domain_name: katy-fw2.cdot.io
 
-    - name: Geordi
+    - name: magnolia-fw1.cdot.io
       ip: "192.168.255.2"
-      domain_name: geordi.example.com
+      domain_name: magnolia-fw1.cdot.io
 
-    - name: Archer
+    - name: magnolia-fw2.cdot.io
       ip: "192.168.255.1"
-      domain_name: archer.example.com
+      domain_name: magnolia-fw2.cdot.io
 
-    - name: Tpol
+    - name: nas1.cdot.io
       ip: "10.0.0.2"
-      domain_name: tpol.example.com
+      domain_name: nas1.cdot.io
 
-    - name: Trip
+    - name: nas2.cdot.io
       ip: "172.16.0.2"
-      domain_name: trip.example.com
+      domain_name: nas2.cdot.io
 
-    - name: Malcolm
+    - name: office.cdot.io
       ip: "192.168.255.103"
-      domain_name: malcom.example.com
+      domain_name: office.cdot.io
 
-    - name: Hoshi
+    - name: panorama1.cdot.io
       ip: "192.168.255.191"
-      domain_name: hoshi.example.com
+      domain_name: panorama1.cdot.io
 
-    - name: Janeway
+    - name: panorama2.cdot.io
       ip: "192.168.255.192"
-      domain_name: janeway.example.com
+      domain_name: panorama2.cdot.io
 
-    - name: Chakotay
+    - name: panorama3.cdot.io
+      ip: "192.168.255.193"
+      domain_name: panorama3.cdot.io
+
+    - name: proxmox.cdot.io
       ip: "192.168.255.3"
-      domain_name: hakotay.example.com
+      domain_name: proxmox.cdot.io
 
-    - name: 7of9
+    - name: woodlands-fw1.cdot.io
       ip: "192.168.255.21"
-      domain_name: sevenofnine.example.com
+      domain_name: woodlands-fw1.cdot.io
 
-    - name: EMH
+    - name: woodlands-fw2.cdot.io
       ip: "192.168.255.22"
-      domain_name: emh.example.com
+      domain_name: woodlands-fw2.cdot.io
 
-    - name: Tuvok
+    - name: woodlands-fw3.cdot.io
       ip: "192.168.255.23"
-      domain_name: tuvok.example.com
+      domain_name: woodlands-fw3.cdot.io
+
+    - name: worf.cdot.io
+      ip: "10.0.0.9"
+      domain_name: worf.cdot.io

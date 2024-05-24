@@ -1,2 +1,0 @@
-pan-os-python==1.11.0
-dynaconf==3.2.1
