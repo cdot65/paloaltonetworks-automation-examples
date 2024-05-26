@@ -16,6 +16,7 @@ xmltodict = "^0.13.0"
 invoke = "^2.2.0"
 requests = "^2.32.2"
 dynaconf = "^3.2.5"
+pulumi = "^3.116.1"
 
 [tool.poetry.group.dev.dependencies]
 flake8 = "^7.0.0"
