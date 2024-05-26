@@ -1,0 +1,13 @@
+config:
+  pan_os_configure_bgp_peer:hostname: "example-firewall.example.com"
+  pan_os_configure_bgp_peer:username: "automation"
+  pan_os_configure_bgp_peer:vr_name: "default-vr"
+  pan_os_configure_bgp_peer:router_id: "172.16.255.1"
+  pan_os_configure_bgp_peer:local_as: 65000
+  pan_os_configure_bgp_peer:bgp_name: "MPLS"
+  pan_os_configure_bgp_peer:neighbors:
+    - name: "peer1"
+      asn: 65001
+      iface: "ethernet1/8"
+      local_ip: "10.10.10.1/24"
+      peer_ip: "10.10.10.2"
