@@ -205,7 +205,7 @@ def main():
     Workflow:
         1. Parse command-line arguments
         2. Set the logging level based on the provided argument
-        3. Retrieve the list of prefixes from the settings.yaml file
+        3. Retrieve the list of prefixes from the command-line argument or settings.yaml file
         4. Call the `grab_config` function to retrieve configuration objects
         5. Loop over each prefix:
             a. Pass the prefix and lists objects into `find_matches`
@@ -219,6 +219,9 @@ def main():
     parser.add_argument(
         "-d", "--debug", action="store_true", help="Enable debug logging"
     )
+    parser.add_argument(
+        "-p", "--prefix", type=str, help="Comma-separated list of prefixes to search"
+    )
     args = parser.parse_args()
 
     # set the logging level based on the provided argument
@@ -230,8 +233,11 @@ def main():
     # inform user that the script is starting
     logging.info("Script execution started.")
 
-    # retrieve the list of prefixes from settings.yaml
-    prefixes = settings.prefixes
+    # retrieve the list of prefixes from the command-line argument or settings.yaml file
+    if args.prefix:
+        prefixes = args.prefix.split(",")
+    else:
+        prefixes = settings.prefixes
 
     # pull in our configuration objects
     address_groups, address_objects = grab_config()
@@ -250,7 +256,6 @@ def main():
 
         # determine if the search was successful
         if match:
-
             # inform user that a match was found
             logging.debug(f"Match found for prefix: {prefix}")
 
