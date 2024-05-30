@@ -36,7 +36,7 @@ To create a Python virtual environment, follow these steps:
 1. Open a terminal and navigate to the project directory.
 2. Run the following command to create a virtual environment:
 
-   ```console
+   ```bash
    python -m venv venv
    ```
 
@@ -44,13 +44,13 @@ To create a Python virtual environment, follow these steps:
 
    - For Windows:
 
-     ```console
+     ```bash
      venv\Scripts\activate
      ```
 
    - For macOS and Linux:
 
-     ```console
+     ```bash
      source venv/bin/activate
      ```
 
@@ -58,7 +58,7 @@ To create a Python virtual environment, follow these steps:
 
 To install the required Python packages within our virtual environment, execute:
 
-```console
+```bash
 pip install -r requirements.txt
 ```
 
@@ -297,7 +297,7 @@ def main():
     Workflow:
         1. Parse command-line arguments
         2. Set the logging level based on the provided argument
-        3. Retrieve the list of prefixes from the settings.yaml file
+        3. Retrieve the list of prefixes from the command-line argument or settings.yaml file
         4. Call the `grab_config` function to retrieve configuration objects
         5. Loop over each prefix:
             a. Pass the prefix and lists objects into `find_matches`
@@ -311,6 +311,9 @@ def main():
     parser.add_argument(
         "-d", "--debug", action="store_true", help="Enable debug logging"
     )
+    parser.add_argument(
+        "-p", "--prefix", type=str, help="Comma-separated list of prefixes to search"
+    )
     args = parser.parse_args()
 
     # set the logging level based on the provided argument
@@ -322,8 +325,11 @@ def main():
     # inform user that the script is starting
     logging.info("Script execution started.")
 
-    # retrieve the list of prefixes from settings.yaml
-    prefixes = settings.prefixes
+    # retrieve the list of prefixes from the command-line argument or settings.yaml file
+    if args.prefix:
+        prefixes = args.prefix.split(",")
+    else:
+        prefixes = settings.prefixes
 
     # pull in our configuration objects
     address_groups, address_objects = grab_config()
@@ -342,7 +348,6 @@ def main():
 
         # determine if the search was successful
         if match:
-
             # inform user that a match was found
             logging.debug(f"Match found for prefix: {prefix}")
 
@@ -390,21 +395,30 @@ To execute our Python script, follow these steps:
 1. Ensure that you have activated the Python virtual environment.
 2. Run the following command:
 
-   ```console
+   ```bash
    python pan-os-object-search.py
    ```
 
-   To enable debug logging, use:
+To override the prefixes defined in `settings.yaml`, you can pass a comma-separated list of prefixes using the `--prefix` argument:
 
-   ```console
-   python pan-os-object-search.py --debug
-   ```
+```bash
+python pan-os-object-search.py --prefix 192.168.1.1,10.0.0.1
+```
+
+To enable debug logging, use:
+
+```bash
+python pan-os-object-search.py --debug
+```
 
 ### Screenshots
 
 Here are some screenshots showcasing the execution of our Python script:
 
 ![Screenshot 1](screenshots/screenshot1.png)
+_Use the entries in `settings.yaml` file to search_
+
 ![Screenshot 2](screenshots/screenshot2.png)
+_Pass the entries to search at runtime in comma-separated format_
 
 Feel free to explore the script and customize it according to your specific requirements. Happy automating! 😄
