@@ -87,7 +87,7 @@ prefixes:
 
 ## Script Structure
 
-Our Python script (`pan-os-object-search.py`) is structured as follows:
+Our Python script (`app.py`) is structured as follows:
 
 ```python
 """Search for instances of address objects and their associated parent groupings.
@@ -396,19 +396,19 @@ To execute our Python script, follow these steps:
 2. Run the following command:
 
    ```bash
-   python pan-os-object-search.py
+   python app.py
    ```
 
 To override the prefixes defined in `settings.yaml`, you can pass a comma-separated list of prefixes using the `--prefix` argument:
 
 ```bash
-python pan-os-object-search.py --prefix 192.168.1.1,10.0.0.1
+python app.py --prefix 192.168.1.1,10.0.0.1
 ```
 
 To enable debug logging, use:
 
 ```bash
-python pan-os-object-search.py --debug
+python app.py --debug
 ```
 
 ### Screenshots
