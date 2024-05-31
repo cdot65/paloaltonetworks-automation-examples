@@ -1,0 +1,36 @@
+firewalls:
+  - hostname: "austin-fw1.cdot.io"
+    username: "officehours"
+    password: "paloalto123"
+
+  - hostname: "austin-fw2.cdot.io"
+    username: "officehours"
+    password: "paloalto123"
+
+  - hostname: "austin-fw3.cdot.io"
+    username: "officehours"
+    password: "paloalto123"
+
+  - hostname: "dallas-fw1.cdot.io"
+    username: "officehours"
+    password: "paloalto123"
+
+  - hostname: "dallas-fw2.cdot.io"
+    username: "officehours"
+    password: "paloalto123"
+
+  - hostname: "houston-fw1.cdot.io"
+    username: "officehours"
+    password: "paloalto123"
+
+  - hostname: "houston-fw2.cdot.io"
+    username: "officehours"
+    password: "paloalto123"
+
+  - hostname: "katy-fw1.cdot.io"
+    username: "officehours"
+    password: "paloalto123"
+
+  - hostname: "katy-fw2.cdot.io"
+    username: "officehours"
+    password: "paloalto123"
