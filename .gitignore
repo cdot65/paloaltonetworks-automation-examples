@@ -171,3 +171,47 @@ terraform.tfstate
 terraform.tfstate.backup
 terraform.tfstate.backup.*
 .terraform
+
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+
+# Output directory
+# output/
+
+# Go workspace file
+go.work
+
+# Temp files
+*.log
+*.lock
+*.tmp
+
+# Dependency directories
+vendor/
+
+# Go modules
+go.sum
+
+# IDE/Editor directories and files
+.vscode/
+.idea/
+.DS_Store
+
+# Others
+*.swp
+*.swo
+*.bak
+*.orig
+*.log
+# *.yaml
+
+# Private key files
+*.pem
+*.key
+*.crt
