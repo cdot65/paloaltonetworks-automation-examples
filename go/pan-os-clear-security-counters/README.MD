@@ -197,6 +197,6 @@ _initialize the project by building the binary_
 _execute by simply pointing to the path of the binary file generated_
 
 ![Screenshot 3](screenshots/screenshot3.png)
-_command successfully excutes_
+_command successfully executed_
 
 Feel free to explore the project and customize it according to your specific requirements. Happy automating! 😄

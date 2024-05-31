@@ -5,15 +5,15 @@ This README provides an overview of our Go project and guides you through the se
 ## Table of Contents
 
 - [Firewall Counter Collector 📚](#firewall-counter-collector-)
-  - [Table of Contents](#table-of-contents)
-  - [Overview](#overview)
-  - [Prerequisites](#prerequisites)
-  - [Setup](#setup)
-    - [Creating a Go Environment](#creating-a-go-environment)
-    - [Installing Dependencies](#installing-dependencies)
-  - [main.go](#maingo)
-  - [Execution Workflow](#execution-workflow)
-    - [Screenshots](#screenshots)
+	- [Table of Contents](#table-of-contents)
+	- [Overview](#overview)
+	- [Prerequisites](#prerequisites)
+	- [Setup](#setup)
+		- [Creating a Go Environment](#creating-a-go-environment)
+		- [Installing Dependencies](#installing-dependencies)
+	- [main.go](#maingo)
+	- [Execution Workflow](#execution-workflow)
+		- [Screenshots](#screenshots)
 
 ## Overview
 
@@ -233,7 +233,7 @@ _initialize the project by building the binary_
 ![Screenshot 2](screenshots/screenshot2.png)
 _execute by simply pointing to the path of the binary file generated_
 
-![Screenshot 2](screenshots/screenshot3.png)
+![Screenshot 3](screenshots/screenshot3.png)
 _a new folder called "output" is created, with the command output formatted in YAML files_
 
 Feel free to explore the project and customize it according to your specific requirements. Happy automating! 😄
