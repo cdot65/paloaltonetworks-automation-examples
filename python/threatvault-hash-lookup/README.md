@@ -60,7 +60,7 @@ pip install -r requirements.txt
 
 ## Script Structure
 
-Our Python script (`threat_lookup.py`) is structured as follows:
+Our Python script (`app.py`) is structured as follows:
 
 ```python
 import os
@@ -108,7 +108,7 @@ To execute our Python script, follow these steps:
 2. Run the following command:
 
    ```bash
-   python threat_lookup.py
+   python app.py
    ```
 
 ### Screenshots
@@ -116,6 +116,5 @@ To execute our Python script, follow these steps:
 Here are some screenshots showcasing the execution of our Python script:
 
 ![Screenshot 1](screenshots/screenshot1.png)
-![Screenshot 2](screenshots/screenshot2.png)
 
 Feel free to explore the script and customize it according to your specific requirements. Happy automating! 😄
