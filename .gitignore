@@ -215,3 +215,5 @@ go.sum
 *.pem
 *.key
 *.crt
+/python/threatvault-hash-lookup/files/*.pdf
+/python/threatvault-hash-lookup/.secrets.yaml
