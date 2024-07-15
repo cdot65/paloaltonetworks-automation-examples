@@ -155,7 +155,7 @@ python search.py --debug
 
 Here are some screenshots showcasing the execution of our Python script:
 
-![Screenshot 1](screenshots/screenshot1.jpg)
+![Screenshot 1](screenshots/screenshot1.png)
 _Searching for "Cloudflare DNS", defined in `settings.yaml`_
 
 Feel free to explore the script and customize it according to your specific requirements. Happy searching! 😄
