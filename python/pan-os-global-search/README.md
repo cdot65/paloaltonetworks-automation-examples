@@ -85,7 +85,7 @@ keywords:
 
 ## Script Structure
 
-Our Python script (`search.py`) is structured as follows:
+Our Python script (`app.py`) is structured as follows:
 
 ```python
 """Search for instances of words within a live PAN-OS firewall's XML configuration.
@@ -128,7 +128,7 @@ To execute our Python script, follow these steps:
 2. Run the following command:
 
    ```bash
-   python search.py
+   python app.py
    ```
 
 ### Command-line Arguments
@@ -142,13 +142,13 @@ The script supports the following command-line arguments:
 To search using the keywords defined in `settings.yaml`:
 
 ```bash
-python search.py
+python app.py
 ```
 
 To enable debug logging:
 
 ```bash
-python search.py --debug
+python app.py --debug
 ```
 
 ### Screenshots
