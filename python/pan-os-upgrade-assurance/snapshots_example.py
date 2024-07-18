@@ -146,8 +146,8 @@ if __name__ == "__main__":
     # Take snapshots and compare
     results = take_and_compare_snapshots(
         hostname="austin-fw1.cdot.io",
-        username="this-is-just-a-placeholder",
-        password="this-is-just-a-placeholder",
+        username="officehours",
+        password="paloalto123",
         config_snapshots=snapshot_config,
         config_comparison=comparison_config,
     )

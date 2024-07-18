@@ -96,8 +96,8 @@ def run_readiness_checks_example():
     # Run the readiness checks
     results = run_readiness_checks(
         hostname="austin-fw1.cdot.io",
-        username="this-is-just-a-placeholder",
-        password="this-is-just-a-placeholder",
+        username="officehours",
+        password="paloalto123",
         checks_configuration=checks_configuration,
     )
 

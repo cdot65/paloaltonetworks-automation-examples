@@ -84,8 +84,8 @@ def run_health_checks_example() -> None:
     """
     # Define firewall credentials
     hostname = "austin-fw1.cdot.io"
-    username = "this-is-just-a-placeholder"
-    password = "this-is-just-a-placeholder"
+    username = "officehours"
+    password = "paloalto123"
 
     # Define health checks
     health_checks = [
