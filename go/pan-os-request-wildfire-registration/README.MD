@@ -83,6 +83,18 @@ The script will display:
 2. WildFire registration results for each device
 3. A summary of successful and failed registrations
 
+### Screenshots
+
+Here are some screenshots showcasing the execution:
+
+_initialize the project by building the binary_
+![Screenshot 1](screenshots/screenshot1.png)
+
+_execute by simply pointing to the path of the binary file generated_
+![Screenshot 2](screenshots/screenshot2.png)
+
+![Screenshot 2](screenshots/screenshot3.png)
+
 ## Error Handling
 
 - The script will log errors for failed connections or registrations
