@@ -86,6 +86,14 @@ func (l *Logger) Info(v ...interface{}) {
 	}
 }
 
+// Inventory represents the structure of the inventory.yaml file
+type Inventory struct {
+	Inventory []struct {
+		Hostname  string `yaml:"hostname"`
+		IPAddress string `yaml:"ip_address"`
+	} `yaml:"inventory"`
+}
+
 func main() {
 	// Define command-line flags
 	debugLevel := flag.Int("debug", 0, "Debug level: 0=INFO, 1=DEBUG")
@@ -94,6 +102,7 @@ func main() {
 	secretsFile := flag.String("secrets", ".secrets.yaml", "Path to the secrets file")
 	hostnameFilter := flag.String("filter", "", "Comma-separated list of hostname patterns to filter devices")
 	verbose := flag.Bool("verbose", false, "Enable verbose logging")
+	noPanorama := flag.Bool("nopanorama", false, "Use inventory.yaml instead of querying Panorama")
 
 	// Initialize custom logger
 	logger := &Logger{
@@ -107,52 +116,63 @@ func main() {
 	}
 	flag.Parse()
 
-	// Parse hostname filters
-	filters := parseHostnameFilters(*hostnameFilter)
-
-	// Read and parse the Panorama configuration file
-	var config Config
-	if err := readYAMLFile(*configFile, &config); err != nil {
-		logger.Fatalf("Failed to read Panorama config: %v", err)
-	}
-
 	// Read and parse the secrets file
 	var authConfig AuthConfig
 	if err := readYAMLFile(*secretsFile, &authConfig); err != nil {
 		logger.Fatalf("Failed to read secrets: %v", err)
 	}
 
-	if len(config.Panorama) == 0 {
-		logger.Fatalf("No Panorama configuration found in the YAML file")
+	// Parse hostname filters
+	filters := parseHostnameFilters(*hostnameFilter)
+
+	var deviceList []map[string]string
+
+	if *noPanorama {
+		// Read from inventory.yaml
+		inventory, err := readInventoryFile("inventory.yaml")
+		if err != nil {
+			logger.Fatalf("Failed to read inventory file: %v", err)
+		}
+		deviceList = convertInventoryToDeviceList(inventory)
+	} else {
+		// Read and parse the Panorama configuration file
+		var config Config
+		if err := readYAMLFile(*configFile, &config); err != nil {
+			logger.Fatalf("Failed to read Panorama config: %v", err)
+		}
+
+		if len(config.Panorama) == 0 {
+			logger.Fatalf("No Panorama configuration found in the YAML file")
+		}
+
+		// Use the first Panorama configuration
+		pano := config.Panorama[0]
+
+		// Initialize the Panorama client
+		client := &pango.Panorama{
+			Client: pango.Client{
+				Hostname: pano.Hostname,
+				Username: authConfig.Auth.Panorama.Username,
+				Password: authConfig.Auth.Panorama.Password,
+				Logging:  pango.LogAction | pango.LogOp,
+			},
+		}
+
+		logger.Info("Initializing client for", pano.Hostname)
+		if err := client.Initialize(); err != nil {
+			logger.Fatalf("Failed to initialize client: %v", err)
+		}
+		logger.Info("Client initialized for", pano.Hostname)
+
+		// Get the list of connected devices
+		allDevices, err := getConnectedDevices(client, logger)
+		if err != nil {
+			logger.Fatalf("Failed to get connected devices: %v", err)
+		}
+
+		// Filter devices based on hostname patterns
+		deviceList = filterDevices(allDevices, filters, logger)
 	}
-
-	// Use the first Panorama configuration
-	pano := config.Panorama[0]
-
-	// Initialize the Panorama client
-	client := &pango.Panorama{
-		Client: pango.Client{
-			Hostname: pano.Hostname,
-			Username: authConfig.Auth.Panorama.Username,
-			Password: authConfig.Auth.Panorama.Password,
-			Logging:  pango.LogAction | pango.LogOp,
-		},
-	}
-
-	logger.Info("Initializing client for", pano.Hostname)
-	if err := client.Initialize(); err != nil {
-		logger.Fatalf("Failed to initialize client: %v", err)
-	}
-	logger.Info("Client initialized for", pano.Hostname)
-
-	// Get the list of connected devices
-	allDevices, err := getConnectedDevices(client, logger)
-	if err != nil {
-		logger.Fatalf("Failed to get connected devices: %v", err)
-	}
-
-	// Filter devices based on hostname patterns
-	deviceList := filterDevices(allDevices, filters, logger)
 
 	logger.Info("Starting WildFire registration for", len(deviceList), "devices")
 
@@ -301,6 +321,32 @@ func registerWildFireScrapli(device map[string]string, username, password string
 
 	logger.Debug("Successfully registered WildFire for", device["hostname"])
 	return nil
+}
+
+func readInventoryFile(filename string) (*Inventory, error) {
+	data, err := os.ReadFile(filename)
+	if err != nil {
+		return nil, fmt.Errorf("failed to read file: %w", err)
+	}
+
+	var inventory Inventory
+	err = yaml.Unmarshal(data, &inventory)
+	if err != nil {
+		return nil, fmt.Errorf("failed to unmarshal YAML: %w", err)
+	}
+
+	return &inventory, nil
+}
+
+func convertInventoryToDeviceList(inventory *Inventory) []map[string]string {
+	var deviceList []map[string]string
+	for _, device := range inventory.Inventory {
+		deviceList = append(deviceList, map[string]string{
+			"hostname":   device.Hostname,
+			"ip-address": device.IPAddress,
+		})
+	}
+	return deviceList
 }
 
 func parseHostnameFilters(filterString string) []string {
