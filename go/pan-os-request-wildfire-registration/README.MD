@@ -25,8 +25,14 @@ This Go script automates the process of registering WildFire on Palo Alto Networ
     git clone https://github.com/yourusername/wildfire-registration-script.git
     cd wildfire-registration-script
     ```
+   
+2. Initialize the project
 
-2. Install the required dependencies:
+   ```
+   go mod init github.com/yourusernamehere/pan-os-request-wildfire-registration
+   ```
+
+3. Install the required dependencies:
 
     ```
     go mod tidy
