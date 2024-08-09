@@ -1,0 +1,52 @@
+# config/objects/security_profile_groups.yaml
+panos_config:
+  device_groups:
+    Magnolia:
+
+      objects:
+
+        security_profile_groups:
+          - name: "Default_Security_Profile"
+            virus: "Default-AV"
+            spyware: "Default-AS"
+            vulnerability: "Default-VP"
+            url_filtering: "Default-URL"
+            file_blocking: "Default-FB"
+            data_filtering: "Default-DF"
+            wildfire_analysis: "Default-WF"
+
+          - name: "High_Security_Profile"
+            virus: "Strict-AV"
+            spyware: "Strict-AS"
+            vulnerability: "Strict-VP"
+            url_filtering: "Strict-URL"
+            file_blocking: "Strict-FB"
+            data_filtering: "Strict-DF"
+            wildfire_analysis: "Aggressive-WF"
+
+          - name: "Web_Server_Profile"
+            virus: "Web-AV"
+            spyware: "Web-AS"
+            vulnerability: "Strict-VP"
+            url_filtering: "Web-URL"
+            file_blocking: "Web-FB"
+            data_filtering: "Default-DF"
+            wildfire_analysis: "Web-WF"
+
+          - name: "Database_Server_Profile"
+            virus: "DB-AV"
+            spyware: "Strict-AS"
+            vulnerability: "DB-VP"
+            url_filtering: "Minimal-URL"
+            file_blocking: "DB-FB"
+            data_filtering: "Strict-DF"
+            wildfire_analysis: "Default-WF"
+
+          - name: "Development_Profile"
+            virus: "Dev-AV"
+            spyware: "Dev-AS"
+            vulnerability: "Dev-VP"
+            url_filtering: "Dev-URL"
+            file_blocking: "Permissive-FB"
+            data_filtering: "Dev-DF"
+            wildfire_analysis: "Dev-WF"

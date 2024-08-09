@@ -1,0 +1,13 @@
+# config/network/zones.yaml
+panos_config:
+  device_groups:
+    Magnolia:
+
+      network:
+        security_zones:
+          - name: "Trust"
+            interfaces:
+              - "ethernet1/1"
+              - "ethernet1/2"
+          # Add more zones here
+
