@@ -1,0 +1,158 @@
+# config/objects/address_objects.yaml
+panos_config:
+  device_groups:
+    Magnolia:
+
+      objects:
+        address_objects:
+          - name: "Web_Server_1"
+            type: "ip-netmask"
+            value: "10.1.1.10/32"
+            description: "Web Server 1"
+            tag: [ "web", "production" ]
+          - name: "Web_Server_2"
+            type: "ip-netmask"
+            value: "10.1.1.11/32"
+            description: "Web Server 2"
+            tag: [ "web", "production" ]
+          - name: "App_Server_1"
+            type: "ip-netmask"
+            value: "10.2.1.10/32"
+            description: "Application Server 1"
+            tag: [ "app", "production" ]
+          - name: "App_Server_2"
+            type: "ip-netmask"
+            value: "10.2.1.11/32"
+            description: "Application Server 2"
+            tag: [ "app", "production" ]
+          - name: "DB_Server_1"
+            type: "ip-netmask"
+            value: "10.3.1.10/32"
+            description: "Database Server 1"
+            tag: [ "database", "production" ]
+          - name: "DB_Server_2"
+            type: "ip-netmask"
+            value: "10.3.1.11/32"
+            description: "Database Server 2"
+            tag: [ "database", "production" ]
+          - name: "Load_Balancer_1"
+            type: "ip-netmask"
+            value: "10.0.1.10/32"
+            description: "Load Balancer 1"
+            tag: [ "lb", "production" ]
+          - name: "Load_Balancer_2"
+            type: "ip-netmask"
+            value: "10.0.1.11/32"
+            description: "Load Balancer 2"
+            tag: [ "lb", "production" ]
+          - name: "Dev_Web_Server"
+            type: "ip-netmask"
+            value: "172.16.1.10/32"
+            description: "Development Web Server"
+            tag: [ "web", "development" ]
+          - name: "Dev_App_Server"
+            type: "ip-netmask"
+            value: "172.16.2.10/32"
+            description: "Development App Server"
+            tag: [ "app", "development" ]
+          - name: "Dev_DB_Server"
+            type: "ip-netmask"
+            value: "172.16.3.10/32"
+            description: "Development Database Server"
+            tag: [ "database", "development" ]
+          - name: "Backup_Server"
+            type: "ip-netmask"
+            value: "10.4.1.10/32"
+            description: "Backup Server"
+            tag: [ "backup" ]
+          - name: "Monitoring_Server"
+            type: "ip-netmask"
+            value: "10.5.1.10/32"
+            description: "Monitoring Server"
+            tag: [ "monitoring" ]
+          - name: "VPN_Gateway"
+            type: "ip-netmask"
+            value: "203.0.113.1/32"
+            description: "VPN Gateway"
+            tag: [ "vpn" ]
+          - name: "Internal_DNS"
+            type: "ip-netmask"
+            value: "10.0.0.53/32"
+            description: "Internal DNS Server"
+            tag: [ "dns", "internal" ]
+          - name: "External_DNS"
+            type: "fqdn"
+            value: "dns.example.com"
+            description: "External DNS Server"
+            tag: [ "dns", "external" ]
+          - name: "SMTP_Server"
+            type: "ip-netmask"
+            value: "10.6.1.10/32"
+            description: "SMTP Server"
+            tag: [ "mail" ]
+          - name: "FTP_Server"
+            type: "ip-netmask"
+            value: "10.7.1.10/32"
+            description: "FTP Server"
+            tag: [ "ftp" ]
+          - name: "NTP_Server"
+            type: "ip-netmask"
+            value: "10.0.0.123/32"
+            description: "NTP Server"
+            tag: [ "ntp" ]
+          - name: "LDAP_Server"
+            type: "ip-netmask"
+            value: "10.8.1.10/32"
+            description: "LDAP Server"
+            tag: [ "ldap" ]
+          - name: "Proxy_Server"
+            type: "ip-netmask"
+            value: "10.9.1.10/32"
+            description: "Proxy Server"
+            tag: [ "proxy" ]
+          - name: "NAT_Gateway"
+            type: "ip-netmask"
+            value: "203.0.113.2/32"
+            description: "NAT Gateway"
+            tag: [ "nat" ]
+          - name: "DMZ_Server_1"
+            type: "ip-netmask"
+            value: "192.168.1.10/32"
+            description: "DMZ Server 1"
+            tag: [ "dmz" ]
+          - name: "DMZ_Server_2"
+            type: "ip-netmask"
+            value: "192.168.1.11/32"
+            description: "DMZ Server 2"
+            tag: [ "dmz" ]
+          - name: "Staging_Server"
+            type: "ip-netmask"
+            value: "172.16.4.10/32"
+            description: "Staging Server"
+            tag: [ "staging" ]
+          - name: "CI_CD_Server"
+            type: "ip-netmask"
+            value: "172.16.5.10/32"
+            description: "CI/CD Server"
+            tag: [ "cicd" ]
+          - name: "Log_Server"
+            type: "ip-netmask"
+            value: "10.10.1.10/32"
+            description: "Log Server"
+            tag: [ "logging" ]
+          - name: "Backup_DC"
+            type: "ip-netmask"
+            value: "10.11.1.10/32"
+            description: "Backup Domain Controller"
+            tag: [ "dc", "backup" ]
+          - name: "Test_Range"
+            type: "ip-range"
+            value: "172.16.100.1-172.16.100.254"
+            description: "Test IP Range"
+            tag: [ "test" ]
+          - name: "Office_Network"
+            type: "ip-netmask"
+            value: "10.0.0.0/8"
+            description: "Office Network"
+            tag: [ "office" ]
+

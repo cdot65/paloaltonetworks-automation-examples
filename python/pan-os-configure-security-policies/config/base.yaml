@@ -1,0 +1,4 @@
+# config/base.yaml
+panos_config:
+  panorama:
+    base_url: "panorama1.cdot.io"

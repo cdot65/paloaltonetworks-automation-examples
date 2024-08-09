@@ -1,266 +1,162 @@
 # standard library imports
-import argparse
-import sys
+import logging
 
-# pan-os-python SDK imports
+# 3rd party imports
+from config import settings
+from panos.panorama import Panorama, DeviceGroup
+from panos.objects import AddressObject, AddressGroup, Tag
+from panos.network import Zone, Interface
+from panos.policies import PostRulebase, PreRulebase, SecurityRule
 from panos.errors import PanDeviceError
-from panos.panorama import Panorama, PanoramaCommitAll
 
-# local imports
-from paloconfig import PaloConfig
-from utils import set_log_level, logger
+# ----------------------------------------------------------------------------
+# Configure logging
+# ----------------------------------------------------------------------------
+logging.basicConfig(
+    level=logging.DEBUG, format="%(asctime)s [%(levelname)s] %(message)s"
+)
 
+# ----------------------------------------------------------------------------
+# create a panorama object
+# ----------------------------------------------------------------------------
+pan = Panorama(
+    hostname=settings.panos_config.panorama.base_url,
+    api_key=settings.panos_config.panorama.api_key,
+)
 
-def parse_arguments():
-    """
-    Parse command-line arguments for configuring Palo Alto Networks Panorama.
+# ----------------------------------------------------------------------------
+# test our Panorama creds, attempt to refresh the system info with pan object
+# ----------------------------------------------------------------------------
+try:
+    pan.refresh_system_info()
+    logging.info("Successfully connected to Panorama with credentials")
+except PanDeviceError as pan_device_error:
+    logging.error("Failed to connect to Panorama: %s", pan_device_error)
+    exit(1)  # Exit the script if connection fails
 
-    Sets up an argument parser with options for log level and returns parsed arguments.
+# ----------------------------------------------------------------------------
+# create device group and attach to Panorama
+# ----------------------------------------------------------------------------
+device_group_name = "Magnolia"
+device_group = DeviceGroup(device_group_name)
+pan.add(device_group)
+logging.info(f"Successfully attached {device_group_name} device group object to Panorama object")
 
-    Attributes:
-        -l, --log-level (str): Set the logging level (choices: debug, info, warning, error, critical; default: info)
-
-    Return:
-        argparse.Namespace: Parsed command-line arguments
-    """
-    parser = argparse.ArgumentParser(
-        description="Configure Palo Alto Networks Panorama"
-    )
-    parser.add_argument(
-        "-l",
-        "--log-level",
-        choices=["debug", "info", "warning", "error", "critical"],
-        default="info",
-        help="Set the logging level",
-        type=lambda x: x.lower(),
-    )
-    parser.add_argument(
-        "--hostname",
-        required=True,
-        help="Panorama hostname or IP address",
-    )
-    parser.add_argument(
-        "--username",
-        required=True,
-        help="Panorama username",
-    )
-    parser.add_argument(
-        "--password",
-        required=True,
-        help="Panorama password",
-    )
-    parser.add_argument(
-        "--device-group",
-        default="shared",
-        help="Device group name (default: shared)",
-    )
-    parser.add_argument(
-        "--rule-name",
-        required=True,
-        help="Security rule name",
-    )
-    parser.add_argument(
-        "--rule-description",
-        default="",
-        help="Security rule description",
-    )
-    parser.add_argument(
-        "--rule-tag",
-        default="",
-        help="Security rule tags (comma-separated list)",
-    )
-    parser.add_argument(
-        "--rule-disabled",
-        action="store_true",
-        help="Disable the security rule",
-    )
-    parser.add_argument(
-        "--rule-from-zone",
-        required=True,
-        nargs="+",
-        help="From zone(s) for the security rule",
-    )
-    parser.add_argument(
-        "--rule-to-zone",
-        required=True,
-        nargs="+",
-        help="To zone(s) for the security rule",
-    )
-    parser.add_argument(
-        "--rule-source",
-        required=True,
-        nargs="+",
-        help="Source address(es) for the security rule",
-    )
-    parser.add_argument(
-        "--rule-destination",
-        required=True,
-        nargs="+",
-        help="Destination address(es) for the security rule",
-    )
-    parser.add_argument(
-        "--rule-application",
-        required=True,
-        nargs="+",
-        help="Application(s) for the security rule",
-    )
-    parser.add_argument(
-        "--rule-service",
-        required=True,
-        nargs="+",
-        help="Service(s) for the security rule",
-    )
-    parser.add_argument(
-        "--rule-category",
-        nargs="+",
-        help="URL category for the security rule",
-    )
-    parser.add_argument(
-        "--rule-security-profile-group",
-        help="Security profile group for the security rule",
-    )
-    parser.add_argument(
-        "--rule-log-setting",
-        help="Log setting for the security rule",
-    )
-    parser.add_argument(
-        "--rule-action",
-        required=True,
-        choices=["allow", "deny", "drop", "reset-client", "reset-server", "reset-both"],
-        help="Action for the security rule",
-    )
-    return parser.parse_args()
-
-
-def connect_to_panorama(
-    hostname: str,
-    username: str,
-    password: str,
-) -> Panorama:
-    """
-    Establishes a connection to a Panorama device.
-
-    Attempts to connect to a Panorama device using the provided hostname and API key.
-    Refreshes system info upon successful connection.
-
-    Attributes:
-        hostname (str): The hostname or IP address of the Panorama device.
-        username (str): The username for authentication.
-        password (str): The username for authentication.
-
-    Error:
-        PanDeviceError: Raised if connection to Panorama fails.
-
-    Return:
-        Panorama: A connected Panorama object.
-    """
-    try:
-        pan = Panorama(
-            hostname=hostname,
-            api_username=username,
-            api_password=password,
+# ----------------------------------------------------------------------------
+# create tags and add them to the device group
+# ----------------------------------------------------------------------------
+dg_config = settings.panos_config.device_groups.get(device_group_name)
+if dg_config and dg_config.objects.tags:
+    for tag_config in dg_config.objects.tags:
+        tag = Tag(
+            name=tag_config.name,
+            color=tag_config.color,
+            comments=tag_config.comments
         )
-        pan.refresh_system_info()
-        logger.info("Successfully connected to Panorama with credentials")
-        return pan
-    except PanDeviceError as e:
-        logger.error(f"Failed to connect to Panorama: {e}")
-        raise
+        device_group.add(tag)
+        tag.create()
+    logging.info(f"Created and added tags to the {device_group_name} device group")
+else:
+    logging.warning(f"No tags found for {device_group_name} device group")
 
+# # ----------------------------------------------------------------------------
+# # create address groups and add them to the device group
+# # ----------------------------------------------------------------------------
+# for group in settings.address_groups:
+#     addr_group = AddressGroup(
+#         name=group.name,
+#         static_value=group.members
+#     )
+#     device_group.add(addr_group)
+#     addr_group.create()
+# logging.info("Created and added address groups to the device group")
+#
+# # ----------------------------------------------------------------------------
+# # create security zones and associate them with interfaces
+# # ----------------------------------------------------------------------------
+# for zone_config in settings.security_zones:
+#     zone = Zone(name=zone_config.name)
+#     device_group.add(zone)
+#     zone.create()
+#
+#     for intf_name in zone_config.interfaces:
+#         interface = Interface(name=intf_name)
+#         zone.add(interface)
+#         interface.create()
+# logging.info("Created security zones and associated them with interfaces")
+#
+# # ----------------------------------------------------------------------------
+# # create pre-rulebase and security rules
+# # ----------------------------------------------------------------------------
+# pre_rulebase = PreRulebase()
+# device_group.add(pre_rulebase)
+#
+# for rule in settings.security_rules.pre_rules:
+#     new_rule = SecurityRule(
+#         name=rule.name,
+#         fromzone=rule.from_zone,
+#         tozone=rule.to_zone,
+#         source=rule.source,
+#         destination=rule.destination,
+#         application=rule.application,
+#         service=rule.service,
+#         action=rule.action,
+#     )
+#     pre_rulebase.add(new_rule)
+#     new_rule.create()
+# logging.info("Created pre-rulebase security rules")
+#
+# # ----------------------------------------------------------------------------
+# # create post-rulebase and security rules
+# # ----------------------------------------------------------------------------
+# post_rulebase = PostRulebase()
+# device_group.add(post_rulebase)
+#
+# for rule in settings.security_rules.post_rules:
+#     new_rule = SecurityRule(
+#         name=rule.name,
+#         fromzone=rule.from_zone,
+#         tozone=rule.to_zone,
+#         source=rule.source,
+#         destination=rule.destination,
+#         application=rule.application,
+#         service=rule.service,
+#         action=rule.action,
+#     )
+#     post_rulebase.add(new_rule)
+#     new_rule.create()
+# logging.info("Created post-rulebase security rules")
+#
+# # ----------------------------------------------------------------------------
+# # ensure "Deny Any" rule is at the bottom of post-rulebase
+# # ----------------------------------------------------------------------------
+# deny_all = SecurityRule.find(post_rulebase, name="Deny Any")
+# if deny_all:
+#     deny_all.refresh()
+#     deny_all.move(location="bottom")
+# else:
+#     deny_all = SecurityRule(
+#         name="Deny Any",
+#         fromzone=["any"],
+#         tozone=["any"],
+#         source=["any"],
+#         destination=["any"],
+#         application=["any"],
+#         service=["any"],
+#         action="deny",
+#     )
+#     post_rulebase.add(deny_all)
+#     deny_all.create()
+# logging.info("Ensured 'Deny Any' rule is at the bottom of post-rulebase")
 
-def main():
-    """
-    This method is the entry point for the program. It performs the following steps:
+# ----------------------------------------------------------------------------
+# commit changes to Panorama and push to device group
+# ----------------------------------------------------------------------------
+pan.commit(sync=True)
+logging.info("Successfully committed changes to Panorama")
 
-    1. Parses the command line arguments.
-    2. Sets the logging level based on the arguments.
-    3. Connects to the Panorama device.
-    4. Creates a PaloConfig instance for managing the Panorama configuration.
-    5. Processes each device group in the Panorama configuration.
-    6. Commits the changes to the Panorama device.
-    7. Pushes the changes to each device group.
-
-    If any errors occur during the process, a message will be logged and the method will return a non-zero value.
-
-    Returns:
-        int: The exit code of the method. 0 indicates success, while non-zero values indicate failure.
-    """
-    args = parse_arguments()
-    set_log_level(args.log_level)
-
-    try:
-        # Create a panorama object
-        pan = connect_to_panorama(
-            hostname=args.hostname,
-            username=args.username,
-            password=args.password,
-        )
-
-        # Create PaloConfig instance
-        panorama_config = PaloConfig(pan)
-
-        # Retrieve or create the device group
-        device_group = panorama_config.create_device_group(args.device_group)
-
-        # Prepare security rule configuration
-        security_rule_config = {
-            "name": args.rule_name,
-            "fromzone": args.rule_from_zone,
-            "tozone": args.rule_to_zone,
-            "source": args.rule_source,
-            "destination": args.rule_destination,
-            "application": args.rule_application,
-            "service": args.rule_service,
-            "action": args.rule_action,
-            "disabled": args.rule_disabled,
-        }
-
-        # Add optional arguments if they are provided
-        if args.rule_description:
-            security_rule_config["description"] = args.rule_description
-        if args.rule_tag:
-            security_rule_config["tag"] = args.rule_tag
-        if args.rule_log_setting:
-            security_rule_config["log_setting"] = args.rule_log_setting
-        if args.rule_security_profile_group:
-            security_rule_config["group"] = args.rule_security_profile_group
-        if args.rule_category:
-            security_rule_config["category"] = args.rule_category
-
-        # Configure security rule
-        panorama_config.security_rules(
-            security_rule_configuration=[security_rule_config],
-            device_group=device_group,
-        )
-
-        # Commit changes to Panorama
-        panorama_config.commit_panorama(
-            description="Commit changes to Panorama",
-            admins=[args.username],
-            device_groups=[args.device_group],
-        )
-
-        # Commit changes to each device group
-        panorama_config.commit_all(
-            style=PanoramaCommitAll.STYLE_DEVICE_GROUP,
-            name=args.device_group,
-            description=f"Commit changes to device group: {args.device_group}",
-            admins=[args.username],
-            include_template=True,
-        )
-        print('{"status": "completed"}')  # Print JSON to stdout
-        return 0
-
-    except PanDeviceError as e:
-        logger.critical(f"Critical error in PAN-OS operations: {e}")
-        print('{"status": "errored"}')  # Print JSON to stdout
-        return 1
-    except Exception as e:
-        logger.critical(f"Unexpected error occurred: {e}")
-        print('{"status": "errored"}')  # Print JSON to stdout
-        return 1
-
-
-if __name__ == "__main__":
-    # The script exits with the status code returned by main()
-    sys.exit(main())
+pan.commit_all(
+    sync=True,
+    devicegroup=device_group.name,
+)
+logging.info(f"Configuration pushed to device group: {device_group.name}")

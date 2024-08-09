@@ -1,0 +1,48 @@
+# config/objects/log_forwarding_profile_match_list_actions.yaml
+panos_config:
+  device_groups:
+    Magnolia:
+
+      objects:
+
+        log_forwarding_profile_match_list_actions:
+          - name: "Tag_High_Risk_Source"
+            action_type: "tagging"
+            action: "add-tag"
+            target: "source-address"
+            registration: "localhost"
+            tags: [ "high-risk-source" ]
+
+          - name: "Tag_Malware_Destination"
+            action_type: "tagging"
+            action: "add-tag"
+            target: "destination-address"
+            registration: "localhost"
+            tags: [ "malware-destination" ]
+
+          - name: "Remove_Trusted_Tag"
+            action_type: "tagging"
+            action: "remove-tag"
+            target: "source-address"
+            registration: "localhost"
+            tags: [ "trusted-source" ]
+
+          - name: "Azure_Security_Integration"
+            action_type: "integration"
+            action: "Azure-Security-Center-Integration"
+
+          - name: "Tag_VPN_User"
+            action_type: "tagging"
+            action: "add-tag"
+            target: "source-address"
+            registration: "panorama"
+            tags: [ "vpn-user" ]
+            timeout: 1440  # 24 hours
+
+          - name: "Tag_Compliance_Violation"
+            action_type: "tagging"
+            action: "add-tag"
+            target: "source-address"
+            registration: "remote"
+            http_profile: "Compliance_HTTP"
+            tags: [ "compliance-violation" ]

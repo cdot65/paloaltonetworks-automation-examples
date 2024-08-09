@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "pan-os-configure-panorama"
+name = "dag-updates"
 version = "0.1.0"
 description = ""
 authors = ["Calvin Remsburg <cremsburg.dev@gmail.com>"]
@@ -10,7 +10,6 @@ python = "^3.10"
 dynaconf = "^3.2.4"
 lxml = "^4.9.3"
 pan-os-python = "^1.12.1"
-pyyaml = "^6.0.2"
 
 
 [tool.poetry.group.dev.dependencies]
