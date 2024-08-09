@@ -1,0 +1,69 @@
+# config/objects/schedule_objects.yaml
+panos_config:
+  device_groups:
+    Magnolia:
+
+      objects:
+
+        schedule_objects:
+          - name: "Business_Hours"
+            type: "recurring"
+            recurrence: "weekly"
+            weekly_monday_time: [ "09:00-17:00" ]
+            weekly_tuesday_time: [ "09:00-17:00" ]
+            weekly_wednesday_time: [ "09:00-17:00" ]
+            weekly_thursday_time: [ "09:00-17:00" ]
+            weekly_friday_time: [ "09:00-17:00" ]
+
+          - name: "Weekend_Hours"
+            type: "recurring"
+            recurrence: "weekly"
+            weekly_saturday_time: [ "10:00-14:00" ]
+            weekly_sunday_time: [ "10:00-14:00" ]
+
+          - name: "Night_Shift"
+            type: "recurring"
+            recurrence: "daily"
+            daily_time: [ "22:00-06:00" ]
+
+          - name: "Lunch_Break"
+            type: "recurring"
+            recurrence: "daily"
+            daily_time: [ "12:00-13:00" ]
+
+          - name: "Quarterly_Maintenance"
+            type: "recurring"
+            recurrence: "weekly"
+            weekly_saturday_time: [ "00:00-04:00" ]
+
+          - name: "Annual_Inventory"
+            type: "non-recurring"
+            non_recurring_date_time: [ "2023/12/31@18:00-2024/01/01@06:00" ]
+
+          - name: "Summer_Hours"
+            type: "recurring"
+            recurrence: "weekly"
+            weekly_monday_time: [ "08:00-16:00" ]
+            weekly_tuesday_time: [ "08:00-16:00" ]
+            weekly_wednesday_time: [ "08:00-16:00" ]
+            weekly_thursday_time: [ "08:00-16:00" ]
+            weekly_friday_time: [ "08:00-15:00" ]
+
+          - name: "Holiday_Season"
+            type: "non-recurring"
+            non_recurring_date_time: [ "2023/12/24@00:00-2024/01/02@00:00" ]
+
+          - name: "Extended_Support_Hours"
+            type: "recurring"
+            recurrence: "weekly"
+            weekly_monday_time: [ "07:00-20:00" ]
+            weekly_tuesday_time: [ "07:00-20:00" ]
+            weekly_wednesday_time: [ "07:00-20:00" ]
+            weekly_thursday_time: [ "07:00-20:00" ]
+            weekly_friday_time: [ "07:00-20:00" ]
+
+          - name: "System_Backup_Window"
+            type: "recurring"
+            recurrence: "weekly"
+            weekly_sunday_time: [ "01:00-05:00" ]
+

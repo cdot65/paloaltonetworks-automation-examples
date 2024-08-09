@@ -1,0 +1,6 @@
+# config/device_groups/cloud_infrastructure.yaml
+panos_config:
+  device_groups:
+    Magnolia:
+
+      # Add device group specific configurations here

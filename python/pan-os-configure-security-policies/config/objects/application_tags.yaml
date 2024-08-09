@@ -1,0 +1,21 @@
+# config/objects/application_tags.yaml
+panos_config:
+  device_groups:
+    Magnolia:
+
+      objects:
+        application_tags:
+          - name: "web-critical"
+            tags: [ "critical", "web" ]
+
+          - name: "database-sensitive"
+            tags: [ "sensitive", "database" ]
+
+          - name: "admin-restricted"
+            tags: [ "restricted", "admin" ]
+
+          - name: "monitoring-important"
+            tags: [ "important", "monitoring" ]
+
+          - name: "development-tools"
+            tags: [ "development", "tools" ]
