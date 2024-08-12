@@ -6,7 +6,7 @@
 
   vars:
     amount_of_logs_to_return: 5
-    api_key: "LUFRPT1welhtc2ZoT3JHbUplYnFIclQzRnZEeXhQRkU9N2dxVE1qdUZFM0FROE40Tm9WVFRLSmx5QWRCdnlKRnduQ3dDZUxPek5hMXpJcGJnVVU5R1lMMEUvckdRSHg2d0lHeE51ellBOW5IV2dkR3paSG1HOVE9PQ=="
+    api_key: "you-super-secret-api-key-goes-here"
     ansible_python_interpreter: "{{ ansible_playbook_python }}"
 
   tasks:
