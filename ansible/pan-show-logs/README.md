@@ -171,4 +171,10 @@ To execute our Ansible playbook, follow these steps:
 
 3. Ansible will connect to the target firewalls and execute the tasks defined in the playbook, retrieving and formatting the log data. 🚀
 
+## Screenshots
+
+![Screenshot 1](screenshots/1.png)
+
+![Screenshot 2](screenshots/2.png)
+
 Feel free to explore the playbook and customize it according to your specific requirements. Happy automating! 😄
