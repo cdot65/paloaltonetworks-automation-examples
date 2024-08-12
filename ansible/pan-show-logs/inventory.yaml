@@ -1,0 +1,6 @@
+all:
+  children:
+    firewalls:
+      hosts:
+        magnolia-fw1:
+          ansible_host: 192.168.255.2
