@@ -1,0 +1,18 @@
+---
+# ------------------------------------------------------------------------
+# CONFIGURE IPSEC VPN
+# ------------------------------------------------------------------------
+- hosts: firewalls
+  connection: local
+  gather_facts: False
+  become: False
+  collections:
+    - paloaltonetworks.panos
+    - ansible.utils
+
+  roles:
+    - create_tags
+    - create_address_objects
+    - create_interfaces
+    - configure_vpn
+    - configure_static_routes

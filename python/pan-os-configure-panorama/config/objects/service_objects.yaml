@@ -1,0 +1,137 @@
+# config/objects/service_objects.yaml
+panos_config:
+  device_groups:
+    Magnolia:
+      objects:
+        service_objects:
+          - name: "HTTP"
+            protocol: "tcp"
+            destination_port: "80"
+            description: "HTTP traffic"
+            tag: [ "web" ]
+
+          - name: "HTTPS"
+            protocol: "tcp"
+            destination_port: "443"
+            description: "HTTPS traffic"
+            tag: [ "web", "secure" ]
+
+          - name: "SSH"
+            protocol: "tcp"
+            destination_port: "22"
+            description: "Secure Shell"
+            tag: [ "network" ]
+
+          - name: "TELNET"
+            protocol: "tcp"
+            destination_port: "23"
+            description: "Telnet"
+            tag: [ "network" ]
+
+          - name: "FTP"
+            protocol: "tcp"
+            destination_port: "21"
+            description: "File Transfer Protocol"
+            tag: [ "network" ]
+
+          - name: "SFTP"
+            protocol: "tcp"
+            destination_port: "22"
+            description: "Secure File Transfer Protocol"
+            tag: [ "network", "secure" ]
+
+          - name: "SMTP"
+            protocol: "tcp"
+            destination_port: "25"
+            description: "Simple Mail Transfer Protocol"
+            tag: [ "mail" ]
+
+          - name: "POP3"
+            protocol: "tcp"
+            destination_port: "110"
+            description: "Post Office Protocol v3"
+            tag: [ "mail" ]
+
+          - name: "IMAP"
+            protocol: "tcp"
+            destination_port: "143"
+            description: "Internet Message Access Protocol"
+            tag: [ "mail" ]
+
+          - name: "DNS"
+            protocol: "udp"
+            destination_port: "53"
+            description: "Domain Name System"
+            tag: [ "dns" ]
+
+          - name: "NTP"
+            protocol: "udp"
+            destination_port: "123"
+            description: "Network Time Protocol"
+            tag: [ "ntp" ]
+
+          - name: "SNMP"
+            protocol: "udp"
+            destination_port: "161-162"
+            description: "Simple Network Management Protocol"
+            tag: [ "monitoring" ]
+
+          - name: "LDAP"
+            protocol: "tcp"
+            destination_port: "389"
+            description: "Lightweight Directory Access Protocol"
+            tag: [ "ldap" ]
+
+          - name: "LDAPS"
+            protocol: "tcp"
+            destination_port: "636"
+            description: "LDAP over SSL"
+            tag: [ "ldap", "secure" ]
+
+          - name: "RDP"
+            protocol: "tcp"
+            destination_port: "3389"
+            description: "Remote Desktop Protocol"
+            tag: [ "network" ]
+
+          - name: "MySQL"
+            protocol: "tcp"
+            destination_port: "3306"
+            description: "MySQL Database"
+            tag: [ "database" ]
+
+          - name: "PostgreSQL"
+            protocol: "tcp"
+            destination_port: "5432"
+            description: "PostgreSQL Database"
+            tag: [ "database" ]
+
+          - name: "MongoDB"
+            protocol: "tcp"
+            destination_port: "27017"
+            description: "MongoDB Database"
+            tag: [ "database" ]
+
+          - name: "Redis"
+            protocol: "tcp"
+            destination_port: "6379"
+            description: "Redis Database"
+            tag: [ "database" ]
+
+          - name: "Elasticsearch"
+            protocol: "tcp"
+            destination_port: "9200"
+            description: "Elasticsearch"
+            tag: [ "database" ]
+
+          - name: "Kibana"
+            protocol: "tcp"
+            destination_port: "5601"
+            description: "Kibana"
+            tag: [ "monitoring" ]
+
+          - name: "Jenkins"
+            protocol: "tcp"
+            destination_port: "8080"
+            description: "Jenkins CI/CD"
+            tag: [ "cicd" ]

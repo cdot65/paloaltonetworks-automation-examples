@@ -1,0 +1,4 @@
+# config/base.yaml
+panos_config:
+  panorama:
+    base_url: "this-is-just-a-placeholder"

@@ -1,0 +1,17 @@
+# config/objects/application_containers.yaml
+panos_config:
+  device_groups:
+    Magnolia:
+      objects:
+        application_container:
+          - name: "Cloud_Native_Apps"
+            applications:
+              - "Custom-HTTP"
+              - "Custom-HTTPS"
+              - "Custom-MySQL"
+              - "Custom-PostgreSQL"
+              - "Custom-MongoDB"
+              - "Custom-Redis"
+              - "Custom-Elasticsearch"
+              - "Custom-Jenkins"
+              - "Custom-Grafana"

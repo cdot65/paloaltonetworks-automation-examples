@@ -1,0 +1,6 @@
+---
+panos:
+  hostname: "this-is-just-a-placeholder"
+  apikey: "this-is-just-a-placeholder"
+  trusted_users: ["this-is-just-a-placeholder1", "this-is-just-a-placeholder2"]
+  dag_tag: "this-is-just-a-placeholder"

@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: dnsutils
+  namespace: pan-os-telemetry
+spec:
+  containers:
+    - name: dnsutils
+      image: infoblox/dnstools
+      command:
+        - sleep
+        - "3600"

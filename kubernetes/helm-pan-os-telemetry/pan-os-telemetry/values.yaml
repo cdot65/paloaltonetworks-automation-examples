@@ -1,0 +1,73 @@
+# values.yaml
+replicaCount: 1
+
+serviceAccount:
+  create: true
+  annotations: {}
+
+panosExporter:
+  config:
+    devices:
+      - ip: 192.168.255.11
+        username: this-is-just-a-placeholder
+        password: this-is-just-a-placeholder
+      - ip: 192.168.255.12
+        username: this-is-just-a-placeholder
+        password: this-is-just-a-placeholder
+  image:
+    repository: ghcr.io/cdot65/panos-exporter
+    tag: latest
+    pullPolicy: Always
+
+prometheus:
+  config:
+    global:
+      scrape_interval: 15s
+      scrape_timeout: 10s
+      evaluation_interval: 1m
+    scrape_configs:
+      - job_name: "panos_exporter"
+        metrics_path: /panos
+        static_configs:
+          - targets:
+              - 192.168.255.11
+              - 192.168.255.12
+        relabel_configs:
+          - source_labels: ["__address__"]
+            target_label: "__param_target"
+          - source_labels: ["__param_target"]
+            target_label: "instance"
+          - target_label: "__address__"
+            replacement: "panos-exporter.pan-os-telemetry.svc.cluster.local:9654"
+  image:
+    repository: ghcr.io/cdot65/panos-prometheus
+    tag: latest
+    pullPolicy: Always
+
+grafana:
+  adminPassword: this-is-just-a-placeholder
+  image:
+    repository: ghcr.io/cdot65/panos-grafana
+    tag: latest
+    pullPolicy: Always
+  service:
+    type: LoadBalancer # Change to NodePort if you prefer
+    port: 3000 # Default Grafana port
+    nodePort: 30088 # Only needed if service.type is NodePort
+
+ingress:
+  enabled: false
+  annotations: {}
+  hosts:
+    - host: my-grafana.example.com
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls: []
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 80
+  targetMemoryUtilizationPercentage: 80

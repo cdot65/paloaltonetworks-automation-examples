@@ -1,0 +1,49 @@
+---
+- name: Retrieve and format PAN-OS firewall log data
+  hosts: firewalls
+  gather_facts: no
+  connection: local
+
+  vars:
+    amount_of_logs_to_return: 5
+    api_key: "you-super-secret-api-key-goes-here"
+    ansible_python_interpreter: "{{ ansible_playbook_python }}"
+
+  tasks:
+    - name: Initial API request
+      ansible.builtin.uri:
+        url: "https://{{ inventory_hostname }}/api/?key={{ api_key }}&type=log&log-type=traffic&query=(%20subtype%20eq%20%27drop%27%20)&nlogs={{ amount_of_logs_to_return }}"
+        method: GET
+        return_content: yes
+        validate_certs: False
+      register: initial_response
+
+    - name: Extract job ID
+      ansible.builtin.set_fact:
+        job_id: "{{ initial_response.content | regex_search('<job>(.*?)</job>', '\\1') | first }}"
+
+    - name: Wait for 2 seconds
+      ansible.builtin.pause:
+        seconds: 2
+
+    - name: Retrieve log data
+      ansible.builtin.uri:
+        url: "https://{{ ansible_host }}/api/?key={{ api_key }}&type=log&action=get&job-id={{ job_id }}"
+        method: GET
+        return_content: yes
+        validate_certs: False
+      register: log_response
+
+    - name: Parse XML and convert to YAML
+      ansible.builtin.set_fact:
+        parsed_xml: "{{ log_response.content | ansible.utils.from_xml }}"
+
+    - name: Extract log entries
+      ansible.builtin.set_fact:
+        log_data: "{{ parsed_xml.response.result.log.logs.entry }}"
+
+    - name: Display log data in YAML format
+      ansible.builtin.debug:
+        var: log_data
+        verbosity: 0
+

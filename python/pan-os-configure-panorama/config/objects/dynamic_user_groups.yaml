@@ -1,0 +1,55 @@
+# config/objects/dynamic_user_groups.yaml
+panos_config:
+  device_groups:
+    Magnolia:
+      objects:
+        dynamic_user_groups:
+          - name: "VPN_Users"
+            description: "Dynamic group for VPN users"
+            filter: "'vpn-user' in tag"
+            tag: [ "remote-access" ]
+
+          - name: "Developers"
+            description: "Dynamic group for development team"
+            filter: "'developer' in tag"
+            tag: [ "engineering" ]
+
+          - name: "Finance_Team"
+            description: "Dynamic group for finance department"
+            filter: "'finance' in tag"
+            tag: [ "sensitive-data" ]
+
+          - name: "HR_Staff"
+            description: "Dynamic group for HR personnel"
+            filter: "'hr' in tag"
+            tag: [ "confidential" ]
+
+          - name: "IT_Admins"
+            description: "Dynamic group for IT administrators"
+            filter: "'it-admin' in tag"
+            tag: [ "privileged-access" ]
+
+          - name: "Contractors"
+            description: "Dynamic group for external contractors"
+            filter: "'contractor' in tag"
+            tag: [ "temporary" ]
+
+          - name: "Executive_Team"
+            description: "Dynamic group for company executives"
+            filter: "'executive' in tag"
+            tag: [ "leadership" ]
+
+          - name: "Customer_Support"
+            description: "Dynamic group for customer support team"
+            filter: "'support' in tag"
+            tag: [ "customer-facing" ]
+
+          - name: "Marketing_Team"
+            description: "Dynamic group for marketing department"
+            filter: "'marketing' in tag"
+            tag: [ "external-comms" ]
+
+          - name: "Research_Scientists"
+            description: "Dynamic group for research team"
+            filter: "'researcher' in tag"
+            tag: [ "intellectual-property" ]

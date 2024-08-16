@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: panos-exporter
+  namespace: pan-os-telemetry
+  labels:
+    app: panos-exporter
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: panos-exporter
+  template:
+    metadata:
+      labels:
+        app: panos-exporter
+    spec:
+      containers:
+        - name: panos-exporter
+          image: "{{ .Values.panosExporter.image.repository }}:{{ .Values.panosExporter.image.tag }}"
+          imagePullPolicy: {{ .Values.panosExporter.image.pullPolicy }}
+          ports:
+            - containerPort: 9654
+          args:
+            - "--config.file=/etc/prometheus/panos_exporter.yml"
+          volumeMounts:
+            - name: config-volume
+              mountPath: /etc/prometheus/panos_exporter.yml
+              subPath: panos_exporter.yml
+      volumes:
+        - name: config-volume
+          configMap:
+            name: panos-exporter-config

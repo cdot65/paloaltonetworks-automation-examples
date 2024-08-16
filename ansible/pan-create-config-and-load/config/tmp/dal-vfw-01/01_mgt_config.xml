@@ -1,0 +1,25 @@
+<config version="10.2.0" urldb="paloaltonetworks" detail-version="10.2.2">
+    <mgt-config>
+        <users>
+            <entry name="admin">
+                <phash>this-is-just-a-placeholder</phash>
+                <permissions>
+                    <role-based>
+                        <superuser>yes</superuser>
+                    </role-based>
+                </permissions>
+            </entry>
+            <entry name="automation">
+                <phash>this-is-just-a-placeholder</phash>
+                <permissions>
+                    <role-based>
+                        <superuser>yes</superuser>
+                    </role-based>
+                </permissions>
+            </entry>
+        </users>
+        <password-complexity>
+            <enabled>yes</enabled>
+            <minimum-length>8</minimum-length>
+        </password-complexity>
+    </mgt-config>

@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-dashboard
+  namespace: pan-os-telemetry
+  labels:
+    app: grafana
+data:
+  dashboard.json: |-
+{{ .Files.Get "grafana/dashboards/dashboard.json" | indent 4 }}

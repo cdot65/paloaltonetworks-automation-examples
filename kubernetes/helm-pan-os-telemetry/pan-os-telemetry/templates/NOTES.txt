@@ -1,0 +1,41 @@
+1. Access the Grafana UI:
+{{- if .Values.ingress.enabled }}
+{{- range $host := .Values.ingress.hosts }}
+  {{- range .paths }}
+  http{{ if $.Values.ingress.tls }}s{{ end }}://{{ $host.host }}{{ .path }}
+  {{- end }}
+{{- end }}
+{{- else if eq .Values.grafana.service.type "NodePort" }}
+  export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services grafana)
+  export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
+  echo "Grafana URL: http://$NODE_IP:$NODE_PORT"
+{{- else if eq .Values.grafana.service.type "LoadBalancer" }}
+  NOTE: It may take a few minutes for the LoadBalancer IP to be available.
+        You can watch the status by running 'kubectl get --namespace {{ .Release.Namespace }} svc -w grafana'
+  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} grafana --template "{{"{{ range (index .status.loadBalancer.ingress 0) }}{{.}}{{ end }}"}}")
+  echo "Grafana URL: http://$SERVICE_IP:{{ .Values.grafana.service.port }}"
+{{- else if eq .Values.grafana.service.type "ClusterIP" }}
+  echo "Grafana URL: http://grafana.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.grafana.service.port }}"
+  echo "To access Grafana, run the following command:"
+  echo "kubectl port-forward svc/grafana {{ .Values.grafana.service.port }}:{{ .Values.grafana.service.port }} --namespace {{ .Release.Namespace }}"
+{{- end }}
+
+2. Prometheus and Panos Exporter:
+   Prometheus and Panos Exporter are not exposed externally by default.
+   You can access them within the cluster using the following commands:
+
+   Prometheus:
+   kubectl port-forward svc/prometheus 9090:9090 --namespace {{ .Release.Namespace }}
+
+   Panos Exporter:
+   kubectl port-forward svc/panos-exporter 9654:9654 --namespace {{ .Release.Namespace }}
+
+3. Default Grafana Credentials:
+   Username: admin
+   Password: {{ .Values.grafana.adminPassword }}
+
+4. Grafana Dashboard:
+   The provided Grafana dashboard is automatically provisioned during the installation.
+   You can access it by navigating to the Dashboards section in the Grafana UI.
+
+For more information and customization options, please refer to the chart's README and values.yaml file.

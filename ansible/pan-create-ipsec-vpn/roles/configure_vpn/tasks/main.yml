@@ -1,0 +1,41 @@
+- name: Create IKE crypto profiles
+  panos_ike_crypto_profile:
+    provider: "{{ provider }}"
+    name: "{{ item.name }}"
+    dh_group: "{{ item.dh_group }}"
+    authentication: "{{ item.authentication }}"
+    encryption: "{{ item.encryption }}"
+    lifetime_seconds: "{{ item.lifetime }}"
+  loop: "{{ crypto_profiles }}"
+
+- name: Create IKE gateway config to the firewall
+  panos_ike_gateway:
+    provider: "{{ provider }}"
+    name: "{{ item.name }}"
+    version: "{{ item.version }}"
+    interface: "{{ item.interface }}"
+    enable_passive_mode: "{{ item.enable_passive_mode }}"
+    enable_liveness_check: "{{ item.enable_liveness_check }}"
+    liveness_check_interval: "{{ item.liveness_check_interval }}"
+    peer_ip_value: "{{ item.peer_ip_value }}"
+    pre_shared_key: "{{ item.pre_shared_key }}"
+    ikev2_crypto_profile: "{{ item.ike_profile }}"
+  loop: "{{ ike_gateways }}"
+
+- name: Create IPSec crypto config to the firewall
+  panos_ipsec_profile:
+    provider: "{{ provider }}"
+    name: "{{ item.name }}"
+    esp_authentication: "{{ item.authentication }}"
+    esp_encryption: "{{ item.encryption }}"
+    lifetime_seconds: "{{ item.lifetime }}"
+  loop: "{{ ipsec_profiles }}"
+
+- name: Create IPSec tunnel to IKE gateway profile
+  panos_ipsec_tunnel:
+    provider: "{{ provider }}"
+    name: "{{ item.name }}"
+    tunnel_interface: "{{ item.tunnel }}"
+    ak_ike_gateway: "{{ item.gateway }}"
+    ak_ipsec_crypto_profile: "{{ item.profile }}"
+  loop: "{{ ipsec_tunnels }}"

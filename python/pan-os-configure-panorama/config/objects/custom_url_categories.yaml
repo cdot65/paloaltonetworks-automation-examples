@@ -1,0 +1,163 @@
+# config/objects/custom_url_categories.yaml
+panos_config:
+  device_groups:
+    Magnolia:
+      objects:
+        custom_url_categories:
+          - name: "Internal_Apps"
+            url_value:
+              - "*.internal-app.com"
+              - "*.company-portal.net"
+            description: "Internal application URLs"
+            type: "URL List"
+
+          - name: "HR_Portals"
+            url_value:
+              - "*.hr-system.com"
+              - "*.payroll.net"
+            description: "HR and payroll system URLs"
+            type: "URL List"
+
+          - name: "Finance_Sites"
+            url_value:
+              - "*.accounting-tool.com"
+              - "*.expense-report.net"
+            description: "Finance and accounting URLs"
+            type: "URL List"
+
+          - name: "Development_Tools"
+            url_value:
+              - "*.github.com"
+              - "*.gitlab.com"
+              - "*.bitbucket.org"
+            description: "Development and version control URLs"
+            type: "URL List"
+
+          - name: "Collaboration_Tools"
+            url_value:
+              - "*.slack.com"
+              - "*.teams.microsoft.com"
+              - "*.zoom.us"
+            description: "Collaboration and communication tools"
+            type: "URL List"
+
+          - name: "Cloud_Services"
+            url_value:
+              - "*.amazonaws.com"
+              - "*.azure.com"
+              - "*.googlecloud.com"
+            description: "Cloud service provider URLs"
+            type: "URL List"
+
+          - name: "Marketing_Tools"
+            url_value:
+              - "*.salesforce.com"
+              - "*.hubspot.com"
+              - "*.mailchimp.com"
+            description: "Marketing and CRM tool URLs"
+            type: "URL List"
+
+          - name: "Analytics_Platforms"
+            url_value:
+              - "*.google-analytics.com"
+              - "*.mixpanel.com"
+              - "*.amplitude.com"
+            description: "Web and mobile analytics platforms"
+            type: "URL List"
+
+          - name: "Social_Media"
+            url_value:
+              - "*.facebook.com"
+              - "*.twitter.com"
+              - "*.linkedin.com"
+            description: "Social media platform URLs"
+            type: "URL List"
+
+          - name: "News_Sites"
+            url_value:
+              - "*.cnn.com"
+              - "*.bbc.com"
+              - "*.reuters.com"
+            description: "News website URLs"
+            type: "URL List"
+
+          - name: "E-learning_Platforms"
+            url_value:
+              - "*.coursera.org"
+              - "*.udemy.com"
+              - "*.edx.org"
+            description: "Online learning platform URLs"
+            type: "URL List"
+
+          - name: "Job_Boards"
+            url_value:
+              - "*.indeed.com"
+              - "*.linkedin.com/jobs"
+              - "*.glassdoor.com"
+            description: "Job search and career websites"
+            type: "URL List"
+
+          - name: "Tech_Blogs"
+            url_value:
+              - "*.techcrunch.com"
+              - "*.arstechnica.com"
+              - "*.theverge.com"
+            description: "Technology news and blog URLs"
+            type: "URL List"
+
+          - name: "File_Sharing"
+            url_value:
+              - "*.dropbox.com"
+              - "*.box.com"
+              - "*.wetransfer.com"
+            description: "File sharing and storage URLs"
+            type: "URL List"
+
+          - name: "Productivity_Apps"
+            url_value:
+              - "*.trello.com"
+              - "*.asana.com"
+              - "*.notion.so"
+            description: "Productivity and project management tools"
+            type: "URL List"
+
+          - name: "Design_Tools"
+            url_value:
+              - "*.figma.com"
+              - "*.sketch.com"
+              - "*.adobe.com"
+            description: "Design and creative tool URLs"
+            type: "URL List"
+
+          - name: "Documentation_Sites"
+            url_value:
+              - "*.readthedocs.io"
+              - "*.gitbook.com"
+              - "*.confluence.atlassian.com"
+            description: "Documentation and wiki URLs"
+            type: "URL List"
+
+          - name: "Customer_Support"
+            url_value:
+              - "*.zendesk.com"
+              - "*.intercom.com"
+              - "*.freshdesk.com"
+            description: "Customer support and helpdesk URLs"
+            type: "URL List"
+
+          - name: "Travel_Booking"
+            url_value:
+              - "*.expedia.com"
+              - "*.booking.com"
+              - "*.airbnb.com"
+            description: "Travel and accommodation booking sites"
+            type: "URL List"
+
+          - name: "Health_Wellness"
+            url_value:
+              - "*.fitbit.com"
+              - "*.myfitnesspal.com"
+              - "*.strava.com"
+            description: "Health and fitness tracking URLs"
+            type: "URL List"
+

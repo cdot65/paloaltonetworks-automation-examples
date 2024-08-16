@@ -1,0 +1,9 @@
+# containers/panos_exporter/device.yaml
+
+devices:
+  192.168.255.11:
+    username: this-is-just-a-placeholder
+    password: this-is-just-a-placeholder
+  192.168.255.12:
+    username: this-is-just-a-placeholder
+    password: this-is-just-a-placeholder

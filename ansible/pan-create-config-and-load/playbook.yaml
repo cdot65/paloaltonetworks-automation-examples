@@ -1,0 +1,33 @@
+---
+#------------------------------------------------------------------------
+# Build a full XML configuration with Jinja2, push to firewall, and load.
+#------------------------------------------------------------------------
+- hosts: all
+  connection: local
+  any_errors_fatal: "{{ any_errors_fatal | default(true) }}"
+  gather_facts: False
+  tasks:
+    # create local directories to hold configuration files.
+    - ansible.builtin.import_role:
+        name: directories
+
+    # use Jinja2 to template out a firewall configuration, piece by piece.
+    - ansible.builtin.import_role:
+        name: build_config
+
+    # assemble a full configuration from the parts created in previous step.
+    - ansible.builtin.import_role:
+        name: assemble
+
+    # upload our full configuration to the firewall through the REST API.
+    - name: Upload our generated configuration file
+      ansible.builtin.shell: |
+        curl 'https://{{ ansible_host }}/api/?type=import&category=configuration' \
+        --header 'X-PAN-KEY: {{ api_token }}' \
+        --form 'file=@"{{ completed_config_file }}"' -k
+
+    # load our generated configuration into the candidate configuration.
+    - name: Load our generated configuration into the candidate configuration
+      ansible.builtin.shell: |
+        curl 'https://{{ ansible_host }}/api/?type=op&cmd=<load><config><from>{{ ansible_host }}_ansible.xml</from></config></load>' \
+        --header 'X-PAN-KEY: {{ api_token }}' -k

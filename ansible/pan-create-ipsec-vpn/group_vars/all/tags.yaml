@@ -1,0 +1,16 @@
+tags:
+  - name: "VPN"
+    color: "red"
+    comments: "All VPN objects"
+
+  - name: "DMZ"
+    color: "orange"
+    comments: "All DMZ objects"
+
+  - name: "WAN"
+    color: "purple"
+    comments: "All WAN objects"
+
+  - name: "LAN"
+    color: "green"
+    comments: "All LAN objects"
