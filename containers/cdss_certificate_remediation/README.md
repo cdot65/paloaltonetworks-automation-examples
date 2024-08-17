@@ -94,7 +94,7 @@ POSTGRES_PASSWORD=EuN3KVIGbHkPqvOPMrNuq38MCF953dfzqyFQ1QMCJANyxVZqcVOQndkZImFppe
 
 ### Production Deployment
 
-For production deployment, you'll need to create a `production` directory in the `.envs` folder and add the following files:
+For production deployment, you'll need to create a `.production` directory in the `.envs` folder and add the following files:
 
 #### .envs/.production/.django
 ```
