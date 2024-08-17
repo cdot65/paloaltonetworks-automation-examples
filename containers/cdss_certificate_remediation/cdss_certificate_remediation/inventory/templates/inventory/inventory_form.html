@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="container content-space-1">
+  <div class="w-lg-65 text-center mx-lg-auto mb-7">
+    <h3>{% if form.instance.pk %}Edit{% else %}Create{% endif %} Inventory Item</h3>
+  </div>
+
+  <div class="row justify-content-lg-center">
+    <div class="col-lg-8">
+      <div class="card card-lg card-bordered shadow-none">
+        <div class="card-body">
+          <form method="post">
+            {% csrf_token %}
+            <div class="d-grid gap-4">
+              <div class="row">
+                <div class="col-sm-6 mb-4 mb-sm-0">
+                  <label class="form-label">Device Type</label>
+                  {{ form.device_type }}
+                </div>
+                <div class="col-sm-6">
+                  <label class="form-label">Hostname</label>
+                  {{ form.hostname }}
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-sm-6 mb-4 mb-sm-0">
+                  <label class="form-label">Username</label>
+                  {{ form.username }}
+                </div>
+                <div class="col-sm-6">
+                  <label class="form-label">Password</label>
+                  {{ form.password }}
+                </div>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label">Connection Hostname</label>
+                {{ form.connection_hostname }}
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Connection IPv4</label>
+                {{ form.connection_ipv4 }}
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Connection IPv6</label>
+                {{ form.connection_ipv6 }}
+              </div>
+
+              <div class="d-grid">
+                <button type="submit" class="btn btn-primary">Submit</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

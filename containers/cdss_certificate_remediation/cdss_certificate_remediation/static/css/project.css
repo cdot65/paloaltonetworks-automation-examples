@@ -11,3 +11,32 @@
   background-color: #f2dede;
   border-color: #eed3d7;
 }
+
+/* custom.css */
+.content-space-1 {
+    padding-top: 3rem;
+    padding-bottom: 3rem;
+}
+
+.card-lg {
+    border-radius: 0.5rem;
+}
+
+.card-bordered {
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.form-label {
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+}
+
+.btn-primary {
+    background-color: #55A178;
+    border-color: #55A178;
+}
+
+.btn-primary:hover {
+    background-color: #458c66;
+    border-color: #458c66;
+}

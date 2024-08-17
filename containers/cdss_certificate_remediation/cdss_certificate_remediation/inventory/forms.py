@@ -26,7 +26,9 @@ class InventoryForm(forms.ModelForm):
             "username": forms.TextInput(
                 attrs={"class": "form-control", "placeholder": "Enter Device Username"}
             ),
-            "password": forms.PasswordInput(attrs={"class": "form-control"}),
+            "password": forms.PasswordInput(
+                attrs={"class": "form-control", "placeholder": "Enter password"}
+            ),
             "connection_hostname": forms.TextInput(
                 attrs={
                     "class": "form-control",
@@ -46,3 +48,8 @@ class InventoryForm(forms.ModelForm):
                 }
             ),
         }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields:
+            self.fields[field].label = False

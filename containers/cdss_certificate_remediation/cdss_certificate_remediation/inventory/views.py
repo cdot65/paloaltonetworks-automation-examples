@@ -1,4 +1,4 @@
-# inventory/views.py
+# cdss_certificate_remediation/inventory/views.py
 from django.views.generic import (
     ListView,
     DetailView,
@@ -17,7 +17,6 @@ class InventoryListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        # Add connection addresses to each inventory item
         for item in context["object_list"]:
             item.connection_address = item.get_connection_address()
         return context
