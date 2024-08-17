@@ -218,3 +218,4 @@ go.sum
 /python/threatvault-hash-lookup/.secrets.yaml
 /python/pan-os-configure-panorama/.secrets.yaml
 /go/pan-os-request-wildfire-registration/.secrets.yaml
+python/pan-os-cdss-certificate-remediation/django/staticfiles
