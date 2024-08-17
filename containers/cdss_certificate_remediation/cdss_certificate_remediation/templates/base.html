@@ -53,78 +53,29 @@
 
   {% endblock javascript %}
 </head>
-<body class="{% block bodyclass %}{% endblock bodyclass %}">
+<body class="d-flex flex-column min-vh-100">
 {% block body %}
-<div class="mb-1">
-  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <div class="container-fluid">
-      <button class="navbar-toggler navbar-toggler-right"
-              type="button"
-              data-bs-toggle="collapse"
-              data-bs-target="#navbarSupportedContent"
-              aria-controls="navbarSupportedContent"
-              aria-expanded="false"
-              aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <a class="navbar-brand" href="{% url 'home' %}">CDSS Certificate Remediation</a>
-      <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav mr-auto">
-          <li class="nav-item active">
-            <a class="nav-link" href="{% url 'home' %}">Home <span class="visually-hidden">(current)</span></a>
-          </li>
-          {% if request.user.is_authenticated %}
-          <li class="nav-item">
-            <a class="nav-link"
-               href="{% url 'inventory:list' %}">{% translate "Inventory" %}</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link"
-               href="{% url 'users:detail' request.user.username %}">{% translate "My Profile" %}</a>
-          </li>
-          <li class="nav-item">
-            {# URL provided by django-allauth/account/urls.py #}
-            <a class="nav-link" href="{% url 'account_logout' %}">{% translate "Sign Out" %}</a>
-          </li>
-          {% else %}
-          {% if ACCOUNT_ALLOW_REGISTRATION %}
-          <li class="nav-item">
-            {# URL provided by django-allauth/account/urls.py #}
-            <a id="sign-up-link" class="nav-link" href="{% url 'account_signup' %}">{% translate "Sign Up" %}</a>
-          </li>
-          {% endif %}
-          <li class="nav-item">
-            {# URL provided by django-allauth/account/urls.py #}
-            <a id="log-in-link" class="nav-link" href="{% url 'account_login' %}">{% translate "Sign In" %}</a>
-          </li>
-          {% endif %}
-        </ul>
-      </div>
-    </div>
-  </nav>
+<div class="navbar-wrapper">
+  {% include 'components/navbar.html' %}
 </div>
-<div class="container mt-4">
+<div class="container mt-4 flex-grow-1">
   {% if messages %}
   {% for message in messages %}
   <div class="alert alert-dismissible {% if message.tags %}alert-{{ message.tags }}{% endif %}">
     {{ message }}
-    <button type="button"
-            class="btn-close"
-            data-bs-dismiss="alert"
-            aria-label="Close"></button>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
   </div>
   {% endfor %}
   {% endif %}
-  {% block main %}
   {% block content %}
   <p>Use this document as a way to quick start any new project.</p>
   {% endblock content %}
-  {% endblock main %}
-
 </div>
-{% include 'components/footer.html' %}
-
+<div class="footer-wrapper">
+  {% include 'components/footer.html' %}
+</div>
 {% endblock body %}
+
 <!-- /container -->
 {% block modal %}
 {% endblock modal %}
