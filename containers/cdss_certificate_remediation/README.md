@@ -7,75 +7,134 @@ PAN-OS CDSS Certificate Remediation
 
 License: MIT
 
-## Settings
+## Getting Started
 
-Moved to [settings](http://cookiecutter-django.readthedocs.io/en/latest/settings.html).
+### Installing Docker
 
-## Basic Commands
+Before you begin, you'll need to install Docker on your system. Docker allows you to run applications in containers, making it easy to set up and run our project.
 
-### Setting Up Your Users
+#### For Windows:
+1. Download Docker Desktop for Windows from the [official Docker website](https://www.docker.com/products/docker-desktop).
+2. Follow the installation instructions provided.
+3. Once installed, start Docker Desktop.
 
-- To create a **normal user account**, just go to Sign Up and fill out the form. Once you submit it, you'll see a "Verify Your E-mail Address" page. Go to your console to see a simulated email verification message. Copy the link into your browser. Now the user's email should be verified and ready to go.
+#### For macOS:
+1. Download Docker Desktop for Mac from the [official Docker website](https://www.docker.com/products/docker-desktop).
+2. Follow the installation instructions provided.
+3. Once installed, start Docker Desktop.
 
-- To create a **superuser account**, use this command:
+### Docker Compose
 
-      $ python manage.py createsuperuser
+This project uses Docker Compose to define and run multi-container Docker applications. We have two Docker Compose files:
 
-For convenience, you can keep your normal user logged in on Chrome and your superuser logged in on Firefox (or similar), so that you can see how the site behaves for both kinds of users.
+- `docker-compose.local.yml`: For local development
+- `docker-compose.production.yml`: For production deployment
 
-### Type checks
+## Setting Up the Project
 
-Running type checks with mypy:
+Follow these steps to set up and run the project locally:
 
-    $ mypy cdss_certificate_remediation
+1. Build the Docker images:
+    ```
+    docker compose -f docker-compose.local.yml build
+    ```
+    This command builds the Docker images defined in the docker-compose file.
 
-### Test coverage
+2. Start the Docker containers:
+    ```
+    docker compose -f docker-compose.local.yml up -d
+    ```
+    This command starts the Docker containers in detached mode.
 
-To run the tests, check your test coverage, and generate an HTML coverage report:
+3. Run database migrations:
+    ```
+    docker compose -f docker-compose.local.yml run --rm django python manage.py migrate
+    ```
+    This command applies any pending database migrations.
 
-    $ coverage run -m pytest
-    $ coverage html
-    $ open htmlcov/index.html
+4. Create a superuser:
+    ```
+    docker compose -f docker-compose.local.yml run --rm django python manage.py createsuperuser
+    ```
+    This command creates an admin user for the Django admin interface.
 
-#### Running tests with pytest
+5. Collect static files:
+    ```
+    docker compose -f docker-compose.local.yml run --rm django python manage.py collectstatic
+    ```
+    This command collects all static files into a single directory for serving.
 
-    $ pytest
+After completing these steps, you can access the application by navigating to `localhost:8000` in your web browser.
 
-### Live reloading and Sass CSS compilation
+## Environment Variables
 
-Moved to [Live reloading and SASS compilation](https://cookiecutter-django.readthedocs.io/en/latest/developing-locally.html#sass-compilation-live-reloading).
+The Django application uses environment variables for configuration. These are stored in `.env` files in the `.envs` directory.
 
-### Celery
+### Local Development
 
-This app comes with Celery.
+For local development, the following environment files are used; adjust as you see fit:
 
-To run a celery worker:
-
-```bash
-cd cdss_certificate_remediation
-celery -A config.celery_app worker -l info
+#### .envs/.local/.django
+```
+USE_DOCKER=yes
+IPYTHONDIR=/app/.ipython
+REDIS_URL=redis://redis:6379/0
+CELERY_FLOWER_USER=TVESqMVdiKYaZMkjyeUbbyaXunAugvNU
+CELERY_FLOWER_PASSWORD=Q87yx6dLEHofc00ObVWg7TCW1godKiODxMMN7UkygLTjW4UdCBKv00YSW6TjwZnR
 ```
 
-Please note: For Celery's import magic to work, it is important _where_ the celery commands are run. If you are in the same folder with _manage.py_, you should be right.
-
-To run [periodic tasks](https://docs.celeryq.dev/en/stable/userguide/periodic-tasks.html), you'll need to start the celery beat scheduler service. You can start it as a standalone process:
-
-```bash
-cd cdss_certificate_remediation
-celery -A config.celery_app beat
+#### .envs/.local/.postgres
+```
+POSTGRES_HOST=postgres
+POSTGRES_PORT=5432
+POSTGRES_DB=cdss_certificate_remediation
+POSTGRES_USER=mUCXwAwCFRJsQOMuHxeenmfkVsTEvgyd
+POSTGRES_PASSWORD=EuN3KVIGbHkPqvOPMrNuq38MCF953dfzqyFQ1QMCJANyxVZqcVOQndkZImFppeMe
 ```
 
-or you can embed the beat service inside a worker with the `-B` option (not recommended for production use):
+### Production Deployment
 
-```bash
-cd cdss_certificate_remediation
-celery -A config.celery_app worker -B -l info
+For production deployment, you'll need to create a `production` directory in the `.envs` folder and add the following files:
+
+#### .envs/.production/.django
 ```
+DJANGO_SETTINGS_MODULE=config.settings.production
+DJANGO_SECRET_KEY=i1iK8JTMv9dRa6WLtWLCLFed51MDQ2sBw57JVxLISznj3LHPjQixo0hiwyzBXmfm
+DJANGO_ADMIN_URL=an2jcn9QmCyUSEuN3IQJlHWPO6tw0j4c/
+DJANGO_ALLOWED_HOSTS=localhost,127.0.0.1,*
+DJANGO_SECURE_SSL_REDIRECT=False
+DJANGO_ACCOUNT_ALLOW_REGISTRATION=True
+WEB_CONCURRENCY=4
+REDIS_URL=redis://redis:6379/0
+CELERY_FLOWER_USER=TVESqMVdiKYaZMkjyeUbbyaXunAugvNU
+CELERY_FLOWER_PASSWORD=DclJlnny6Gzf5pb78H85ruozvwuFIcsKrGWnlsfMMaPzIZzogaBDKYYiXMp61MHk
+```
+
+#### .envs/.production/.postgres
+```
+POSTGRES_HOST=postgres
+POSTGRES_PORT=5432
+POSTGRES_DB=cdss_certificate_remediation
+POSTGRES_USER=mUCXwAwCFRJsQOMuHxeenmfkVsTEvgyd
+POSTGRES_PASSWORD=MMzND0CvDiSQRoSUpZQhi8YHGcbEi8B5jYRz0aDZlQhnxX5bI2mlGYZibqCi1OQU
+```
+
+### Traefik Configuration for Production
+
+For production deployment with a valid domain name, you'll need to update the Traefik configuration file located at `compose/production/traefik/traefik.yml`. Replace all instances of `example.com` with your actual domain name. This is necessary for registering a new TLS certificate through acme.sh.
+
+Key areas to update in the Traefik configuration:
+
+1. The email address for Let's Encrypt notifications
+2. The `Host` rules for the web-secure-router and flower-secure-router
+3. The `Host` rule for the web-media-router
+
+After making these changes, you can use the `docker-compose.production.yml` file to deploy your application in a production environment with TLS encryption.
 
 ## Deployment
 
-The following details how to deploy this application.
+For detailed information on deploying this application, please refer to the [cookiecutter-django Docker documentation](http://cookiecutter-django.readthedocs.io/en/latest/deployment-with-docker.html).
 
-### Docker
+## Additional Information
 
-See detailed [cookiecutter-django Docker documentation](http://cookiecutter-django.readthedocs.io/en/latest/deployment-with-docker.html).
+For more detailed information about the project settings and structure, please refer to the [cookiecutter-django documentation](http://cookiecutter-django.readthedocs.io/en/latest/settings.html).
