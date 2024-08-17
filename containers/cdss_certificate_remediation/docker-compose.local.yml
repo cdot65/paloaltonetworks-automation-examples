@@ -1,7 +1,10 @@
 volumes:
-  cdss_certificate_remediation_local_postgres_data: {}
-  cdss_certificate_remediation_local_postgres_data_backups: {}
-  cdss_certificate_remediation_local_redis_data: {}
+  postgres_data:
+    name: cdss_certificate_remediation_postgres_data
+  postgres_data_backups:
+    name: cdss_certificate_remediation_postgres_backups
+  redis_data:
+    name: cdss_certificate_remediation_redis_data
 
 services:
   django: &django
@@ -29,18 +32,16 @@ services:
     image: cdss_certificate_remediation_production_postgres
     container_name: cdss_certificate_remediation_local_postgres
     volumes:
-      - cdss_certificate_remediation_local_postgres_data:/var/lib/postgresql/data
-      - cdss_certificate_remediation_local_postgres_data_backups:/backups
+      - postgres_data:/var/lib/postgresql/data
+      - postgres_data_backups:/backups
     env_file:
       - ./.envs/.local/.postgres
 
   redis:
     image: docker.io/redis:6
     container_name: cdss_certificate_remediation_local_redis
-    
     volumes:
-      - cdss_certificate_remediation_local_redis_data:/data
-    
+      - redis_data:/data
 
   celeryworker:
     <<: *django
