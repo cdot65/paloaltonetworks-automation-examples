@@ -1,5 +1,70 @@
-/* These styles are generated from project.scss. */
+/* custom.css */
 
+/* Layout styles */
+.navbar-wrapper, .footer-wrapper {
+  width: 100%;
+}
+
+/* Navbar styles */
+.navbar {
+  padding: 1rem 0;
+}
+
+.navbar-brand-logo {
+  max-height: 40px;
+}
+
+/* Dropdown styles */
+.dropdown-menu {
+  border-radius: 0.5rem;
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+
+.dropdown-item:hover, .dropdown-item:focus {
+  background-color: #f8f9fa;
+}
+
+/* Active link style */
+.nav-link.active {
+  font-weight: bold;
+}
+
+/* Footer styles */
+footer {
+  background-color: #f8f9fa;
+}
+
+/* Content styles */
+.content-space-1 {
+  padding-top: 3rem;
+  padding-bottom: 3rem;
+}
+
+.card-lg {
+  border-radius: 0.5rem;
+}
+
+.card-bordered {
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.form-label {
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+
+/* Button styles */
+.btn-primary {
+  background-color: #55A178;
+  border-color: #55A178;
+}
+
+.btn-primary:hover {
+  background-color: #458c66;
+  border-color: #458c66;
+}
+
+/* Alert styles */
 .alert-debug {
   color: black;
   background-color: white;
@@ -12,31 +77,9 @@
   border-color: #eed3d7;
 }
 
-/* custom.css */
-.content-space-1 {
-    padding-top: 3rem;
-    padding-bottom: 3rem;
-}
-
-.card-lg {
-    border-radius: 0.5rem;
-}
-
-.card-bordered {
-    border: 1px solid rgba(0, 0, 0, 0.1);
-}
-
-.form-label {
-    font-weight: 500;
-    margin-bottom: 0.5rem;
-}
-
-.btn-primary {
-    background-color: #55A178;
-    border-color: #55A178;
-}
-
-.btn-primary:hover {
-    background-color: #458c66;
-    border-color: #458c66;
+/* Responsive adjustments */
+@media (max-width: 991.98px) {
+  .navbar-nav {
+    padding-top: 1rem;
+  }
 }
