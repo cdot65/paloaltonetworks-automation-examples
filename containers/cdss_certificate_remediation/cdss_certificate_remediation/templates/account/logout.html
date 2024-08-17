@@ -16,9 +16,9 @@
             {% if redirect_field_value %}
             <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}"/>
             {% endif %}
-            <div class="d-grid gap-2">
-              <button class="btn btn-primary" type="submit">{% trans 'Sign Out' %}</button>
+            <div class="button-group">
               <a href="{% url 'home' %}" class="btn btn-outline-secondary">{% trans 'Cancel' %}</a>
+              <button class="btn btn-primary" type="submit">{% trans 'Sign Out' %}</button>
             </div>
           </form>
         </div>

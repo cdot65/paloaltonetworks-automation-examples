@@ -23,7 +23,7 @@
               <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
               {% endif %}
 
-              <div class="d-flex justify-content-between align-items-center">
+              <div class="button-group">
                 <a class="text-primary" href="{% url 'account_reset_password' %}">{% trans "Forgot Password?" %}</a>
                 <button class="btn btn-primary" type="submit">{% trans "Sign In" %}</button>
               </div>
