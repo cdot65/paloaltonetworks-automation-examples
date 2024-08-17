@@ -2,14 +2,14 @@
 {% block content %}
 <h1>Inventory List</h1>
 <a href="{% url 'inventory:create' %}" class="btn btn-primary mb-3">Add New Device</a>
-<table class="table">
-    <thead>
+<table class="table table-borderless table-thead-bordered">
+    <thead class="thead-light">
         <tr>
-            <th>Device Type</th>
-            <th>Hostname</th>
-            <th>Connection Address</th>
-            <th>Username</th>
-            <th>Actions</th>
+            <th scope="col">Device Type</th>
+            <th scope="col">Hostname</th>
+            <th scope="col">Connection Address</th>
+            <th scope="col">Username</th>
+            <th scope="col">Actions</th>
         </tr>
     </thead>
     <tbody>
