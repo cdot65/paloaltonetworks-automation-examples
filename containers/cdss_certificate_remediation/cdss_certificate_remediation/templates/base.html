@@ -26,12 +26,12 @@
 <!-- Your stuff: Third-party CSS libraries go here -->
 <!-- This file stores project-specific CSS -->
 
-  
+
   <link href="{% static 'css/project.css' %}" rel="stylesheet" />
 
 
 {% endblock css %}
-<!-- Le javascript
+<!-- Javascript
     ================================================== -->
 {# Placed at the top of the document so pages load faster with defer #}
 {% block javascript %}
@@ -48,7 +48,7 @@
 
 <!-- place project specific Javascript in this file -->
 
-  
+
   <script defer src="{% static 'js/project.js' %}"></script>
 
 
@@ -57,7 +57,7 @@
 <body class="{% block bodyclass %}{% endblock bodyclass %}">
   {% block body %}
   <div class="mb-1">
-    <nav class="navbar navbar-expand-md navbar-light bg-light">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
       <div class="container-fluid">
         <button class="navbar-toggler navbar-toggler-right"
                 type="button"
@@ -74,10 +74,11 @@
             <li class="nav-item active">
               <a class="nav-link" href="{% url 'home' %}">Home <span class="visually-hidden">(current)</span></a>
             </li>
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'about' %}">About</a>
-            </li>
             {% if request.user.is_authenticated %}
+              <li class="nav-item">
+                <a class="nav-link"
+                   href="{% url 'inventory:list' %}">{% translate "Inventory" %}</a>
+              </li>
               <li class="nav-item">
                 <a class="nav-link"
                    href="{% url 'users:detail' request.user.username %}">{% translate "My Profile" %}</a>
@@ -103,7 +104,7 @@
       </div>
     </nav>
   </div>
-  <div class="container">
+  <div class="container mt-4">
     {% if messages %}
       {% for message in messages %}
         <div class="alert alert-dismissible {% if message.tags %}alert-{{ message.tags }}{% endif %}">

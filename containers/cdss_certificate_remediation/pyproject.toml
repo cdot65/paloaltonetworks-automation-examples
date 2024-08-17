@@ -135,3 +135,51 @@ extend-unsafe-fixes = [
 
 [tool.ruff.lint.isort]
 force-single-line = true
+
+[tool.poetry]
+name = "paloaltonetworks-automation-examples"
+version = "0.1.0"
+description = "Home to all of my personal automation examples for Palo Alto Networks products"
+authors = ["Calvin Remsburg <calvin@cdot.io>"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+python-slugify = "8.0.4"
+Pillow = "10.4.0"
+argon2-cffi = "23.1.0"
+whitenoise = "6.7.0"
+redis = "5.0.8"
+hiredis = "3.0.0"
+celery = "5.4.0"
+django-celery-beat = "2.6.0"
+flower = "2.0.1"
+uvicorn = "0.30.6"
+uvicorn-worker = "0.2.0"
+
+# Django
+# ------------------------------------------------------------------------------
+django = "5.0.8"
+django-environ = "0.11.2"
+django-model-utils = "4.5.1"
+django-allauth = "64.1.0"
+django-crispy-forms = "2.3"
+crispy-bootstrap5 = "2024.2"
+django-redis = "5.4.0"
+# Django REST Framework
+djangorestframework = "3.15.2"
+django-cors-headers = "4.4.0"
+# DRF-spectacular for api documentation
+drf-spectacular = "0.27.2"
+
+
+[tool.poetry.group.dev.dependencies]
+flake8 = "^7.0.0"
+black = "^24.4.2"
+ipdb = "^0.13.13"
+ipython = "^8.24.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

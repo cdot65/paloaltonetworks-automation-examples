@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Inventory List</h1>
+<a href="{% url 'inventory:create' %}" class="btn btn-primary mb-3">Add New Device</a>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Device Type</th>
+            <th>Hostname</th>
+            <th>Connection Address</th>
+            <th>Username</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in object_list %}
+        <tr>
+            <td>{{ item.device_type }}</td>
+            <td>{{ item.hostname }}</td>
+            <td>{{ item.connection_address }}</td>
+            <td>{{ item.username }}</td>
+            <td>
+                <a href="{% url 'inventory:detail' item.pk %}" class="btn btn-info btn-sm">View</a>
+                <a href="{% url 'inventory:update' item.pk %}" class="btn btn-warning btn-sm">Edit</a>
+                <a href="{% url 'inventory:delete' item.pk %}" class="btn btn-danger btn-sm">Delete</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

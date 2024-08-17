@@ -86,7 +86,8 @@ THIRD_PARTY_APPS = [
 
 LOCAL_APPS = [
     "cdss_certificate_remediation.users",
-    # Your stuff: custom apps go here
+    "cdss_certificate_remediation.inventory",
+    # more custom apps go here
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
