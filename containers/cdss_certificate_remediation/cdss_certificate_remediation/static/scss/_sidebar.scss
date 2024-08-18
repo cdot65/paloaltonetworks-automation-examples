@@ -1,5 +1,13 @@
 @import 'variables';
 
+// Add these new variables to your _variables.scss file
+$sidebar-nav-item-bg: transparent;
+$sidebar-nav-item-fg: #a0a2a9;
+$sidebar-nav-item-active-bg: #2e3343;
+$sidebar-nav-item-active-fg: #ffffff;
+$sidebar-nav-item-hover-bg: #2e3343;
+$sidebar-nav-item-hover-fg: #ffffff;
+
 .sidebar {
   background-color: $sidebar-bg;
   color: $sidebar-fg;
@@ -24,9 +32,23 @@
     color: $sidebar-icon;
   }
 
-  .active {
-    border-radius: 5px;
-    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
+  .list-group-item {
+    background-color: $sidebar-nav-item-bg;
+    color: $sidebar-nav-item-fg;
+    border: none;
+    transition: background-color 0.3s, color 0.3s;
+
+    &:hover, &:focus {
+      background-color: $sidebar-nav-item-hover-bg;
+      color: $sidebar-nav-item-hover-fg;
+    }
+
+    &.active {
+      background-color: $sidebar-nav-item-active-bg;
+      color: $sidebar-nav-item-active-fg;
+      border-radius: 5px;
+      box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
+    }
   }
 }
 
