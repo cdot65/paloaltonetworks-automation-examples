@@ -1,4 +1,3 @@
-// main.scss
 @import 'variables';
 @import 'sidebar';
 @import 'navbar';
@@ -9,9 +8,19 @@ body {
   overflow-x: hidden;
 }
 
+.content-wrapper {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
 main {
-  @media (min-width: 991.98px) {
-    padding-left: 240px;
+  flex-grow: 1;
+}
+
+@media (min-width: 992px) {
+  main {
+    margin-left: 240px; // Width of the sidebar
   }
 }
 

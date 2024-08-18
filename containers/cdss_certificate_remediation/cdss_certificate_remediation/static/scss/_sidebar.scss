@@ -1,13 +1,5 @@
 @import 'variables';
 
-// Add these new variables to your _variables.scss file
-$sidebar-nav-item-bg: transparent;
-$sidebar-nav-item-fg: #a0a2a9;
-$sidebar-nav-item-active-bg: #2e3343;
-$sidebar-nav-item-active-fg: #ffffff;
-$sidebar-nav-item-hover-bg: #2e3343;
-$sidebar-nav-item-hover-fg: #ffffff;
-
 .sidebar {
   background-color: $sidebar-bg;
   color: $sidebar-fg;
@@ -15,10 +7,9 @@ $sidebar-nav-item-hover-fg: #ffffff;
   top: 0;
   bottom: 0;
   left: 0;
-  padding: 58px 0 0; /* Height of navbar */
-  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.05), 0 2px 10px 0 rgba(0, 0, 0, 0.05);
   width: 240px;
-  z-index: 600;
+  z-index: 1000;
+  transition: all 0.3s;
 
   .sidebar-title {
     color: $sidebar-title;
@@ -53,9 +44,9 @@ $sidebar-nav-item-hover-fg: #ffffff;
 }
 
 .sidebar-sticky {
-  position: relative;
+  position: sticky;
   top: 0;
-  height: calc(100vh - 48px);
+  height: 100vh;
   padding-top: 0.5rem;
   overflow-x: hidden;
   overflow-y: auto;
@@ -63,6 +54,10 @@ $sidebar-nav-item-hover-fg: #ffffff;
 
 @media (max-width: 991.98px) {
   .sidebar {
-    width: 100%;
+    transform: translateX(-100%);
+
+    &.show {
+      transform: translateX(0);
+    }
   }
 }
