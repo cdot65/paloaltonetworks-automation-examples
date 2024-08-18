@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container pt-4">
+    <div class="card mb-4">
+        <div class="card-header py-3">
+            <h5 class="mb-0 text-center">{% if form.instance.pk %}Edit{% else %}Create{% endif %} Inventory Item</h5>
+        </div>
+        <div class="card-body">
+            <form method="post">
+                {% csrf_token %}
+                <div class="row g-3">
+                    <div class="col-sm-6">
+                        <div class="mb-3">
+                            <label for="{{ form.hostname.id_for_label }}" class="form-label">Hostname</label>
+                            {{ form.hostname }}
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="mb-3">
+                            <label for="{{ form.device_type.id_for_label }}" class="form-label">Device Type</label>
+                            {{ form.device_type }}
+                        </div>
+                    </div>
+                </div>
+                <div class="row g-3">
+                    <div class="col-sm-6">
+                        <div class="mb-3">
+                            <label for="{{ form.username.id_for_label }}" class="form-label">Username</label>
+                            {{ form.username }}
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="mb-3">
+                            <label for="{{ form.password.id_for_label }}" class="form-label">Password</label>
+                            {{ form.password }}
+                            <div class="form-text">Enter a secure password for this device.</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row g-3">
+                    <div class="col-sm-6">
+                        <div class="mb-3">
+                            <label for="{{ form.connection_hostname.id_for_label }}" class="form-label">Connection Hostname</label>
+                            {{ form.connection_hostname }}
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="mb-3">
+                            <label for="{{ form.connection_ipv4.id_for_label }}" class="form-label">Connection IPv4</label>
+                            {{ form.connection_ipv4 }}
+                        </div>
+                    </div>
+                </div>
+                <div class="row g-3">
+                    <div class="col-sm-6">
+                        <div class="mb-3">
+                            <label for="{{ form.connection_ipv6.id_for_label }}" class="form-label">Connection IPv6</label>
+                            {{ form.connection_ipv6 }}
+                        </div>
+                    </div>
+                </div>
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

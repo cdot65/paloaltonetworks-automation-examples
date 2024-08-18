@@ -326,7 +326,7 @@ tags
 dump.rdb
 
 ### Project template
-cdss_certificate_remediation/media/
+django_project/media/
 
 .pytest_cache/
 .ipython/

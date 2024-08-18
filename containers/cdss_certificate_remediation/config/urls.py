@@ -18,10 +18,24 @@ urlpatterns = [
         name="home",
     ),
     path(
+        "dashboard/",
+        include(
+            "django_project.dashboard.urls",
+            namespace="dashboard",
+        ),
+    ),
+    path(
         "inventory/",
         include(
-            "cdss_certificate_remediation.inventory.urls",
+            "django_project.inventory.urls",
             namespace="inventory",
+        ),
+    ),
+    path(
+        "task-results/",
+        include(
+            "django_project.task_results.urls",
+            namespace="task_results",
         ),
     ),
     # Django Admin, use {% url 'admin:index' %}
@@ -30,7 +44,7 @@ urlpatterns = [
     path(
         "users/",
         include(
-            "cdss_certificate_remediation.users.urls",
+            "django_project.users.urls",
             namespace="users",
         ),
     ),

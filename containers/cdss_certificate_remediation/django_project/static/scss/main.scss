@@ -1,0 +1,27 @@
+@import 'variables';
+@import 'sidebar';
+@import 'navbar';
+@import 'content';
+@import 'buttons';
+
+body {
+  overflow-x: hidden;
+}
+
+.content-wrapper {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  flex-grow: 1;
+}
+
+@media (min-width: 992px) {
+  main {
+    margin-left: 240px; // Width of the sidebar
+  }
+}
+
+// Add any other global styles here

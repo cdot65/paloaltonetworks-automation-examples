@@ -25,8 +25,8 @@ if __name__ == "__main__":
         raise
 
     # This allows easy placement of apps within the interior
-    # cdss_certificate_remediation directory.
+    # django_project directory.
     current_path = Path(__file__).parent.resolve()
-    sys.path.append(str(current_path / "cdss_certificate_remediation"))
+    sys.path.append(str(current_path / "django_project"))
 
     execute_from_command_line(sys.argv)

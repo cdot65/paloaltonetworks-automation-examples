@@ -10,7 +10,7 @@ services:
     volumes:
       - ./docs:/docs:z
       - ./config:/app/config:z
-      - ./cdss_certificate_remediation:/app/cdss_certificate_remediation:z
+      - ./django_project:/app/django_project:z
     ports:
       - '9000:9000'
     command: /start-docs

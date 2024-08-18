@@ -1,3 +1,5 @@
+# config/asgi.py
+
 # ruff: noqa
 """
 ASGI config for CDSS Certificate Remediation project.
@@ -14,30 +16,28 @@ import sys
 from pathlib import Path
 
 from django.core.asgi import get_asgi_application
+from channels.routing import ProtocolTypeRouter, URLRouter
+from channels.auth import AuthMiddlewareStack
 
 # This allows easy placement of apps within the interior
-# cdss_certificate_remediation directory.
+# django_project directory.
 BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
-sys.path.append(str(BASE_DIR / "cdss_certificate_remediation"))
+sys.path.append(str(BASE_DIR))
 
 # If DJANGO_SETTINGS_MODULE is unset, default to the local settings
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings.local")
 
 # This application object is used by any ASGI server configured to use this file.
 django_application = get_asgi_application()
-# Apply ASGI middleware here.
-# from helloworld.asgi import HelloWorldApplication
-# application = HelloWorldApplication(application)
 
 # Import websocket application here, so apps from django_application are loaded first
-from config.websocket import websocket_application
+from django_project.task_results import routing as task_results_routing
 
-
-async def application(scope, receive, send):
-    if scope["type"] == "http":
-        await django_application(scope, receive, send)
-    elif scope["type"] == "websocket":
-        await websocket_application(scope, receive, send)
-    else:
-        msg = f"Unknown scope type {scope['type']}"
-        raise NotImplementedError(msg)
+application = ProtocolTypeRouter(
+    {
+        "http": django_application,
+        "websocket": AuthMiddlewareStack(
+            URLRouter(task_results_routing.websocket_urlpatterns)
+        ),
+    }
+)
