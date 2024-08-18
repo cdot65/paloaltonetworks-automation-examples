@@ -18,6 +18,13 @@ urlpatterns = [
         name="home",
     ),
     path(
+        "dashboard/",
+        include(
+            "cdss_certificate_remediation.dashboard.urls",
+            namespace="dashboard",
+        ),
+    ),
+    path(
         "inventory/",
         include(
             "cdss_certificate_remediation.inventory.urls",

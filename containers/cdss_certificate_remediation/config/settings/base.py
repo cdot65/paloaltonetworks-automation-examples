@@ -87,6 +87,7 @@ THIRD_PARTY_APPS = [
 LOCAL_APPS = [
     "cdss_certificate_remediation.users",
     "cdss_certificate_remediation.inventory",
+    "cdss_certificate_remediation.dashboard",
     # more custom apps go here
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
@@ -311,9 +312,13 @@ ACCOUNT_ADAPTER = "cdss_certificate_remediation.users.adapters.AccountAdapter"
 # https://docs.allauth.org/en/latest/account/forms.html
 ACCOUNT_FORMS = {"signup": "cdss_certificate_remediation.users.forms.UserSignupForm"}
 # https://docs.allauth.org/en/latest/socialaccount/configuration.html
-SOCIALACCOUNT_ADAPTER = "cdss_certificate_remediation.users.adapters.SocialAccountAdapter"
+SOCIALACCOUNT_ADAPTER = (
+    "cdss_certificate_remediation.users.adapters.SocialAccountAdapter"
+)
 # https://docs.allauth.org/en/latest/socialaccount/configuration.html
-SOCIALACCOUNT_FORMS = {"signup": "cdss_certificate_remediation.users.forms.UserSocialSignupForm"}
+SOCIALACCOUNT_FORMS = {
+    "signup": "cdss_certificate_remediation.users.forms.UserSocialSignupForm"
+}
 
 # django-rest-framework
 # -------------------------------------------------------------------------------
