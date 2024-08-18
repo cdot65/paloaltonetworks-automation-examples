@@ -1,0 +1,18 @@
+// main.scss
+@import 'variables';
+@import 'sidebar';
+@import 'navbar';
+@import 'content';
+@import 'buttons';
+
+body {
+  overflow-x: hidden;
+}
+
+main {
+  @media (min-width: 991.98px) {
+    padding-left: 240px;
+  }
+}
+
+// Add any other global styles here

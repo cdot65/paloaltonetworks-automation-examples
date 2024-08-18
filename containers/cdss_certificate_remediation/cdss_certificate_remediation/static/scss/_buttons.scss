@@ -1,0 +1,13 @@
+// _buttons.scss
+@import 'variables';
+
+.btn-primary {
+  background-color: $primary-btn-bg;
+  color: $primary-btn-fg;
+}
+
+.btn-accent {
+  background-color: $accent-btn-bg;
+  color: $accent-btn-fg;
+}
+

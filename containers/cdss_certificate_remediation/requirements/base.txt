@@ -19,8 +19,15 @@ django-allauth[mfa]==64.1.0  # https://github.com/pennersr/django-allauth
 django-crispy-forms==2.3  # https://github.com/django-crispy-forms/django-crispy-forms
 crispy-bootstrap5==2024.2  # https://github.com/django-crispy-forms/crispy-bootstrap5
 django-redis==5.4.0  # https://github.com/jazzband/django-redis
+django-debug-toolbar==4.4.6
 # Django REST Framework
 djangorestframework==3.15.2  # https://github.com/encode/django-rest-framework
 django-cors-headers==4.4.0  # https://github.com/adamchainz/django-cors-headers
 # DRF-spectacular for api documentation
 drf-spectacular==0.27.2  # https://github.com/tfranzel/drf-spectacular
+
+# SCSS
+# ------------------------------------------------------------------------------
+django-compressor==4.5.1
+django-sass-processor==1.4.1
+libsass==0.23.0

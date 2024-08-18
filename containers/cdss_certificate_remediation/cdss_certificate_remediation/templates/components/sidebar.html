@@ -1,14 +1,14 @@
 {% load i18n %}
-<nav id="sidebarMenu" class="collapse d-lg-block sidebar collapse bg-white">
-  <div class="position-sticky">
-    <div class="list-group list-group-flush mx-3 mt-4">
-      <a href="{% url 'dashboard:dashboard' %}" class="list-group-item list-group-item-action py-2 ripple {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}" aria-current="true">
-        <i class="fas fa-tachometer-alt fa-fw me-3"></i><span>{% translate "Dashboard" %}</span>
-      </a>
-      <a href="{% url 'inventory:list' %}" class="list-group-item list-group-item-action py-2 ripple {% if request.resolver_match.url_name == 'inventory:list' %}active{% endif %}">
-        <i class="fas fa-chart-area fa-fw me-3"></i><span>{% translate "Inventory" %}</span>
-      </a>
-      <!-- Add more menu items as needed -->
+<nav id="sidebarMenu" class="sidebar d-flex flex-column flex-shrink-0">
+    <div class="position-sticky">
+        <div class="list-group list-group-flush mx-3 mt-4">
+            <a href="{% url 'dashboard:dashboard' %}" class="list-group-item list-group-item-action py-2 ripple {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}" aria-current="true">
+                <i class="fas fa-tachometer-alt fa-fw me-3"></i><span>{% translate "Dashboard" %}</span>
+            </a>
+            <a href="{% url 'inventory:list' %}" class="list-group-item list-group-item-action py-2 ripple {% if request.resolver_match.url_name == 'inventory:list' %}active{% endif %}">
+                <i class="fas fa-chart-area fa-fw me-3"></i><span>{% translate "Inventory" %}</span>
+            </a>
+            <!-- Add more menu items as needed -->
+        </div>
     </div>
-  </div>
 </nav>

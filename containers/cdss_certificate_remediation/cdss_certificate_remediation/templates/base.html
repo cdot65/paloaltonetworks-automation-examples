@@ -1,5 +1,6 @@
-{% load static i18n %}<!DOCTYPE html>
+{% load static i18n sass_tags %}
 {% get_current_language as LANGUAGE_CODE %}
+<!DOCTYPE html>
 <html lang="{{ LANGUAGE_CODE }}">
 <head>
     <meta charset="utf-8"/>
@@ -19,38 +20,24 @@
     <!-- Font Awesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <!-- Your custom CSS -->
-    <link href="{% static 'css/project.css' %}" rel="stylesheet"/>
+    <link href="{% sass_src 'scss/main.scss' %}" rel="stylesheet" type="text/css"/>
     {% endblock css %}
 </head>
 <body>
 <!--Main Navigation-->
-<header>
+<div class="d-flex">
     {% include 'components/sidebar.html' %}
-    {% include 'components/navbar.html' %}
-</header>
+    <div class="flex-grow-1">
+        {% include 'components/navbar.html' %}
+        <main style="margin-top: 58px">
+            <div class="container pt-4">
+                {% block content %}{% endblock content %}
+            </div>
+        </main>
+    </div>
+</div>
 <!--Main Navigation-->
 
-<!--Main layout-->
-<main style="margin-top: 58px">
-    <div class="container pt-4">
-        {% if messages %}
-        {% for message in messages %}
-        <div class="alert alert-dismissible {% if message.tags %}alert-{{ message.tags }}{% endif %}">
-            {{ message }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-        {% endfor %}
-        {% endif %}
-        {% block content %}
-        <p>Use this document as a way to quick start any new project.</p>
-        {% endblock content %}
-    </div>
-</main>
-<!--Main layout-->
-
-<div class="footer-wrapper">
-    {% include 'components/footer.html' %}
-</div>
 
 {% block javascript %}
 <!-- Bootstrap JS -->

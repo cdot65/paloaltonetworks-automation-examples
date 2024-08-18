@@ -1,0 +1,46 @@
+@import 'variables';
+
+.sidebar {
+  background-color: $sidebar-bg;
+  color: $sidebar-fg;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  padding: 58px 0 0; /* Height of navbar */
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.05), 0 2px 10px 0 rgba(0, 0, 0, 0.05);
+  width: 240px;
+  z-index: 600;
+
+  .sidebar-title {
+    color: $sidebar-title;
+  }
+
+  .sidebar-subtitle {
+    color: $sidebar-subtitle;
+  }
+
+  .sidebar-icon {
+    color: $sidebar-icon;
+  }
+
+  .active {
+    border-radius: 5px;
+    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
+  }
+}
+
+.sidebar-sticky {
+  position: relative;
+  top: 0;
+  height: calc(100vh - 48px);
+  padding-top: 0.5rem;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+@media (max-width: 991.98px) {
+  .sidebar {
+    width: 100%;
+  }
+}

@@ -1,6 +1,7 @@
 # ruff: noqa: ERA001, E501
 """Base settings to build other settings files upon."""
 
+import os
 from pathlib import Path
 
 import environ
@@ -82,6 +83,8 @@ THIRD_PARTY_APPS = [
     "rest_framework.authtoken",
     "corsheaders",
     "drf_spectacular",
+    "sass_processor",
+    "compressor",
 ]
 
 LOCAL_APPS = [
@@ -161,6 +164,7 @@ STATICFILES_DIRS = [str(APPS_DIR / "static")]
 STATICFILES_FINDERS = [
     "django.contrib.staticfiles.finders.FileSystemFinder",
     "django.contrib.staticfiles.finders.AppDirectoriesFinder",
+    "sass_processor.finders.CssFinder",
 ]
 
 # MEDIA
@@ -344,5 +348,12 @@ SPECTACULAR_SETTINGS = {
     "SERVE_PERMISSIONS": ["rest_framework.permissions.IsAdminUser"],
     "SCHEMA_PATH_PREFIX": "/api/",
 }
-# Your stuff...
+# SCSS
 # ------------------------------------------------------------------------------
+SASS_PROCESSOR_ROOT = os.path.join(BASE_DIR, "static")
+SASS_PROCESSOR_INCLUDE_FILE_PATTERN = r"^.+\.scss$"
+SASS_PRECISION = 8
+SASS_OUTPUT_STYLE = "compressed"
+SASS_PROCESSOR_ENABLED = True
+
+COMPRESS_PRECOMPILERS = (("text/x-scss", "django_libsass.SassCompiler"),)

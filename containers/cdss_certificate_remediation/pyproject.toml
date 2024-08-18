@@ -173,6 +173,9 @@ django-cors-headers = "4.4.0"
 # DRF-spectacular for api documentation
 drf-spectacular = "0.27.2"
 django-debug-toolbar = "^4.4.6"
+django-compressor = "^4.5.1"
+django-sass-processor = "^1.4.1"
+libsass = "^0.23.0"
 
 
 [tool.poetry.group.dev.dependencies]

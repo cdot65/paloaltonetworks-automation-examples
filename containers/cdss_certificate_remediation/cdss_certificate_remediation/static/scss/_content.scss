@@ -1,0 +1,19 @@
+// _content.scss
+@import 'variables';
+
+body {
+  background-color: $main-bg;
+}
+
+.card {
+  background-color: $card-bg;
+
+  .card-title {
+    color: $card-title;
+  }
+
+  .card-subtitle {
+    color: $card-subtitle;
+  }
+}
+
