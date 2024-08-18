@@ -1,31 +1,43 @@
 {% extends "base.html" %}
 {% block content %}
-<h1>Inventory List</h1>
-<a href="{% url 'inventory:create' %}" class="btn btn-primary mb-3">Add New Device</a>
-<table class="table table-responsive table-thead-bordered">
-    <thead class="thead-light">
-        <tr>
-            <th scope="col">Device Type</th>
-            <th scope="col">Hostname</th>
-            <th scope="col">Connection Address</th>
-            <th scope="col">Username</th>
-            <th scope="col">Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for item in object_list %}
-        <tr>
-            <td>{{ item.device_type }}</td>
-            <td>{{ item.hostname }}</td>
-            <td>{{ item.connection_address }}</td>
-            <td>{{ item.username }}</td>
-            <td>
-                <a href="{% url 'inventory:detail' item.pk %}" class="btn btn-info btn-sm">View</a>
-                <a href="{% url 'inventory:update' item.pk %}" class="btn btn-warning btn-sm">Edit</a>
-                <a href="{% url 'inventory:delete' item.pk %}" class="btn btn-danger btn-sm">Delete</a>
-            </td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+<div class="container pt-4">
+    <div class="card mb-4">
+        <div class="card-header py-3">
+            <h5 class="mb-0 text-center">Inventory List</h5>
+        </div>
+        <div class="card-body">
+            <div class="mb-3">
+                <a href="{% url 'inventory:create' %}" class="btn btn-primary">Add New Device</a>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Device Type</th>
+                            <th>Hostname</th>
+                            <th>Connection Address</th>
+                            <th>Username</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in object_list %}
+                        <tr>
+                            <td>{{ item.device_type }}</td>
+                            <td>{{ item.hostname }}</td>
+                            <td>{{ item.connection_address }}</td>
+                            <td>{{ item.username }}</td>
+                            <td>
+                                <a href="{% url 'inventory:detail' item.pk %}" class="btn btn-info btn-sm">View</a>
+                                <a href="{% url 'inventory:update' item.pk %}" class="btn btn-warning btn-sm">Edit</a>
+                                <a href="{% url 'inventory:delete' item.pk %}" class="btn btn-danger btn-sm">Delete</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
