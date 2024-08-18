@@ -40,3 +40,23 @@ body {
 .btn {
   border-radius: 0.25rem;
 }
+
+.feature-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+
+.card-title.h5 {
+  font-weight: 600;
+}
+
+.display-5, .display-6 {
+  font-weight: 300;
+}
+
+.lead {
+  font-size: 1.1rem;
+  font-weight: 300;
+}
