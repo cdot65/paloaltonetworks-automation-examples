@@ -89,6 +89,7 @@ THIRD_PARTY_APPS = [
     "compressor",
     "channels",
     "django_filters",
+    "django_celery_results",
 ]
 
 LOCAL_APPS = [

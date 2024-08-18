@@ -1,9 +1,12 @@
 # django_project/scripts/inventory_script.py
-
+import time
 
 def run_script(inventory_data):
     # This function will be called with the inventory data
     print(f"Processing inventory: {inventory_data}")
+
+    print(f"Pausing for 15 seconds")
+    time.sleep(15)
 
     # Perform actions with the data
     device_type = inventory_data.get("device_type")

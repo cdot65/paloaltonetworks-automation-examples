@@ -1,4 +1,5 @@
 # django_project/inventory/views.py
+from django_celery_results.models import TaskResult
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import (
     ListView,
@@ -23,6 +24,10 @@ class InventoryListView(LoginRequiredMixin, ListView):
         context = super().get_context_data(**kwargs)
         for item in context["object_list"]:
             item.connection_address = item.get_connection_address()
+
+        # Get active tasks
+        active_tasks = TaskResult.objects.filter(status__in=['PENDING', 'STARTED', 'RETRY'])
+        context['active_tasks'] = active_tasks
         return context
 
 
