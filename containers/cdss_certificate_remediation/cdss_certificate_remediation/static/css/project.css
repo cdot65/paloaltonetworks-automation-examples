@@ -1,38 +1,47 @@
-/* custom.css */
-
-/* Layout styles */
-.navbar-wrapper, .footer-wrapper {
-  width: 100%;
+body {
+  background-color: #fbfbfb;
+}
+@media (min-width: 991.98px) {
+  main {
+    padding-left: 240px;
+  }
 }
 
-/* Navbar styles */
-.navbar {
-  padding: 1rem 0;
+/* Sidebar */
+.sidebar {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  padding: 58px 0 0; /* Height of navbar */
+  box-shadow: 0 2px 5px 0 rgb(0 0 0 / 5%), 0 2px 10px 0 rgb(0 0 0 / 5%);
+  width: 240px;
+  z-index: 600;
 }
 
+@media (max-width: 991.98px) {
+  .sidebar {
+    width: 100%;
+  }
+}
+.sidebar .active {
+  border-radius: 5px;
+  box-shadow: 0 2px 5px 0 rgb(0 0 0 / 16%), 0 2px 10px 0 rgb(0 0 0 / 12%);
+}
+
+.sidebar-sticky {
+  position: relative;
+  top: 0;
+  height: calc(100vh - 48px);
+  padding-top: 0.5rem;
+  overflow-x: hidden;
+  overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
+}
+
+/* Navbar */
 .navbar-brand-logo {
-  height: 40px;
+  height: 25px;
   width: auto;
-}
-
-/* Dropdown styles */
-.dropdown-menu {
-  border-radius: 0.5rem;
-  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
-}
-
-.dropdown-item:hover, .dropdown-item:focus {
-  background-color: #f8f9fa;
-}
-
-/* Active link style */
-.nav-link.active {
-  font-weight: bold;
-}
-
-/* Footer styles */
-footer {
-  background-color: #f8f9fa;
 }
 
 /* Content styles */
@@ -76,31 +85,4 @@ footer {
   color: #b94a48;
   background-color: #f2dede;
   border-color: #eed3d7;
-}
-
-/* Responsive adjustments */
-@media (max-width: 991.98px) {
-  .navbar-nav {
-    padding-top: 1rem;
-  }
-}
-
-/* Button group styles */
-.button-group {
-  display: flex;
-  justify-content: flex-end;
-  flex-wrap: wrap;
-  margin-right: -7.5px;
-  margin-left: -7.5px;
-}
-
-.button-group .btn {
-  margin: 0 7.5px 15px;
-}
-
-/* Responsive adjustments */
-@media (max-width: 575.98px) {
-  .button-group {
-    justify-content: center;
-  }
 }
