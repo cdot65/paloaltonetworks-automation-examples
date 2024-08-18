@@ -176,6 +176,8 @@ django-debug-toolbar = "^4.4.6"
 django-compressor = "^4.5.1"
 django-sass-processor = "^1.4.1"
 libsass = "^0.23.0"
+channels = "^4.1.0"
+channels-redis = "^4.2.0"
 
 
 [tool.poetry.group.dev.dependencies]

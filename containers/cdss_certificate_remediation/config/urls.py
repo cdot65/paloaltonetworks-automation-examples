@@ -31,6 +31,13 @@ urlpatterns = [
             namespace="inventory",
         ),
     ),
+    path(
+        "task-results/",
+        include(
+            "django_project.task_results.urls",
+            namespace="task_results",
+        ),
+    ),
     # Django Admin, use {% url 'admin:index' %}
     path(settings.ADMIN_URL, admin.site.urls),
     # User management

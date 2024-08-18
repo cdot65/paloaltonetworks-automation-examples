@@ -8,6 +8,9 @@ from django.views.generic import (
     DeleteView,
 )
 from django.urls import reverse_lazy
+from django.contrib import messages
+from .tasks import run_inventory_script
+
 from .models import Inventory
 from .forms import InventoryForm
 
@@ -33,6 +36,14 @@ class InventoryCreateView(LoginRequiredMixin, CreateView):
     form_class = InventoryForm
     template_name = "inventory/inventory_form.html"
     success_url = reverse_lazy("inventory:list")
+
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        task = run_inventory_script.delay(self.object.id)
+        messages.success(
+            self.request, f"Inventory creation task started. Task ID: {task.id}"
+        )
+        return response
 
 
 class InventoryUpdateView(LoginRequiredMixin, UpdateView):
