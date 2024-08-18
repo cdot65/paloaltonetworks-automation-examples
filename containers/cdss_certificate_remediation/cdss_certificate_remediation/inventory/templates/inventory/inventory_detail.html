@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Inventory Detail</h1>
+<dl class="row">
+    <dt class="col-sm-3">Device Type</dt>
+    <dd class="col-sm-9">{{ object.device_type }}</dd>
+
+    <dt class="col-sm-3">Hostname</dt>
+    <dd class="col-sm-9">{{ object.hostname }}</dd>
+
+    <dt class="col-sm-3">Preferred Connection Address</dt>
+    <dd class="col-sm-9">{{ object.get_connection_address }}</dd>
+
+    <dt class="col-sm-3">Username</dt>
+    <dd class="col-sm-9">{{ object.username }}</dd>
+
+    <dt class="col-sm-3">Connection Hostname</dt>
+    <dd class="col-sm-9">{{ object.connection_hostname|default:"Not set" }}</dd>
+
+    <dt class="col-sm-3">Connection IPv4</dt>
+    <dd class="col-sm-9">{{ object.connection_ipv4|default:"Not set" }}</dd>
+
+    <dt class="col-sm-3">Connection IPv6</dt>
+    <dd class="col-sm-9">{{ object.connection_ipv6|default:"Not set" }}</dd>
+</dl>
+<a href="{% url 'inventory:update' object.pk %}" class="btn btn-warning">Edit</a>
+<a href="{% url 'inventory:delete' object.pk %}" class="btn btn-danger">Delete</a>
+<a href="{% url 'inventory:list' %}" class="btn btn-secondary">Back to List</a>
+{% endblock %}

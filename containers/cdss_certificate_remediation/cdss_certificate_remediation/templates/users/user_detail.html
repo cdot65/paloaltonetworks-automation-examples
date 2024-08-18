@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}User: {{ object.username }}{% endblock title %}
+
+{% block content %}
+<div class="container content-space-1">
+  <div class="row justify-content-lg-center">
+    <div class="col-lg-8">
+      <div class="card card-lg card-bordered shadow-none">
+        <div class="card-body">
+          <h3 class="card-title text-center mb-4">{{ object.username }}</h3>
+          {% if object.name %}
+            <p class="text-center mb-4">{{ object.name }}</p>
+          {% endif %}
+
+          {% if object == request.user %}
+            <div class="button-group">
+              <a class="btn btn-primary" href="{% url 'users:update' %}" role="button">Update My Info</a>
+              <a class="btn btn-primary" href="{% url 'account_email' %}" role="button">Manage E-Mail</a>
+              <a class="btn btn-primary" href="{% url 'mfa_index' %}" role="button">Manage MFA</a>
+              <!-- Your Stuff: Custom user template urls -->
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}
