@@ -1,4 +1,4 @@
-# cdss_certificate_remediation/inventory/api_views.py
+# django_project/inventory/api_views.py
 from rest_framework import viewsets, filters
 from rest_framework.decorators import action
 from rest_framework.response import Response

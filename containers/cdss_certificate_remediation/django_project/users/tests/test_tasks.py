@@ -1,8 +1,8 @@
 import pytest
 from celery.result import EagerResult
 
-from cdss_certificate_remediation.users.tasks import get_users_count
-from cdss_certificate_remediation.users.tests.factories import UserFactory
+from django_project.users.tasks import get_users_count
+from django_project.users.tests.factories import UserFactory
 
 pytestmark = pytest.mark.django_db
 

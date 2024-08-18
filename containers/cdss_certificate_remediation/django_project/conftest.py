@@ -1,7 +1,7 @@
 import pytest
 
-from cdss_certificate_remediation.users.models import User
-from cdss_certificate_remediation.users.tests.factories import UserFactory
+from django_project.users.models import User
+from django_project.users.tests.factories import UserFactory
 
 
 @pytest.fixture(autouse=True)

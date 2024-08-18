@@ -2,8 +2,8 @@
 
 from django.utils.translation import gettext_lazy as _
 
-from cdss_certificate_remediation.users.forms import UserAdminCreationForm
-from cdss_certificate_remediation.users.models import User
+from django_project.users.forms import UserAdminCreationForm
+from django_project.users.models import User
 
 
 class TestUserAdminCreationForm:

@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from cdss_certificate_remediation.users.models import User
+from django_project.users.models import User
 
 
 class UserSerializer(serializers.ModelSerializer[User]):

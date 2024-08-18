@@ -3,4 +3,4 @@ from django.apps import AppConfig
 
 class InventoryConfig(AppConfig):
     default_auto_field = "django.db.models.BigAutoField"
-    name = "cdss_certificate_remediation.inventory"
+    name = "django_project.inventory"

@@ -4,7 +4,7 @@ import django.utils.timezone
 from django.db import migrations
 from django.db import models
 
-import cdss_certificate_remediation.users.models
+import django_project.users.models
 
 
 class Migration(migrations.Migration):

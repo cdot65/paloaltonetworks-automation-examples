@@ -1,4 +1,4 @@
-# cdss_certificate_remediation/inventory/views.py
+# django_project/inventory/views.py
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import (
     ListView,

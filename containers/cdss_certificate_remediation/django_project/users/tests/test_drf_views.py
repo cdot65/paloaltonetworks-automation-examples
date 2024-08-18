@@ -1,8 +1,8 @@
 import pytest
 from rest_framework.test import APIRequestFactory
 
-from cdss_certificate_remediation.users.api.views import UserViewSet
-from cdss_certificate_remediation.users.models import User
+from django_project.users.api.views import UserViewSet
+from django_project.users.models import User
 
 
 class TestUserViewSet:

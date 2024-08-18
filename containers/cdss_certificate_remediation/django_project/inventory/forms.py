@@ -1,4 +1,4 @@
-# cdss_certificate_remediation/inventory/forms.py
+# django_project/inventory/forms.py
 from django import forms
 from .models import Inventory
 

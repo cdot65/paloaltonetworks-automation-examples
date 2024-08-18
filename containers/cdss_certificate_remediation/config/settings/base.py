@@ -7,8 +7,8 @@ from pathlib import Path
 import environ
 
 BASE_DIR = Path(__file__).resolve(strict=True).parent.parent.parent
-# cdss_certificate_remediation/
-APPS_DIR = BASE_DIR / "cdss_certificate_remediation"
+# django_project/
+APPS_DIR = BASE_DIR / "django_project"
 env = environ.Env()
 
 READ_DOT_ENV_FILE = env.bool("DJANGO_READ_DOT_ENV_FILE", default=False)
@@ -88,9 +88,9 @@ THIRD_PARTY_APPS = [
 ]
 
 LOCAL_APPS = [
-    "cdss_certificate_remediation.users",
-    "cdss_certificate_remediation.inventory",
-    "cdss_certificate_remediation.dashboard",
+    "django_project.users",
+    "django_project.inventory",
+    "django_project.dashboard",
     # more custom apps go here
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
@@ -99,7 +99,7 @@ INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 # MIGRATIONS
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#migration-modules
-MIGRATION_MODULES = {"sites": "cdss_certificate_remediation.contrib.sites.migrations"}
+MIGRATION_MODULES = {"sites": "django_project.contrib.sites.migrations"}
 
 # AUTHENTICATION
 # ------------------------------------------------------------------------------
@@ -196,7 +196,7 @@ TEMPLATES = [
                 "django.template.context_processors.static",
                 "django.template.context_processors.tz",
                 "django.contrib.messages.context_processors.messages",
-                "cdss_certificate_remediation.users.context_processors.allauth_settings",
+                "django_project.users.context_processors.allauth_settings",
             ],
         },
     },
@@ -312,16 +312,16 @@ ACCOUNT_EMAIL_REQUIRED = True
 # https://docs.allauth.org/en/latest/account/configuration.html
 ACCOUNT_EMAIL_VERIFICATION = "optional"
 # https://docs.allauth.org/en/latest/account/configuration.html
-ACCOUNT_ADAPTER = "cdss_certificate_remediation.users.adapters.AccountAdapter"
+ACCOUNT_ADAPTER = "django_project.users.adapters.AccountAdapter"
 # https://docs.allauth.org/en/latest/account/forms.html
-ACCOUNT_FORMS = {"signup": "cdss_certificate_remediation.users.forms.UserSignupForm"}
+ACCOUNT_FORMS = {"signup": "django_project.users.forms.UserSignupForm"}
 # https://docs.allauth.org/en/latest/socialaccount/configuration.html
 SOCIALACCOUNT_ADAPTER = (
-    "cdss_certificate_remediation.users.adapters.SocialAccountAdapter"
+    "django_project.users.adapters.SocialAccountAdapter"
 )
 # https://docs.allauth.org/en/latest/socialaccount/configuration.html
 SOCIALACCOUNT_FORMS = {
-    "signup": "cdss_certificate_remediation.users.forms.UserSocialSignupForm"
+    "signup": "django_project.users.forms.UserSocialSignupForm"
 }
 
 # django-rest-framework

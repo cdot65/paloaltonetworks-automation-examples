@@ -1,4 +1,4 @@
-from cdss_certificate_remediation.users.models import User
+from django_project.users.models import User
 
 
 def test_user_get_absolute_url(user: User):

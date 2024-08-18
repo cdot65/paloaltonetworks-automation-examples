@@ -20,14 +20,14 @@ urlpatterns = [
     path(
         "dashboard/",
         include(
-            "cdss_certificate_remediation.dashboard.urls",
+            "django_project.dashboard.urls",
             namespace="dashboard",
         ),
     ),
     path(
         "inventory/",
         include(
-            "cdss_certificate_remediation.inventory.urls",
+            "django_project.inventory.urls",
             namespace="inventory",
         ),
     ),
@@ -37,7 +37,7 @@ urlpatterns = [
     path(
         "users/",
         include(
-            "cdss_certificate_remediation.users.urls",
+            "django_project.users.urls",
             namespace="users",
         ),
     ),

@@ -12,12 +12,12 @@ from django.test import RequestFactory
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
-from cdss_certificate_remediation.users.forms import UserAdminChangeForm
-from cdss_certificate_remediation.users.models import User
-from cdss_certificate_remediation.users.tests.factories import UserFactory
-from cdss_certificate_remediation.users.views import UserRedirectView
-from cdss_certificate_remediation.users.views import UserUpdateView
-from cdss_certificate_remediation.users.views import user_detail_view
+from django_project.users.forms import UserAdminChangeForm
+from django_project.users.models import User
+from django_project.users.tests.factories import UserFactory
+from django_project.users.views import UserRedirectView
+from django_project.users.views import UserUpdateView
+from django_project.users.views import user_detail_view
 
 pytestmark = pytest.mark.django_db
 

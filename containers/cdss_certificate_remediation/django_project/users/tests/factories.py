@@ -5,7 +5,7 @@ from factory import Faker
 from factory import post_generation
 from factory.django import DjangoModelFactory
 
-from cdss_certificate_remediation.users.models import User
+from django_project.users.models import User
 
 
 class UserFactory(DjangoModelFactory):

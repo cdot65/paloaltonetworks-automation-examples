@@ -1,4 +1,4 @@
-# cdss_certificate_remediation/inventory/serializers.py
+# django_project/inventory/serializers.py
 from rest_framework import serializers
 from .models import Inventory
 
