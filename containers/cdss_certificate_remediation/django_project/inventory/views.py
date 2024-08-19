@@ -1,4 +1,5 @@
 # django_project/inventory/views.py
+from django.shortcuts import redirect
 from django_celery_results.models import TaskResult
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import (
@@ -8,7 +9,7 @@ from django.views.generic import (
     UpdateView,
     DeleteView,
 )
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.contrib import messages
 from .tasks import run_inventory_script
 
@@ -26,8 +27,10 @@ class InventoryListView(LoginRequiredMixin, ListView):
             item.connection_address = item.get_connection_address()
 
         # Get active tasks
-        active_tasks = TaskResult.objects.filter(status__in=['PENDING', 'STARTED', 'RETRY'])
-        context['active_tasks'] = active_tasks
+        active_tasks = TaskResult.objects.filter(
+            status__in=["PENDING", "STARTED", "RETRY"]
+        )
+        context["active_tasks"] = active_tasks
         return context
 
 
@@ -40,7 +43,6 @@ class InventoryCreateView(LoginRequiredMixin, CreateView):
     model = Inventory
     form_class = InventoryForm
     template_name = "inventory/inventory_form.html"
-    success_url = reverse_lazy("inventory:list")
 
     def form_valid(self, form):
         response = super().form_valid(form)
@@ -48,7 +50,10 @@ class InventoryCreateView(LoginRequiredMixin, CreateView):
         messages.success(
             self.request, f"Inventory creation task started. Task ID: {task.id}"
         )
-        return response
+        return redirect(reverse("inventory:list") + f"?task_id={task.id}")
+
+    def get_success_url(self):
+        return reverse("inventory:list")
 
 
 class InventoryUpdateView(LoginRequiredMixin, UpdateView):

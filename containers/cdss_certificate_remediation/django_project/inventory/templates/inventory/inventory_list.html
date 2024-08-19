@@ -8,10 +8,18 @@
         <h5 id="inventory-list" class="mb-0 text-center">Inventory List</h5>
       </div>
 
-      {% for task in active_tasks %}
-        <p>yes this is a task </p>
-        {% include "components/task_status.html" with task_id=task.task_id %}
-      {% endfor %}
+      {% if request.GET.task_id %}
+        <div id="taskStatus_{{ request.GET.task_id }}" class="task-status-container">
+          <p>Task Status: <span class="task-status">Pending</span></p>
+          <div class="progress">
+            <div class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0"
+                 aria-valuemax="100">0%
+            </div>
+          </div>
+          <p>Result: <span class="task-result"></span></p>
+        </div>
+      {% endif %}
+
 
       <div class="card-body">
         <div class="mb-3">
@@ -53,4 +61,11 @@
 
 {% block extra_js %}
   <script src="{% static 'js/taskStatus.js' %}"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      {% if request.GET.task_id %}
+        window.taskStatusManager.addTask('{{ request.GET.task_id }}');
+      {% endif %}
+    });
+  </script>
 {% endblock %}

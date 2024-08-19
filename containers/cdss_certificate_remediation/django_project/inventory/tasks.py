@@ -1,11 +1,16 @@
 # django_project/inventory/tasks.py
-from celery import shared_task
-from .models import Inventory
-from ..task_results.models import TaskResult
-from channels.layers import get_channel_layer
-from asgiref.sync import async_to_sync
 import importlib.util
 import sys
+
+from celery import shared_task
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
+from .models import Inventory
+from ..task_results.models import TaskResult
+import json
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 @shared_task
@@ -14,41 +19,55 @@ def run_inventory_script(inventory_id):
     task_id = run_inventory_script.request.id
 
     def send_status_update(status, result=None):
-        async_to_sync(channel_layer.group_send)(
-            f'task_{task_id}',
-            {
-                'type': 'task_status',
-                'task_id': task_id,
-                'status': status,
-                'result': result,
-            }
+        group_name = f"task_{task_id}"
+        message = {
+            "type": "task_status",
+            "task_id": task_id,
+            "status": status,
+            "result": result,
+        }
+        logger.info(f"Sending task update to group {group_name}: {message}")
+        async_to_sync(channel_layer.group_send)(group_name, message)
+
+        TaskResult.objects.update_or_create(
+            task_id=task_id,
+            defaults={
+                "status": status,
+                "result": json.dumps(result) if result else None,
+            },
         )
 
-    send_status_update('STARTED')
-
+    send_status_update("STARTED")
 
     try:
         inventory = Inventory.objects.get(id=inventory_id)
+        logger.info(f"Retrieved inventory: {inventory}")
 
         # Dynamically import the script
-        spec = importlib.util.spec_from_file_location(
-            "inventory_script", "django_project/scripts/inventory_script.py"
-        )
+        script_path = "django_project/scripts/inventory_script.py"
+        logger.info(f"Importing script from {script_path}")
+        spec = importlib.util.spec_from_file_location("inventory_script", script_path)
         module = importlib.util.module_from_spec(spec)
         sys.modules["inventory_script"] = module
         spec.loader.exec_module(module)
 
-
         # Run the script with inventory data
-        result = module.run_script({
+        send_status_update("PROGRESS", "Running inventory script")
+        script_data = {
             "device_type": inventory.device_type,
             "hostname": inventory.hostname,
             "username": inventory.username,
             "connection_address": inventory.get_connection_address(),
-        })
-        send_status_update('SUCCESS', result)
+        }
+        logger.info(f"Running script with data: {script_data}")
+        result = module.run_script(script_data)
+        logger.info(f"Script result: {result}")
+        send_status_update("SUCCESS", result)
+        logger.info(f"Sent SUCCESS status for task {task_id}")
         return result
     except Exception as e:
-        error_result = {'error': str(e)}
-        send_status_update('FAILURE', error_result)
+        logger.exception(f"Error in run_inventory_script: {str(e)}")
+        error_result = {"error": str(e)}
+        send_status_update("FAILURE", error_result)
+        logger.info(f"Sent FAILURE status for task {task_id}")
         return error_result

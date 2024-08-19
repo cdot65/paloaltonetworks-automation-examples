@@ -1,5 +1,4 @@
-# django_project/task_results/routing.py
-
+# django_project/inventory/routing.py
 from django.urls import path
 from . import consumers
 
