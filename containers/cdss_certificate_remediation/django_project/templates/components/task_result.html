@@ -1,0 +1,13 @@
+{# django_project/templates/components/task_result.html #}
+<div id="taskStatus_{{ task_id }}" class="task-status-container d-none">
+    <div class="card mt-3">
+        <div class="card-body">
+            <h5 class="card-title">Task: {{ task_id }}</h5>
+            <p class="card-text">Status: <span class="task-status">Pending</span></p>
+            <div class="progress">
+                <div class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>
+            </div>
+            <p class="mt-3">Result: <span class="task-result"></span></p>
+        </div>
+    </div>
+</div>
