@@ -18,10 +18,18 @@ class InventoryViewSet(viewsets.ModelViewSet):
         "connection_ipv4",
         "connection_ipv6",
     ]
-    ordering_fields = ["device_type", "hostname", "username"]
+    ordering_fields = [
+        "device_type",
+        "hostname",
+        "username",
+    ]
 
     @action(detail=True, methods=["get"])
-    def preferred_connection(self, request, pk=None):
+    def preferred_connection(
+        self,
+        request,
+        pk=None,
+    ):
         inventory = self.get_object()
         return Response(
             {"preferred_connection_address": inventory.get_connection_address()}

@@ -32,10 +32,10 @@ urlpatterns = [
         ),
     ),
     path(
-        "task-results/",
+        "jobs/",
         include(
-            "django_project.task_results.urls",
-            namespace="task_results",
+            "django_project.jobs.urls",
+            namespace="jobs",
         ),
     ),
     # Django Admin, use {% url 'admin:index' %}

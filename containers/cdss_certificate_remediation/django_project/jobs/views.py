@@ -1,24 +1,35 @@
+# django_project/jobs/views.py
+
 import logging
 from rest_framework import viewsets
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters
-from .models import TaskResult
-from .serializers import TaskResultSerializer
+from .models import Job
+from .serializers import JobSerializer
 
 logger = logging.getLogger(__name__)
 
 
-class TaskResultViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = TaskResult.objects.all()
-    serializer_class = TaskResultSerializer
+class JobViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = Job.objects.all()
+    serializer_class = JobSerializer
     filter_backends = [
         DjangoFilterBackend,
         filters.SearchFilter,
         filters.OrderingFilter,
     ]
-    filterset_fields = ["status", "task_id"]
-    search_fields = ["task_id", "status"]
-    ordering_fields = ["created_at", "updated_at"]
+    filterset_fields = [
+        "status",
+        "job_id",
+    ]
+    search_fields = [
+        "job_id",
+        "status",
+    ]
+    ordering_fields = [
+        "created_at",
+        "updated_at",
+    ]
 
     def list(self, request, *args, **kwargs):
         logger.info(f"Request query params: {request.query_params}")
@@ -29,6 +40,6 @@ class TaskResultViewSet(viewsets.ReadOnlyModelViewSet):
     def filter_queryset(self, queryset):
         for backend in list(self.filter_backends):
             queryset = backend().filter_queryset(self.request, queryset, self)
-        logger.info(f"Filter backend: {backend.__name__}")
+            logger.info(f"Filter backend: {backend.__name__}")
         logger.info(f"Filtered queryset: {queryset.query}")
         return queryset

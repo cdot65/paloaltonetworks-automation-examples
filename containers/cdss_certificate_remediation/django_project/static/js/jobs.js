@@ -1,6 +1,6 @@
-class TaskStatusManager {
+class JobsManager {
     constructor() {
-        this.tasks = new Map();
+        this.jobs = new Map();
         this.socket = null;
         this.reconnectAttempts = 0;
         this.maxReconnectAttempts = 5;
@@ -15,7 +15,7 @@ class TaskStatusManager {
             return;
         }
 
-        this.socket = new WebSocket('ws://' + window.location.host + '/ws/task_status/');
+        this.socket = new WebSocket('ws://' + window.location.host + '/ws/jobs/');
 
         this.socket.onopen = () => {
             console.log('WebSocket connection established');
@@ -26,7 +26,7 @@ class TaskStatusManager {
         this.socket.onmessage = (e) => {
             const data = JSON.parse(e.data);
             console.log('Received message:', data);
-            if (this.tasks.has(data.task_id)) {
+            if (this.jobs.has(data.job_id)) {
                 this.updateUI(data);
             }
         };
@@ -51,43 +51,43 @@ class TaskStatusManager {
         }
     }
 
-    sendTaskSubscription(taskId) {
+    sendJobSubscription(jobId) {
         if (this.socket && this.socket.readyState === WebSocket.OPEN) {
-            console.log('Subscribing to task:', taskId);
-            this.socket.send(JSON.stringify({action: 'subscribe', task_id: taskId}));
+            console.log('Subscribing to job:', jobId);
+            this.socket.send(JSON.stringify({action: 'subscribe', job_id: jobId}));
         } else {
-            console.log('WebSocket not ready, queueing subscription for task:', taskId);
-            this.pendingSubscriptions.add(taskId);
+            console.log('WebSocket not ready, queueing subscription for job:', jobId);
+            this.pendingSubscriptions.add(jobId);
         }
     }
 
     processPendingSubscriptions() {
-        this.pendingSubscriptions.forEach(taskId => {
-            this.sendTaskSubscription(taskId);
+        this.pendingSubscriptions.forEach(jobId => {
+            this.sendJobSubscription(jobId);
         });
         this.pendingSubscriptions.clear();
     }
 
-    addTask(taskId) {
-        console.log(`Adding task: ${taskId}`);
-        if (!this.tasks.has(taskId)) {
-            const container = document.getElementById(`taskStatus_${taskId}`);
+    addJob(jobId) {
+        console.log(`Adding job: ${jobId}`);
+        if (!this.jobs.has(jobId)) {
+            const container = document.getElementById(`jobs_${jobId}`);
             if (container) {
-                this.tasks.set(taskId, container);
-                this.sendTaskSubscription(taskId);
+                this.jobs.set(jobId, container);
+                this.sendJobSubscription(jobId);
             } else {
-                console.warn(`Task container not found for task ID: ${taskId}`);
+                console.warn(`Job container not found for job ID: ${jobId}`);
             }
         }
     }
 
     updateUI(data) {
-        const container = this.tasks.get(data.task_id);
+        const container = this.jobs.get(data.job_id);
         if (!container) return;
 
-        const statusElement = container.querySelector('.task-status');
+        const statusElement = container.querySelector('.jobs');
         const progressBar = container.querySelector('.progress-bar');
-        const resultElement = container.querySelector('.task-result');
+        const resultElement = container.querySelector('.job');
 
         statusElement.textContent = data.status;
 
@@ -121,11 +121,11 @@ class TaskStatusManager {
     }
 }
 
-// Initialize the TaskStatusManager when the DOM is loaded
+// Initialize the JobsManager when the DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
-    window.taskStatusManager = new TaskStatusManager();
-    document.querySelectorAll('[id^="taskStatus_"]').forEach(container => {
-        const taskId = container.id.split('_')[1];
-        window.taskStatusManager.addTask(taskId);
+    window.jobsManager = new JobsManager();
+    document.querySelectorAll('[id^="jobs_"]').forEach(container => {
+        const jobId = container.id.split('_')[1];
+        window.jobsManager.addJob(jobId);
     });
 });
