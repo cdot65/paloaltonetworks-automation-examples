@@ -7,7 +7,7 @@ from django.apps import apps
 logger = logging.getLogger(__name__)
 
 
-class TaskStatusConsumer(AsyncWebsocketConsumer):
+class JobsConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         logger.info(f"WebSocket connection attempt: {self.channel_name}")
         await self.accept()
@@ -16,49 +16,52 @@ class TaskStatusConsumer(AsyncWebsocketConsumer):
 
     async def disconnect(self, close_code):
         logger.info(f"WebSocket disconnected: {self.channel_name}, code: {close_code}")
-        for task_id in self.subscribed_tasks:
-            await self.channel_layer.group_discard(f"task_{task_id}", self.channel_name)
+        for job_id in self.subscribed_tasks:
+            await self.channel_layer.group_discard(f"job_{job_id}", self.channel_name)
         self.subscribed_tasks.clear()
 
     async def receive(self, text_data):
         logger.info(f"Received message: {text_data}")
         data = json.loads(text_data)
         action = data.get("action")
-        task_id = data.get("task_id")
+        job_id = data.get("job_id")
 
-        if action == "subscribe" and task_id:
-            group_name = f"task_{task_id}"
-            logger.info(f"Subscribing to task group: {group_name}")
+        if action == "subscribe" and job_id:
+            group_name = f"job_{job_id}"
+            logger.info(f"Subscribing to job group: {group_name}")
             await self.channel_layer.group_add(group_name, self.channel_name)
-            self.subscribed_tasks.add(task_id)
+            self.subscribed_tasks.add(job_id)
             logger.info(f"Subscribed to group: {group_name}")
-            await self.send_task_status(task_id)
+            await self.send_jobs(job_id)
 
-    async def task_status(self, event):
-        logger.info(f"Received task status update in consumer: {event}")
+    async def jobs(self, event):
+        logger.info(f"Received job status update in consumer: {event}")
         await self.send(text_data=json.dumps(event))
-        logger.info(f"Sent task status update to client: {event}")
+        logger.info(f"Sent job status update to client: {event}")
 
     @sync_to_async
-    def get_task_status(self, task_id):
-        TaskResult = apps.get_model("django_celery_results", "TaskResult")
+    def get_jobs(self, job_id):
+        Job = apps.get_model(
+            "django_celery_results",
+            "TaskResult",
+        )
         try:
-            task = TaskResult.objects.get(task_id=task_id)
+            job = Job.objects.get(task_id=job_id)
             status = {
-                "task_id": task.task_id,
-                "status": task.status,
-                "result": task.result,
+                "job_id": job.job_id,
+                "status": job.status,
+                "result": job.result,
             }
-            logger.info(f"Retrieved task status: {status}")
+            logger.info(f"Retrieved job status: {status}")
             return status
-        except TaskResult.DoesNotExist:
-            logger.warning(f"Task not found: {task_id}")
+        except Job.DoesNotExist:
+            logger.warning(f"Job not found: {job_id}")
             return None
 
-    async def send_task_status(self, task_id):
-        status = await self.get_task_status(task_id)
+    async def send_jobs(self, job_id):
+        status = await self.get_jobs(job_id)
         if status:
-            logger.info(f"Sending initial task status: {status}")
+            logger.info(f"Sending initial job status: {status}")
             await self.send(text_data=json.dumps(status))
         else:
-            logger.warning(f"No status found for task: {task_id}")
+            logger.warning(f"No status found for job: {job_id}")

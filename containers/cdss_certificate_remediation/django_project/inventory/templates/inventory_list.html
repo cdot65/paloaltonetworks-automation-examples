@@ -8,15 +8,15 @@
         <h5 id="inventory-list" class="mb-0 text-center">Inventory List</h5>
       </div>
 
-      {% if request.GET.task_id %}
-        <div id="taskStatus_{{ request.GET.task_id }}" class="task-status-container">
-          <p>Task Status: <span class="task-status">Pending</span></p>
+      {% if request.GET.job_id %}
+        <div id="jobs_{{ request.GET.job_id }}" class="jobs-container">
+          <p>Job Status: <span class="jobs">Pending</span></p>
           <div class="progress">
             <div class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0"
                  aria-valuemax="100">0%
             </div>
           </div>
-          <p>Result: <span class="task-result"></span></p>
+          <p>Result: <span class="job"></span></p>
         </div>
       {% endif %}
 
@@ -60,11 +60,11 @@
 {% endblock %}
 
 {% block extra_js %}
-  <script src="{% static 'js/taskStatus.js' %}"></script>
+  <script src="{% static 'js/jobs.js' %}"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      {% if request.GET.task_id %}
-        window.taskStatusManager.addTask('{{ request.GET.task_id }}');
+      {% if request.GET.job_id %}
+        window.jobsManager.addJob('{{ request.GET.job_id }}');
       {% endif %}
     });
   </script>

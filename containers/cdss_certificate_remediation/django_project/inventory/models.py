@@ -1,4 +1,6 @@
 # django_project/inventory/models.py
+import uuid
+
 from django.db import models
 from django.core.validators import validate_ipv4_address, validate_ipv6_address
 
@@ -8,8 +10,19 @@ class Inventory(models.Model):
         ("PAN-OS NGFW", "PAN-OS NGFW"),
         ("Panorama", "Panorama"),
     ]
-    device_type = models.CharField(max_length=20, choices=DEVICE_CHOICES)
-    hostname = models.CharField(max_length=255, help_text="Device hostname or FQDN")
+    device_type = models.CharField(
+        max_length=20,
+        choices=DEVICE_CHOICES,
+    )
+    device_uuid = models.UUIDField(
+        unique=True,
+        default=uuid.uuid4,
+        editable=False,
+    )
+    hostname = models.CharField(
+        max_length=255,
+        help_text="Device hostname or FQDN",
+    )
     username = models.CharField(max_length=255)
     password = models.CharField(max_length=255)
 
@@ -34,6 +47,8 @@ class Inventory(models.Model):
         validators=[validate_ipv6_address],
         help_text="IPv6 address for SSH connection",
     )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return f"{self.device_type} - {self.hostname}"

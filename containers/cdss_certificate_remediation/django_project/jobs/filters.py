@@ -2,7 +2,7 @@ import django_filters
 from .models import Job
 
 
-class TaskResultFilter(django_filters.FilterSet):
+class JobFilter(django_filters.FilterSet):
     class Meta:
         model = Job
         fields = {
@@ -10,7 +10,7 @@ class TaskResultFilter(django_filters.FilterSet):
                 "exact",
                 "icontains",
             ],
-            "task_id": [
+            "job_id": [
                 "exact",
                 "icontains",
             ],

@@ -29,15 +29,15 @@ class InventoryListView(
         for item in context["object_list"]:
             item.connection_address = item.get_connection_address()
 
-        # Get active tasks
-        active_tasks = TaskResult.objects.filter(
+        # Get active jobs
+        active_jobs = TaskResult.objects.filter(
             status__in=[
                 "PENDING",
                 "STARTED",
                 "RETRY",
             ]
         )
-        context["active_tasks"] = active_tasks
+        context["active_jobs"] = active_jobs
         return context
 
 
@@ -59,11 +59,11 @@ class InventoryCreateView(
 
     def form_valid(self, form):
         response = super().form_valid(form)
-        task = run_inventory_script.delay(self.object.id)
+        job = run_inventory_script.delay(self.object.id)
         messages.success(
-            self.request, f"Inventory creation task started. Task ID: {task.id}"
+            self.request, f"Inventory creation job started. Job ID: {job.id}"
         )
-        return redirect(reverse("inventory:list") + f"?task_id={task.id}")
+        return redirect(reverse("inventory:list") + f"?job_id={job.id}")
 
     def get_success_url(self):
         return reverse("inventory:list")

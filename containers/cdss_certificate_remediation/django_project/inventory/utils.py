@@ -6,18 +6,18 @@ from asgiref.sync import async_to_sync
 logger = logging.getLogger(__name__)
 
 
-def send_task_update(task_id, status, result):
+def send_job_update(job_id, status, result):
     channel_layer = get_channel_layer()
-    group_name = f"task_{task_id}"
+    group_name = f"job_{job_id}"
     message = {
-        "type": "task_status",
-        "task_id": task_id,
+        "type": "jobs",
+        "job_id": job_id,
         "status": status,
         "result": result,
     }
-    logger.info(f"Attempting to send task update to group {group_name}: {message}")
+    logger.info(f"Attempting to send job update to group {group_name}: {message}")
     try:
         async_to_sync(channel_layer.group_send)(group_name, message)
-        logger.info(f"Successfully sent task update to group {group_name}")
+        logger.info(f"Successfully sent job update to group {group_name}")
     except Exception as e:
-        logger.error(f"Failed to send task update to group {group_name}: {str(e)}")
+        logger.error(f"Failed to send job update to group {group_name}: {str(e)}")

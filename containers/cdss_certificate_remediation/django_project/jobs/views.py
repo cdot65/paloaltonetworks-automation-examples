@@ -20,10 +20,10 @@ class JobViewSet(viewsets.ReadOnlyModelViewSet):
     ]
     filterset_fields = [
         "status",
-        "task_id",
+        "job_id",
     ]
     search_fields = [
-        "task_id",
+        "job_id",
         "status",
     ]
     ordering_fields = [

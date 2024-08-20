@@ -96,7 +96,7 @@ LOCAL_APPS = [
     "django_project.users",
     "django_project.inventory",
     "django_project.dashboard",
-    "django_project.task_results",
+    "django_project.jobs",
     # more custom apps go here
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps

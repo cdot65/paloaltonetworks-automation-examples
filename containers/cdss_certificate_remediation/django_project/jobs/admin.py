@@ -3,9 +3,9 @@ from .models import Job
 
 
 @admin.register(Job)
-class TaskResultAdmin(admin.ModelAdmin):
+class JobAdmin(admin.ModelAdmin):
     list_display = (
-        "task_id",
+        "job_id",
         "status",
         "created_at",
         "updated_at",
@@ -16,11 +16,11 @@ class TaskResultAdmin(admin.ModelAdmin):
         "updated_at",
     )
     search_fields = (
-        "task_id",
+        "job_id",
         "status",
     )
     readonly_fields = (
-        "task_id",
+        "job_id",
         "created_at",
         "updated_at",
     )

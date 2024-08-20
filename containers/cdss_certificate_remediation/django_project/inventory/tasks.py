@@ -6,7 +6,7 @@ from celery import shared_task
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
 from .models import Inventory
-from ..task_results.models import TaskResult
+from ..jobs.models import Job
 import json
 import logging
 
@@ -16,21 +16,21 @@ logger = logging.getLogger(__name__)
 @shared_task
 def run_inventory_script(inventory_id):
     channel_layer = get_channel_layer()
-    task_id = run_inventory_script.request.id
+    job_id = run_inventory_script.request.id
 
     def send_status_update(status, result=None):
-        group_name = f"task_{task_id}"
+        group_name = f"job_{job_id}"
         message = {
-            "type": "task_status",
-            "task_id": task_id,
+            "type": "jobs",
+            "job_id": job_id,
             "status": status,
             "result": result,
         }
-        logger.info(f"Sending task update to group {group_name}: {message}")
+        logger.info(f"Sending job update to group {group_name}: {message}")
         async_to_sync(channel_layer.group_send)(group_name, message)
 
-        TaskResult.objects.update_or_create(
-            task_id=task_id,
+        Job.objects.update_or_create(
+            job_id=job_id,
             defaults={
                 "status": status,
                 "result": json.dumps(result) if result else None,
@@ -63,11 +63,11 @@ def run_inventory_script(inventory_id):
         result = module.run_script(script_data)
         logger.info(f"Script result: {result}")
         send_status_update("SUCCESS", result)
-        logger.info(f"Sent SUCCESS status for task {task_id}")
+        logger.info(f"Sent SUCCESS status for job {job_id}")
         return result
     except Exception as e:
         logger.exception(f"Error in run_inventory_script: {str(e)}")
         error_result = {"error": str(e)}
         send_status_update("FAILURE", error_result)
-        logger.info(f"Sent FAILURE status for task {task_id}")
+        logger.info(f"Sent FAILURE status for job {job_id}")
         return error_result

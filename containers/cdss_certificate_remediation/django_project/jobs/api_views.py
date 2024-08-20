@@ -11,7 +11,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-class TaskResultViewSet(viewsets.ModelViewSet):
+class JobViewSet(viewsets.ModelViewSet):
     queryset = Job.objects.all()
     serializer_class = JobSerializer
     filter_backends = [
@@ -21,16 +21,16 @@ class TaskResultViewSet(viewsets.ModelViewSet):
     ]
     filterset_fields = [
         "status",
-        "task_id",
+        "job_id",
     ]
     search_fields = [
-        "task_id",
+        "job_id",
         "status",
         "result",
     ]
     ordering_fields = [
         "created_at",
-        "task_id",
+        "job_id",
         "status",
     ]
 
