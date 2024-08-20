@@ -5,21 +5,15 @@ from .models import Inventory
 @admin.register(Inventory)
 class InventoryAdmin(admin.ModelAdmin):
     list_display = (
+        "hostname",
+        "device_type",
         "device_uuid",
-        "device_type",
-        "hostname",
-        "connection_hostname",
     )
-    list_filter = (
-        "device_type",
-        "hostname",
-        "connection_hostname",
-    )
+    list_filter = ("device_type",)
     search_fields = (
-        "device_uuid",
-        "device_type",
         "hostname",
-        "connection_hostname",
+        "device_type",
+        "device_uuid",
     )
     readonly_fields = (
         "device_uuid",
