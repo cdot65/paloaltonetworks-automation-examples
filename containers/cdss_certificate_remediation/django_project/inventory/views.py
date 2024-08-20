@@ -17,9 +17,12 @@ from .models import Inventory
 from .forms import InventoryForm
 
 
-class InventoryListView(LoginRequiredMixin, ListView):
+class InventoryListView(
+    LoginRequiredMixin,
+    ListView,
+):
     model = Inventory
-    template_name = "inventory/inventory_list.html"
+    template_name = "inventory_list.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -28,21 +31,31 @@ class InventoryListView(LoginRequiredMixin, ListView):
 
         # Get active tasks
         active_tasks = TaskResult.objects.filter(
-            status__in=["PENDING", "STARTED", "RETRY"]
+            status__in=[
+                "PENDING",
+                "STARTED",
+                "RETRY",
+            ]
         )
         context["active_tasks"] = active_tasks
         return context
 
 
-class InventoryDetailView(LoginRequiredMixin, DetailView):
+class InventoryDetailView(
+    LoginRequiredMixin,
+    DetailView,
+):
     model = Inventory
-    template_name = "inventory/inventory_detail.html"
+    template_name = "inventory_detail.html"
 
 
-class InventoryCreateView(LoginRequiredMixin, CreateView):
+class InventoryCreateView(
+    LoginRequiredMixin,
+    CreateView,
+):
     model = Inventory
     form_class = InventoryForm
-    template_name = "inventory/inventory_form.html"
+    template_name = "inventory_form.html"
 
     def form_valid(self, form):
         response = super().form_valid(form)
@@ -56,14 +69,20 @@ class InventoryCreateView(LoginRequiredMixin, CreateView):
         return reverse("inventory:list")
 
 
-class InventoryUpdateView(LoginRequiredMixin, UpdateView):
+class InventoryUpdateView(
+    LoginRequiredMixin,
+    UpdateView,
+):
     model = Inventory
     form_class = InventoryForm
-    template_name = "inventory/inventory_form.html"
+    template_name = "inventory_form.html"
     success_url = reverse_lazy("inventory:list")
 
 
-class InventoryDeleteView(LoginRequiredMixin, DeleteView):
+class InventoryDeleteView(
+    LoginRequiredMixin,
+    DeleteView,
+):
     model = Inventory
-    template_name = "inventory/inventory_confirm_delete.html"
+    template_name = "inventory_confirm_delete.html"
     success_url = reverse_lazy("inventory:list")
