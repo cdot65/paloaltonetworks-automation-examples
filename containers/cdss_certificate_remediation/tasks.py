@@ -82,18 +82,11 @@ def rebuild(context):
     )
     remove_volumes = (
         f"{CONTAINER_RUNTIME} volume rm cdss_certificate_remediation_postgres_backups "
-        f"cdss_certificate_remediation_postgres_data cdss_certificate_remediation_redis_data -f"
+        f"cdss_certificate_remediation_postgres_data cdss_certificate_remediation_redis_data "
+        "cdss_certificate_remediation_postgres_data_backups -f"
     )
     build_containers = f"{CONTAINER_RUNTIME} compose -f docker-compose.local.yml build"
     start_containers = f"{CONTAINER_RUNTIME} compose -f docker-compose.local.yml up -d"
-    # collect_static = (
-    #     f"{CONTAINER_RUNTIME} compose -f docker-compose.local.yml run --rm django python manage.py "
-    #     f"collectstatic --no-input"
-    # )
-    # create_superuser = (
-    #     f"{CONTAINER_RUNTIME} compose -f docker-compose.local.yml run --rm django python manage.py "
-    #     f"createsuperuser --username admin --email admin@localhost"
-    # )
     context.run(
         f"{stop_containers} && "
         f"{remove_containers} && "

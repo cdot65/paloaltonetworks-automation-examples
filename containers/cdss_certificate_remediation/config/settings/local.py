@@ -3,6 +3,7 @@ from .base import *  # noqa: F403
 from .base import INSTALLED_APPS
 from .base import MIDDLEWARE
 from .base import env
+from corsheaders.defaults import default_headers
 
 # GENERAL
 # ------------------------------------------------------------------------------
@@ -14,7 +15,13 @@ SECRET_KEY = env(
     default="qMLhAeQl57SkU4Sh5VNDeX6EGUwxaQSPuTerZW2KDSKuq0X7TRJSAVrRzHHCbsh4",
 )
 # https://docs.djangoproject.com/en/dev/ref/settings/#allowed-hosts
-ALLOWED_HOSTS = ["localhost", "0.0.0.0", "127.0.0.1"]  # noqa: S104
+ALLOWED_HOSTS = [
+    "localhost",
+    "0.0.0.0",
+    "127.0.0.1",
+    "django.localhost",
+    "*",
+]  # noqa: S104
 
 # CACHES
 # ------------------------------------------------------------------------------
@@ -30,7 +37,8 @@ CACHES = {
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#email-backend
 EMAIL_BACKEND = env(
-    "DJANGO_EMAIL_BACKEND", default="django.core.mail.backends.console.EmailBackend",
+    "DJANGO_EMAIL_BACKEND",
+    default="django.core.mail.backends.console.EmailBackend",
 )
 
 # WhiteNoise
@@ -44,7 +52,10 @@ INSTALLED_APPS = ["whitenoise.runserver_nostatic", *INSTALLED_APPS]
 # https://django-debug-toolbar.readthedocs.io/en/latest/installation.html#prerequisites
 INSTALLED_APPS += ["debug_toolbar"]
 # https://django-debug-toolbar.readthedocs.io/en/latest/installation.html#middleware
-MIDDLEWARE += ["debug_toolbar.middleware.DebugToolbarMiddleware"]
+MIDDLEWARE += [
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
+]
 # https://django-debug-toolbar.readthedocs.io/en/latest/configuration.html#debug-toolbar-config
 DEBUG_TOOLBAR_CONFIG = {
     "DISABLE_PANELS": [
@@ -74,3 +85,31 @@ INSTALLED_APPS += ["django_extensions"]
 CELERY_TASK_EAGER_PROPAGATES = True
 # Your stuff...
 # ------------------------------------------------------------------------------
+
+# CORS settings
+CORS_ALLOW_ALL_ORIGINS = (
+    True  # This is fine for local development, but not recommended for production
+)
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOWED_ORIGINS = [
+    "https://localhost",
+    "http://localhost",
+    "https://127.0.0.1",
+    "http://127.0.0.1",
+]
+
+CORS_ALLOWED_ORIGIN_REGEXES = [
+    r"^https?://localhost:\d+$",
+]
+
+CORS_ALLOW_HEADERS = list(default_headers) + [
+    "x-requested-with",
+]
+
+# Update CSRF settings
+CSRF_TRUSTED_ORIGINS = [
+    "https://localhost",
+    "http://localhost",
+    "https://127.0.0.1",
+    "http://127.0.0.1",
+]

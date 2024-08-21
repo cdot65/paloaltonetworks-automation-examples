@@ -1,4 +1,5 @@
 #!/bin/bash
+# compose/local/django/celery/flower/start
 
 set -o errexit
 set -o nounset

@@ -49,6 +49,11 @@ urlpatterns = [
         ),
     ),
     path("accounts/", include("allauth.urls")),
+    path(
+        "health/",
+        include("django_project.health.urls"),
+        name="health",
+    ),
     # Your stuff: custom urls includes go here
     # ...
     # Media files

@@ -1,3 +1,5 @@
+# compose/local/django/Dockerfile
+
 # define an alias for the specific python version used in this file.
 FROM docker.io/python:3.12.5-slim-bookworm AS python
 
@@ -89,3 +91,4 @@ RUN chmod +x /start-flower
 COPY . ${APP_HOME}
 
 ENTRYPOINT ["/entrypoint"]
+CMD ["/start"]

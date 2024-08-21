@@ -1,4 +1,5 @@
 #!/bin/bash
+# compose/local/django/celery/beat/start
 
 set -o errexit
 set -o nounset
