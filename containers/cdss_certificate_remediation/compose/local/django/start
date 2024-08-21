@@ -4,6 +4,28 @@ set -o errexit
 set -o pipefail
 set -o nounset
 
-
+# Apply database migrations
+echo "Apply database migrations"
+python manage.py makemigrations
 python manage.py migrate
+
+# Create superuser
+echo "Create superuser"
+python manage.py createsuperuser --noinput --username admin --email "automation@example.com"
+
+# Set password for the superuser
+echo "Set password for the superuser"
+python manage.py shell <<EOF
+from django.contrib.auth import get_user_model
+User = get_user_model()
+superuser = User.objects.get(email="automation@example.com")
+superuser.set_password("paloalto123")
+superuser.save()
+EOF
+
+# Collect static files
+echo "Collect static files"
+python manage.py collectstatic --noinput
+
+
 exec uvicorn config.asgi:application --host 0.0.0.0 --reload --reload-include '*.html'

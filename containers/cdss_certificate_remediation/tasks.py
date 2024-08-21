@@ -67,31 +67,39 @@ PWD = os.getcwd()
 def build(context):
     """Build our Container images."""
     build_containers = f"{CONTAINER_RUNTIME} compose -f docker-compose.local.yml build"
-    restart_containers = f"{CONTAINER_RUNTIME} compose -f docker-compose.local.yml restart"
-    context.run(
-        f"{build_containers} && "
-        f"{restart_containers}"
+    restart_containers = (
+        f"{CONTAINER_RUNTIME} compose -f docker-compose.local.yml restart"
     )
+    context.run(f"{build_containers} && " f"{restart_containers}")
 
 
 @task()
 def rebuild(context):
     """Rebuild our Container images."""
-    stop_containers = f"{CONTAINER_RUNTIME} compose -f docker-compose.local.yml stop"
-    remove_containers = f"{CONTAINER_RUNTIME} compose -f docker-compose.local.yml rm"
-    remove_volumes = f"{CONTAINER_RUNTIME} volume rm cdss_certificate_remediation_postgres_backups cdss_certificate_remediation_postgres_data cdss_certificate_remediation_redis_data"
+    stop_containers = f"{CONTAINER_RUNTIME} compose -f docker-compose.local.yml" " stop"
+    remove_containers = (
+        f"{CONTAINER_RUNTIME} compose -f docker-compose.local.yml rm -f -v"
+    )
+    remove_volumes = (
+        f"{CONTAINER_RUNTIME} volume rm cdss_certificate_remediation_postgres_backups "
+        f"cdss_certificate_remediation_postgres_data cdss_certificate_remediation_redis_data -f"
+    )
     build_containers = f"{CONTAINER_RUNTIME} compose -f docker-compose.local.yml build"
     start_containers = f"{CONTAINER_RUNTIME} compose -f docker-compose.local.yml up -d"
-    collect_static = f"{CONTAINER_RUNTIME} compose -f docker-compose.local.yml run --rm django python manage.py collectstatic"
-    create_superuser = f"{CONTAINER_RUNTIME} compose -f docker-compose.local.yml run --rm django python manage.py createsuperuser"
+    # collect_static = (
+    #     f"{CONTAINER_RUNTIME} compose -f docker-compose.local.yml run --rm django python manage.py "
+    #     f"collectstatic --no-input"
+    # )
+    # create_superuser = (
+    #     f"{CONTAINER_RUNTIME} compose -f docker-compose.local.yml run --rm django python manage.py "
+    #     f"createsuperuser --username admin --email admin@localhost"
+    # )
     context.run(
         f"{stop_containers} && "
         f"{remove_containers} && "
         f"{remove_volumes} && "
         f"{build_containers} && "
-        f"{start_containers} && "
-        f"{collect_static} && "
-        f"{create_superuser} && "
+        f"{start_containers}"
     )
 
 
@@ -100,8 +108,4 @@ def rebuild(context):
 def logs(context):
     """Tail the logs from our Container images."""
     tail_logs = f"{CONTAINER_RUNTIME} compose -f docker-compose.local.yml logs -f"
-    context.run(
-        f"{tail_logs}"
-    )
-
-
+    context.run(f"{tail_logs}")
