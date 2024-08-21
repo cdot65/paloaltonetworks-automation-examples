@@ -22,7 +22,7 @@ class InventoryListView(
     ListView,
 ):
     model = Inventory
-    template_name = "inventory_list.html"
+    template_name = "inventory/inventory_list.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -46,7 +46,7 @@ class InventoryDetailView(
     DetailView,
 ):
     model = Inventory
-    template_name = "inventory_detail.html"
+    template_name = "inventory/inventory_detail.html"
 
 
 class InventoryCreateView(
@@ -55,7 +55,7 @@ class InventoryCreateView(
 ):
     model = Inventory
     form_class = InventoryForm
-    template_name = "inventory_form.html"
+    template_name = "inventory/inventory_form.html"
 
     def form_valid(self, form):
         response = super().form_valid(form)
@@ -75,7 +75,7 @@ class InventoryUpdateView(
 ):
     model = Inventory
     form_class = InventoryForm
-    template_name = "inventory_form.html"
+    template_name = "inventory/inventory_form.html"
     success_url = reverse_lazy("inventory:list")
 
 
@@ -84,5 +84,5 @@ class InventoryDeleteView(
     DeleteView,
 ):
     model = Inventory
-    template_name = "inventory_confirm_delete.html"
+    template_name = "inventory/inventory_confirm_delete.html"
     success_url = reverse_lazy("inventory:list")

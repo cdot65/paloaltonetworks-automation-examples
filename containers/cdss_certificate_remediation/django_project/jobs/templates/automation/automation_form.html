@@ -1,0 +1,43 @@
+{# django_project/jobs/templates/automation_form.html #}
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="container pt-4">
+    <div class="card mb-4">
+        <div class="card-header py-3">
+            <h5 class="mb-0 text-center">Create Automation Job</h5>
+        </div>
+        <div class="card-body">
+            <form method="post">
+                {% csrf_token %}
+                <div class="row g-3">
+                    <div class="col-12">
+                        <div class="mb-3">
+                            <label for="{{ form.hostnames.id_for_label }}" class="form-label">Hostnames</label>
+                            {{ form.hostnames|as_crispy_field }}
+                        </div>
+                    </div>
+                </div>
+                <div class="row g-3">
+                    <div class="col-sm-6">
+                        <div class="mb-3">
+                            <label for="{{ form.automation_script.id_for_label }}" class="form-label">Automation Script</label>
+                            {{ form.automation_script|as_crispy_field }}
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="mb-3">
+                            <label for="{{ form.dry_run.id_for_label }}" class="form-label">Dry Run</label>
+                            {{ form.dry_run|as_crispy_field }}
+                        </div>
+                    </div>
+                </div>
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-primary">Start Automation</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

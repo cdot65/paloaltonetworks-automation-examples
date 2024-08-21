@@ -1,45 +1,76 @@
 # django_project/jobs/views.py
+import uuid
 
-import logging
-from rest_framework import viewsets
-from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import filters
-from .models import Job
-from .serializers import JobSerializer
+from django.shortcuts import redirect
+from django_celery_results.models import TaskResult
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views.generic import (
+    ListView,
+    DetailView,
+    CreateView,
+    DeleteView,
+)
+from django.urls import reverse_lazy, reverse
+from django.contrib import messages
+from .tasks import run_automation_job
 
-logger = logging.getLogger(__name__)
+from .models import Job, Automation
+from .forms import AutomationForm
 
 
-class JobViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = Job.objects.all()
-    serializer_class = JobSerializer
-    filter_backends = [
-        DjangoFilterBackend,
-        filters.SearchFilter,
-        filters.OrderingFilter,
-    ]
-    filterset_fields = [
-        "status",
-        "job_id",
-    ]
-    search_fields = [
-        "job_id",
-        "status",
-    ]
-    ordering_fields = [
-        "created_at",
-        "updated_at",
-    ]
+class JobListView(LoginRequiredMixin, ListView):
+    model = Job
+    template_name = "jobs/job_list.html"
+    context_object_name = "jobs_list"
 
-    def list(self, request, *args, **kwargs):
-        logger.info(f"Request query params: {request.query_params}")
-        queryset = self.filter_queryset(self.get_queryset())
-        logger.info(f"Filtered queryset count: {queryset.count()}")
-        return super().list(request, *args, **kwargs)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
 
-    def filter_queryset(self, queryset):
-        for backend in list(self.filter_backends):
-            queryset = backend().filter_queryset(self.request, queryset, self)
-            logger.info(f"Filter backend: {backend.__name__}")
-        logger.info(f"Filtered queryset: {queryset.query}")
-        return queryset
+        # Get all jobs
+        context["jobs_list"] = Job.objects.all()
+
+        # Get active jobs
+        context["active_jobs"] = Job.objects.filter(
+            status__in=[
+                "PENDING",
+                "STARTED",
+                "RETRY",
+            ]
+        )
+        return context
+
+
+class JobDetailView(
+    LoginRequiredMixin,
+    DetailView,
+):
+    model = Job
+    template_name = "jobs/job_detail.html"
+    context_object_name = "job"
+
+
+class AutomationCreateView(LoginRequiredMixin, CreateView):
+    model = Automation
+    form_class = AutomationForm
+    template_name = "automation/automation_form.html"
+
+    def form_valid(self, form):
+        automation = form.save(commit=False)
+        job = Job.objects.create(status="PENDING")
+        automation.job = job
+        automation.save()
+        form.save_m2m()  # This saves the many-to-many relationships
+
+        run_automation_job.delay(automation.id)
+
+        messages.success(self.request, f"Automation job initiated, job id: {job.id}")
+        return redirect(reverse("jobs:job_detail", args=[job.id]))
+
+    def get_success_url(self):
+        return reverse("jobs:job_detail", args=[self.object.job.id])
+
+
+class JobDeleteView(LoginRequiredMixin, DeleteView):
+    model = Job
+    template_name = "jobs/job_confirm_delete.html"
+    success_url = reverse_lazy("jobs:job_list")
