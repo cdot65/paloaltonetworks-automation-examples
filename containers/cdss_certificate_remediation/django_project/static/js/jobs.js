@@ -15,7 +15,7 @@ class JobsManager {
             return;
         }
 
-        this.socket = new WebSocket('ws://' + window.location.host + '/ws/jobs/');
+        this.socket = new WebSocket('wss://' + window.location.host + '/ws/jobs/');
 
         this.socket.onopen = () => {
             console.log('WebSocket connection established');

@@ -46,13 +46,19 @@ services:
       - "traefik.http.routers.django.tls=true"
       - "traefik.http.services.django.loadbalancer.server.port=8000"
       - "traefik.http.services.django.loadbalancer.healthcheck.path=/health/"
-      - "traefik.http.services.django.loadbalancer.healthcheck.interval=10s"
+      - "traefik.http.services.django.loadbalancer.healthcheck.interval=30s"
       - "traefik.http.services.django.loadbalancer.healthcheck.timeout=5s"
       - "traefik.http.routers.django-http.rule=Host(`localhost`) || Host(`127.0.0.1`) || Host(`0.0.0.0`) || Host(`django.localhost`)"
       - "traefik.http.routers.django-http.entrypoints=web"
       - "traefik.http.routers.django-http.middlewares=https-redirect@docker"
       - "traefik.http.middlewares.https-redirect.redirectscheme.scheme=https"
       - "traefik.http.middlewares.https-redirect.redirectscheme.permanent=true"
+      - "traefik.http.routers.django-ws.rule=Host(`localhost`) || Host(`127.0.0.1`) || Host(`0.0.0.0`) || Host(`django.localhost`)"
+      - "traefik.http.routers.django-ws.entrypoints=websecure"
+      - "traefik.http.routers.django-ws.tls=true"
+      - "traefik.http.routers.django-ws.service=django"
+      - "traefik.http.middlewares.django-stripprefix.stripprefix.prefixes=/ws"
+      - "traefik.http.routers.django-ws.middlewares=django-stripprefix@docker"
     depends_on:
       - postgres
       - redis
