@@ -1,5 +1,7 @@
 {# django_project/jobs/templates/jobs/job_detail.html #}
 {% extends "base.html" %}
+{% load static %}
+
 {% block content %}
   <div class="container pt-4">
     <div class="card mb-4">
@@ -65,6 +67,14 @@
     // Prettify logs
     document.querySelectorAll('[id^="log-"]').forEach(elem => {
       elem.textContent = prettifyJSON(elem.textContent);
+    });
+  </script>
+  <script src="{% static 'js/jobs.js' %}"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      {% if request.GET.job_id %}
+        window.jobsManager.addJob('{{ request.GET.job_id }}');
+      {% endif %}
     });
   </script>
 {% endblock %}

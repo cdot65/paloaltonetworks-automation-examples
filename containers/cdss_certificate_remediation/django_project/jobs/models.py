@@ -1,12 +1,18 @@
 # django_project/jobs/models.py
+import uuid
 
 from django.db import models
 from django_project.inventory.models import Inventory
 
 
 class Job(models.Model):
-    job_id = models.CharField(max_length=255, unique=True)
+    job_id = models.UUIDField(
+        primary_key=True,
+        default=uuid.uuid4,
+        editable=False,
+    )
     status = models.CharField(max_length=50)
+    task_name = models.CharField(max_length=255)
     result = models.JSONField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -21,14 +27,12 @@ class JobLog(models.Model):
         related_name="logs",
         on_delete=models.CASCADE,
     )
-    log = models.JSONField(
-        null=True,
-        blank=True,
-    )
-    created_at = models.DateTimeField(auto_now_add=True)
+    timestamp = models.DateTimeField(auto_now_add=True)
+    message = models.TextField()
+    level = models.CharField(max_length=20, default="INFO")
 
     def __str__(self):
-        return f"Log for Job {self.job.job_id} at {self.created_at}"
+        return f"Log for Job {self.job.job_id} at {self.timestamp}"
 
 
 class Automation(models.Model):

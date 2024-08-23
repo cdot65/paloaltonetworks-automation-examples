@@ -13,7 +13,7 @@ urlpatterns = [
         name="job_list",
     ),
     path(
-        "<int:pk>/",
+        "<uuid:pk>/",
         JobDetailView.as_view(),
         name="job_detail",
     ),
@@ -23,7 +23,7 @@ urlpatterns = [
         name="automation_create",
     ),
     path(
-        "<int:pk>/delete/",
+        "<uuid:pk>/delete/",
         JobDeleteView.as_view(),
         name="job_delete",
     ),
