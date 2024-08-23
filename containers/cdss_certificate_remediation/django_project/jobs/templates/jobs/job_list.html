@@ -5,24 +5,41 @@
 {% block content %}
   <div class="container pt-4">
     <div class="card mb-4">
-      <div class="card-header py-3 d-flex justify-content-between align-items-center">
-        <h5 id="jobs-list" class="mb-0">All Jobs</h5>
-        <a href="{% url 'jobs:automation_create' %}" class="btn btn-primary">Create Automation Job</a>
+      <div class="card-header py-3">
+        <h5 id="jobs-list" class="mb-0 text-center">All Jobs</h5>
       </div>
-      
+
+      {% if request.GET.job_id %}
+        <div id="jobs_{{ request.GET.job_id }}" class="jobs-container">
+          <p>Job Status: <span class="jobs">Pending</span></p>
+          <div class="progress">
+            <div class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0"
+                 aria-valuemax="100">0%
+            </div>
+          </div>
+          <p>Result: <span class="job"></span></p>
+        </div>
+      {% endif %}
+
       <div class="card-body">
+
+        <div class="mb-3">
+          <a href="{% url 'jobs:automation_create' %}" class="btn btn-primary">Create Automation Job</a>
+        </div>
+
+
         <div class="table-responsive">
           <table class="table table-hover">
             <thead>
-              <tr>
-                <th>Job ID</th>
-                <th>Status</th>
-                <th>Created At</th>
-                <th>Actions</th>
-              </tr>
+            <tr>
+              <th>Job ID</th>
+              <th>Status</th>
+              <th>Created At</th>
+              <th>Actions</th>
+            </tr>
             </thead>
             <tbody>
-              {% for item in jobs_list %}
+            {% for item in jobs_list %}
               <tr>
                 <td><a href="{% url 'jobs:job_detail' item.pk %}">{{ item.job_id }}</a></td>
                 <td>{{ item.status }}</td>
@@ -32,11 +49,11 @@
                   <a href="{% url 'jobs:job_delete' item.pk %}" class="btn btn-danger btn-sm">Delete</a>
                 </td>
               </tr>
-              {% empty %}
+            {% empty %}
               <tr>
                 <td colspan="4">No jobs found.</td>
               </tr>
-              {% endfor %}
+            {% endfor %}
             </tbody>
           </table>
         </div>
