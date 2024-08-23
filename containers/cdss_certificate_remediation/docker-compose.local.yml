@@ -94,6 +94,7 @@ services:
     depends_on:
       - redis
       - postgres
+      - django
     ports: [ ]
     command: /start-celerybeat
 
@@ -117,4 +118,3 @@ volumes:
 networks:
   default:
     name: cdss_certificate_remediation_default
-
