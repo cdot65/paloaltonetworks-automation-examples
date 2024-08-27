@@ -187,6 +187,7 @@ flake8 = "^7.0.0"
 black = "^24.4.2"
 ipdb = "^0.13.13"
 ipython = "^8.24.0"
+invoke = "^2.2.0"
 
 [build-system]
 requires = ["poetry-core"]

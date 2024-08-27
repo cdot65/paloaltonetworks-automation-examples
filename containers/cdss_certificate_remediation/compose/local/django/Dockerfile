@@ -1,3 +1,5 @@
+# compose/local/django/Dockerfile
+
 # define an alias for the specific python version used in this file.
 FROM docker.io/python:3.12.5-slim-bookworm AS python
 
@@ -51,6 +53,8 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
   libpq-dev \
   # Translations dependencies
   gettext \
+  # postgresql-client \
+  postgresql-client \
   # cleaning up unused files
   && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false \
   && rm -rf /var/lib/apt/lists/*
@@ -89,3 +93,4 @@ RUN chmod +x /start-flower
 COPY . ${APP_HOME}
 
 ENTRYPOINT ["/entrypoint"]
+CMD ["/start"]

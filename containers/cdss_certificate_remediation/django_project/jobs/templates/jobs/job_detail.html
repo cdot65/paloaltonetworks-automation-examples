@@ -1,0 +1,80 @@
+{# django_project/jobs/templates/jobs/job_detail.html #}
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+  <div class="container pt-4">
+    <div class="card mb-4">
+      <div class="card-header py-3">
+        <h5 class="mb-0 text-center">Job Detail</h5>
+      </div>
+      <div class="card-body">
+        <dl class="row">
+          <dt class="col-sm-3">Job ID</dt>
+          <dd class="col-sm-9">{{ object.job_id }}</dd>
+
+          <dt class="col-sm-3">Status</dt>
+          <dd class="col-sm-9">{{ object.status }}</dd>
+
+          <dt class="col-sm-3">Created At</dt>
+          <dd class="col-sm-9">{{ object.created_at }}</dd>
+
+          <dt class="col-sm-3">Updated At</dt>
+          <dd class="col-sm-9">{{ object.updated_at }}</dd>
+
+          <dt class="col-sm-3">Result</dt>
+          <dd class="col-sm-9">{{ object.result|json_script:"job-result" }}</dd>
+        </dl>
+        <div class="mt-3">
+          <a href="{% url 'jobs:job_delete' object.pk %}" class="btn btn-danger">Delete</a>
+          <a href="{% url 'jobs:job_list' %}" class="btn btn-secondary">Back to List</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="card mb-4">
+      <div class="card-header py-3">
+        <h5 class="mb-0 text-center">Job Logs</h5>
+      </div>
+      <div class="card-body">
+        <ul class="list-group">
+          {% for log in object.logs.all %}
+            <li class="list-group-item">
+              <strong>{{ log.created_at }}</strong>: {{ log.log|json_script:"log-" }}
+            </li>
+          {% empty %}
+            <li class="list-group-item">No logs available.</li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block extra_js %}
+  <script>
+    // Function to prettify JSON
+    function prettifyJSON(json) {
+      return JSON.stringify(JSON.parse(json), null, 2);
+    }
+
+    // Prettify job result
+    const jobResultElem = document.getElementById('job-result');
+    if (jobResultElem) {
+      jobResultElem.textContent = prettifyJSON(jobResultElem.textContent);
+    }
+
+    // Prettify logs
+    document.querySelectorAll('[id^="log-"]').forEach(elem => {
+      elem.textContent = prettifyJSON(elem.textContent);
+    });
+  </script>
+  <script src="{% static 'js/jobs.js' %}"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      {% if request.GET.job_id %}
+        window.jobsManager.addJob('{{ request.GET.job_id }}');
+      {% endif %}
+    });
+  </script>
+{% endblock %}

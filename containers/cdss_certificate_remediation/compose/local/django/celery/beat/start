@@ -1,8 +1,31 @@
 #!/bin/bash
+# compose/local/django/celery/beat/start
 
 set -o errexit
 set -o nounset
 
+# Database connection details
+DB_HOST="${POSTGRES_HOST}"
+DB_PORT="${POSTGRES_PORT}"
+DB_NAME="${POSTGRES_DB}"
+DB_USER="${POSTGRES_USER}"
+DB_PASSWORD="${POSTGRES_PASSWORD}"
 
+# Export PGPASSWORD for the psql command to use
+export PGPASSWORD="$DB_PASSWORD"
+
+# Function to check if the database table exists
+check_table_exists() {
+  psql -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -d "$DB_NAME" -tAc "SELECT 1 FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'django_celery_beat_periodictask';" | grep -q 1
+}
+
+# Wait until the table 'django_celery_beat_periodictask' exists
+echo "Checking for migrations to complete..."
+while ! check_table_exists; do
+  echo "Table 'django_celery_beat_periodictask' not found. Waiting..."
+  sleep 5
+done
+
+echo "Table 'django_celery_beat_periodictask' found. Starting Celery Beat..."
 rm -f './celerybeat.pid'
 exec watchfiles --filter python celery.__main__.main --args '-A config.celery_app beat -l INFO'

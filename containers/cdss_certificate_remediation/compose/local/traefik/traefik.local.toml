@@ -1,0 +1,48 @@
+[entryPoints]
+[entryPoints.web]
+address = ":80"
+[entryPoints.websecure]
+address = ":443"
+
+[api]
+insecure = true
+dashboard = true
+
+[providers.docker]
+exposedByDefault = false
+network = "cdss_certificate_remediation_default"
+
+[[tls.certificates]]
+certFile = "/etc/traefik/certs/traefik-local.crt"
+keyFile = "/etc/traefik/certs/traefik-local.key"
+
+[http.routers]
+[http.routers.django]
+rule = "Host(`localhost`) || Host(`127.0.0.1`) || Host(`0.0.0.0`) || Host(`django.localhost`)"
+service = "django"
+[http.routers.django.tls]
+
+[http.routers.django-ws]
+rule = "Host(`localhost`) || Host(`127.0.0.1`) || Host(`0.0.0.0`) || Host(`django.localhost`)"
+service = "django"
+[http.routers.django-ws.tls]
+
+[http.services]
+[http.services.django.loadBalancer]
+[[http.services.django.loadBalancer.servers]]
+url = "http://django:8000"
+
+[http.middlewares]
+[http.middlewares.https-redirect.redirectScheme]
+scheme = "https"
+permanent = true
+
+[http.middlewares.django-stripprefix.stripPrefix]
+prefixes = ["/ws"]
+
+[websocket]
+[websocket.routers]
+[websocket.routers.django-ws]
+rule = "Host(`localhost`) || Host(`127.0.0.1`) || Host(`0.0.0.0`) || Host(`django.localhost`)"
+service = "django"
+middlewares = ["django-stripprefix"]

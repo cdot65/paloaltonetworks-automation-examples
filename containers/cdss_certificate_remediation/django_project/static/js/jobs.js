@@ -1,4 +1,18 @@
+/**
+ * JobsManager class
+ *
+ * This class manages WebSocket connections for job status updates.
+ * It handles connection lifecycle, job subscriptions, and UI updates.
+ * The browser loads this script through the template, and it initializes
+ * when the DOM is fully loaded. It creates a WebSocket connection to the
+ * server, subscribes to job updates, and manages the connection state,
+ * including automatic reconnection attempts on disconnection.
+ */
 class JobsManager {
+    /**
+     * Initializes the JobsManager instance.
+     * Sets up initial state and attempts to establish a WebSocket connection.
+     */
     constructor() {
         this.jobs = new Map();
         this.socket = null;
@@ -9,13 +23,17 @@ class JobsManager {
         this.connect();
     }
 
+    /**
+     * Establishes a WebSocket connection to the server.
+     * Handles connection lifecycle events (open, message, close, error).
+     */
     connect() {
         if (this.socket && (this.socket.readyState === WebSocket.CONNECTING || this.socket.readyState === WebSocket.OPEN)) {
             console.log('WebSocket already connecting or connected');
             return;
         }
 
-        this.socket = new WebSocket('ws://' + window.location.host + '/ws/jobs/');
+        this.socket = new WebSocket('wss://' + window.location.host + '/ws/jobs/');
 
         this.socket.onopen = () => {
             console.log('WebSocket connection established');
@@ -41,6 +59,10 @@ class JobsManager {
         };
     }
 
+    /**
+     * Handles reconnection attempts when the WebSocket connection is closed.
+     * Implements an exponential backoff strategy for reconnection.
+     */
     handleReconnect() {
         if (this.reconnectAttempts < this.maxReconnectAttempts) {
             this.reconnectAttempts++;
@@ -51,6 +73,11 @@ class JobsManager {
         }
     }
 
+    /**
+     * Sends a job subscription request to the server.
+     * If the WebSocket is not ready, it queues the subscription for later processing.
+     * @param {string} jobId - The ID of the job to subscribe to.
+     */
     sendJobSubscription(jobId) {
         if (this.socket && this.socket.readyState === WebSocket.OPEN) {
             console.log('Subscribing to job:', jobId);
@@ -61,6 +88,10 @@ class JobsManager {
         }
     }
 
+    /**
+     * Processes any pending job subscriptions.
+     * Called when the WebSocket connection is established.
+     */
     processPendingSubscriptions() {
         this.pendingSubscriptions.forEach(jobId => {
             this.sendJobSubscription(jobId);
@@ -68,6 +99,11 @@ class JobsManager {
         this.pendingSubscriptions.clear();
     }
 
+    /**
+     * Adds a new job to be managed by the JobsManager.
+     * Subscribes to updates for the job if the corresponding DOM element exists.
+     * @param {string} jobId - The ID of the job to add.
+     */
     addJob(jobId) {
         console.log(`Adding job: ${jobId}`);
         if (!this.jobs.has(jobId)) {
@@ -81,6 +117,10 @@ class JobsManager {
         }
     }
 
+    /**
+     * Updates the UI based on received job status data.
+     * @param {Object} data - The job status data received from the server.
+     */
     updateUI(data) {
         const container = this.jobs.get(data.job_id);
         if (!container) return;
@@ -121,11 +161,14 @@ class JobsManager {
     }
 }
 
-// Initialize the JobsManager when the DOM is loaded
+/**
+ * Initializes the JobsManager when the DOM is fully loaded.
+ * Adds all jobs found in the DOM to the JobsManager.
+ */
 document.addEventListener('DOMContentLoaded', () => {
     window.jobsManager = new JobsManager();
     document.querySelectorAll('[id^="jobs_"]').forEach(container => {
-        const jobId = container.id.split('_')[1];
+        const jobId = container.id.replace('jobs_', '');
         window.jobsManager.addJob(jobId);
     });
 });

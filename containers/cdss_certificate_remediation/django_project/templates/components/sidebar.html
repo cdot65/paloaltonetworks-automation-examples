@@ -12,7 +12,10 @@
          class="list-group-item list-group-item-action py-2 ripple {% if request.resolver_match.namespace == 'inventory' %}active{% endif %}">
         <i class="fas fa-chart-area fa-fw me-3"></i><span>{% translate "Inventory" %}</span>
       </a>
-      <!-- Add more menu items as needed -->
+      <a href="{% url 'jobs:job_list' %}"
+         class="list-group-item list-group-item-action py-2 ripple {% if request.resolver_match.namespace == 'jobs' %}active{% endif %}">
+        <i class="fas fa-book fa-fw me-3"></i><span>{% translate "Jobs" %}</span>
+      </a>
     </div>
   </div>
 </nav>

@@ -1,36 +1,73 @@
-volumes:
-  postgres_data:
-    name: cdss_certificate_remediation_postgres_data
-  postgres_data_backups:
-    name: cdss_certificate_remediation_postgres_backups
-  redis_data:
-    name: cdss_certificate_remediation_redis_data
-
 services:
+  traefik:
+    build:
+      context: ./compose/local/traefik
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8080:8080"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+    labels:
+      - "traefik.http.middlewares.https-redirect.redirectscheme.scheme=https"
+      - "traefik.http.middlewares.https-redirect.redirectscheme.permanent=true"
+
+  nginx:
+    build:
+      context: .
+      dockerfile: ./compose/local/nginx/Dockerfile
+    volumes:
+      - ./django_project/media:/usr/share/nginx/media:ro
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.nginx.rule=Host(`django.localhost`) && PathPrefix(`/media/`)"
+      - "traefik.http.routers.nginx.tls=true"
+      - "traefik.http.services.nginx.loadbalancer.server.port=80"
+
   django: &django
     build:
       context: .
       dockerfile: ./compose/local/django/Dockerfile
     image: cdss_certificate_remediation_local_django
-    container_name: cdss_certificate_remediation_local_django
-    depends_on:
-      - postgres
-      - redis
     volumes:
       - .:/app:z
+      - ./django_project/media:/app/django_project/media
+    environment:
+      - DJANGO_SETTINGS_MODULE=config.settings.local
+      - DJANGO_DEBUG=True
     env_file:
       - ./.envs/.local/.django
       - ./.envs/.local/.postgres
-    ports:
-      - '8000:8000'
-    command: /start
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.django.rule=Host(`localhost`) || Host(`127.0.0.1`) || Host(`0.0.0.0`) || Host(`django.localhost`)"
+      - "traefik.http.routers.django.entrypoints=websecure"
+      - "traefik.http.routers.django.tls=true"
+      - "traefik.http.services.django.loadbalancer.server.port=8000"
+      - "traefik.http.services.django.loadbalancer.healthcheck.path=/health/"
+      - "traefik.http.services.django.loadbalancer.healthcheck.interval=30s"
+      - "traefik.http.services.django.loadbalancer.healthcheck.timeout=5s"
+      - "traefik.http.routers.django-http.rule=Host(`localhost`) || Host(`127.0.0.1`) || Host(`0.0.0.0`) || Host(`django.localhost`)"
+      - "traefik.http.routers.django-http.entrypoints=web"
+      - "traefik.http.routers.django-http.middlewares=https-redirect@docker"
+      - "traefik.http.middlewares.https-redirect.redirectscheme.scheme=https"
+      - "traefik.http.middlewares.https-redirect.redirectscheme.permanent=true"
+      - "traefik.http.routers.django-ws.rule=Host(`localhost`) || Host(`127.0.0.1`) || Host(`0.0.0.0`) || Host(`django.localhost`)"
+      - "traefik.http.routers.django-ws.entrypoints=websecure"
+      - "traefik.http.routers.django-ws.tls=true"
+      - "traefik.http.routers.django-ws.service=django"
+      - "traefik.http.middlewares.django-stripprefix.stripprefix.prefixes=/ws"
+      - "traefik.http.routers.django-ws.middlewares=django-stripprefix@docker"
+    depends_on:
+      - postgres
+      - redis
 
   postgres:
     build:
       context: .
       dockerfile: ./compose/production/postgres/Dockerfile
     image: cdss_certificate_remediation_production_postgres
-    container_name: cdss_certificate_remediation_local_postgres
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - postgres_data_backups:/backups
@@ -39,34 +76,45 @@ services:
 
   redis:
     image: docker.io/redis:6
-    container_name: cdss_certificate_remediation_local_redis
     volumes:
       - redis_data:/data
 
   celeryworker:
     <<: *django
     image: cdss_certificate_remediation_local_celeryworker
-    container_name: cdss_certificate_remediation_local_celeryworker
     depends_on:
       - redis
       - postgres
-    ports: []
+    ports: [ ]
     command: /start-celeryworker
 
   celerybeat:
     <<: *django
     image: cdss_certificate_remediation_local_celerybeat
-    container_name: cdss_certificate_remediation_local_celerybeat
     depends_on:
       - redis
       - postgres
-    ports: []
+      - django
+    ports: [ ]
     command: /start-celerybeat
 
   flower:
     <<: *django
     image: cdss_certificate_remediation_local_flower
-    container_name: cdss_certificate_remediation_local_flower
     ports:
-      - '5555:5555'
+      - "5555:5555"
     command: /start-flower
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.flower.rule=Host(`flower.localhost`)"
+      - "traefik.http.routers.flower.tls=true"
+      - "traefik.http.services.flower.loadbalancer.server.port=5555"
+
+volumes:
+  postgres_data:
+  postgres_data_backups:
+  redis_data:
+
+networks:
+  default:
+    name: cdss_certificate_remediation_default

@@ -6,7 +6,7 @@ from .models import Inventory
 from .serializers import InventorySerializer
 
 
-class InventoryViewSet(viewsets.ModelViewSet):
+class InventoryApiViewSet(viewsets.ModelViewSet):
     queryset = Inventory.objects.all()
     serializer_class = InventorySerializer
     filter_backends = [filters.SearchFilter, filters.OrderingFilter]

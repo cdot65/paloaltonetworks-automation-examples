@@ -2,13 +2,29 @@
 
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from .views import JobViewSet
-
-router = DefaultRouter()
-router.register(r"jobs", JobViewSet)
+from .views import JobListView, JobDeleteView, JobDetailView, AutomationCreateView
 
 app_name = "jobs"
 
 urlpatterns = [
-    path("", include(router.urls)),
+    path(
+        "",
+        JobListView.as_view(),
+        name="job_list",
+    ),
+    path(
+        "<uuid:pk>/",
+        JobDetailView.as_view(),
+        name="job_detail",
+    ),
+    path(
+        "create/",
+        AutomationCreateView.as_view(),
+        name="automation_create",
+    ),
+    path(
+        "<uuid:pk>/delete/",
+        JobDeleteView.as_view(),
+        name="job_delete",
+    ),
 ]

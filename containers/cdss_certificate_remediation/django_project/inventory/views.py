@@ -10,8 +10,6 @@ from django.views.generic import (
     DeleteView,
 )
 from django.urls import reverse_lazy, reverse
-from django.contrib import messages
-from .tasks import run_inventory_script
 
 from .models import Inventory
 from .forms import InventoryForm
@@ -22,7 +20,7 @@ class InventoryListView(
     ListView,
 ):
     model = Inventory
-    template_name = "inventory_list.html"
+    template_name = "inventory/inventory_list.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -46,7 +44,7 @@ class InventoryDetailView(
     DetailView,
 ):
     model = Inventory
-    template_name = "inventory_detail.html"
+    template_name = "inventory/inventory_detail.html"
 
 
 class InventoryCreateView(
@@ -55,15 +53,11 @@ class InventoryCreateView(
 ):
     model = Inventory
     form_class = InventoryForm
-    template_name = "inventory_form.html"
+    template_name = "inventory/inventory_form.html"
 
     def form_valid(self, form):
         response = super().form_valid(form)
-        job = run_inventory_script.delay(self.object.id)
-        messages.success(
-            self.request, f"Inventory creation job started. Job ID: {job.id}"
-        )
-        return redirect(reverse("inventory:list") + f"?job_id={job.id}")
+        return redirect(reverse("inventory:list"))
 
     def get_success_url(self):
         return reverse("inventory:list")
@@ -75,7 +69,7 @@ class InventoryUpdateView(
 ):
     model = Inventory
     form_class = InventoryForm
-    template_name = "inventory_form.html"
+    template_name = "inventory/inventory_form.html"
     success_url = reverse_lazy("inventory:list")
 
 
@@ -84,5 +78,5 @@ class InventoryDeleteView(
     DeleteView,
 ):
     model = Inventory
-    template_name = "inventory_confirm_delete.html"
+    template_name = "inventory/inventory_confirm_delete.html"
     success_url = reverse_lazy("inventory:list")
