@@ -10,8 +10,6 @@ from django.views.generic import (
     DeleteView,
 )
 from django.urls import reverse_lazy, reverse
-from django.contrib import messages
-from .tasks import run_inventory_script
 
 from .models import Inventory
 from .forms import InventoryForm
@@ -59,11 +57,7 @@ class InventoryCreateView(
 
     def form_valid(self, form):
         response = super().form_valid(form)
-        job = run_inventory_script.delay(self.object.id)
-        messages.success(
-            self.request, f"Inventory creation job started. Job ID: {job.id}"
-        )
-        return redirect(reverse("inventory:list") + f"?job_id={job.id}")
+        return redirect(reverse("inventory:list"))
 
     def get_success_url(self):
         return reverse("inventory:list")
