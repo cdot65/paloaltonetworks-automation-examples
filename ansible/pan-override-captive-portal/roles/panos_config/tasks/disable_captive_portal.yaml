@@ -1,0 +1,16 @@
+---
+- name: Configure captive portal override
+  ansible.builtin.uri:
+    url: "https://{{ ansible_host }}/api"
+    method: POST
+    body_format: form-urlencoded
+    body:
+      key: "{{ api_key }}"
+      type: "config"
+      action: "edit"
+      xpath: "/config/devices/entry[@name='localhost.localdomain']/vsys/entry[@name='vsys1']/captive-portal"
+      element: "<captive-portal><timer>120</timer><idle-timer>20</idle-timer><mode><transparent/></mode><enable-captive-portal>no</enable-captive-portal></captive-portal>"
+    headers:
+      Content-Type: "application/x-www-form-urlencoded"
+    validate_certs: no
+  register: api_response

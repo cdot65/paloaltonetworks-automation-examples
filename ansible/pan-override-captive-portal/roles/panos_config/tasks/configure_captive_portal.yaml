@@ -1,0 +1,5 @@
+---
+- name: Configure captive portal override
+  ansible.netcommon.cli_config:
+    config: override captive-portal
+  register: cli_result
