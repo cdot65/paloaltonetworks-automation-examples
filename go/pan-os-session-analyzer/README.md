@@ -56,12 +56,14 @@ This Go script retrieves and displays session information from Palo Alto Network
 
     ```
     git clone https://github.com/cdot65/paloaltonetworks-automation-examples.git
-    cd go/pan-os-session-analyzer
+    cd paloaltonetworks-automation-examples/go/pan-os-session-analyzer
     ```
 
 2. Build the binary:
 
     ```
+    go mod init github.com/cdot65/pan-os-session-analyzer
+    go mod tidy
     go build -o pan-os-session-analyzer
     ```
 
@@ -93,18 +95,7 @@ This Go script retrieves and displays session information from Palo Alto Network
 Run the script with the following command:
 
     ```
-    ./pan-os-session-analyzer [flags]
-    ```
-
-Available flags:
-
-- `-config string`: Path to the settings file (default "settings.yaml")
-- `-secrets string`: Path to the secrets file (default ".secrets.yaml")
-
-Example:
-
-    ```
-    ./pan-os-session-analyzer -config custom-settings.yaml -secrets custom-secrets.yaml
+    ./pan-os-session-analyzer
     ```
 
 ## Output
@@ -121,6 +112,11 @@ The script will display:
    - State
 
 ## Screenshots
+
+Here are some screenshots showcasing the execution:
+
+![Screenshot 1](docs/screenshots/execute.png)
+_execute the binary_
 
 
 
