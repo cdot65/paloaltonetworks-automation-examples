@@ -24,13 +24,14 @@ type Secrets struct {
 
 // SessionEntry represents a single session entry in the XML response
 type SessionEntry struct {
-	XMLName     xml.Name `xml:"entry"`
-	ID          string   `xml:"idx"`
-	StartTime   string   `xml:"start-time"`
-	Source      string   `xml:"source"`
-	Destination string   `xml:"dst"`
-	Application string   `xml:"application"`
-	State       string   `xml:"state"`
+	XMLName        xml.Name `xml:"entry"`
+	ID             string   `xml:"idx"`
+	StartTime      string   `xml:"start-time"`
+	Source         string   `xml:"source"`
+	Destination    string   `xml:"dst"`
+	Application    string   `xml:"application"`
+	State          string   `xml:"state"`
+	TotalByteCount int      `xml:"total-byte-count"`
 }
 
 // SessionResponse represents the entire XML response structure
@@ -97,6 +98,7 @@ func main() {
 			fmt.Printf("  Destination: %s\n", entry.Destination)
 			fmt.Printf("  Application: %s\n", entry.Application)
 			fmt.Printf("  State: %s\n", entry.State)
+			fmt.Printf("  Total Byte Count: %d (%.2f MB)\n", entry.TotalByteCount, float64(entry.TotalByteCount)/(1024*1024))
 			fmt.Println("------------------------------------")
 		}
 	}
