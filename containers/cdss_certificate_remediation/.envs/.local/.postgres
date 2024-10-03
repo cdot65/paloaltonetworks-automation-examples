@@ -1,8 +1,0 @@
-# .envs/.local/.postgres
-# PostgreSQL
-# ------------------------------------------------------------------------------
-POSTGRES_HOST=postgres
-POSTGRES_PORT=5432
-POSTGRES_DB=cdss_certificate_remediation
-POSTGRES_USER=mUCXwAwCFRJsQOMuHxeenmfkVsTEvgyd
-POSTGRES_PASSWORD=EuN3KVIGbHkPqvOPMrNuq38MCF953dfzqyFQ1QMCJANyxVZqcVOQndkZImFppeMe
