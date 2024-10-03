@@ -1,0 +1,27 @@
+controller:
+  # Expose Jenkins via a LoadBalancer Service
+  serviceType: LoadBalancer
+  loadBalancerIP: 172.16.0.75
+  # Disable ingress since we're using a LoadBalancer
+  ingress:
+    enabled: false
+  # Optionally adjust resource requests and limits
+  resources:
+    requests:
+      cpu: "500m"
+      memory: "1024Mi"
+    limits:
+      cpu: "2000m"
+      memory: "4096Mi"
+
+persistence:
+  enabled: true
+  # Use the default storage class provided by k3s (usually 'local-path')
+  storageClass: "local-path"
+  size: "20Gi"  # Adjust the size as needed
+
+rbac:
+  create: true  # Ensure RBAC resources are created
+
+serviceAccount:
+  create: true
