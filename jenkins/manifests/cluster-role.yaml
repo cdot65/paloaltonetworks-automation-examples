@@ -1,0 +1,9 @@
+# cluster-role.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: jenkins-agent-role
+rules:
+  - apiGroups: [ "", "apps", "batch" ]
+    resources: [ "pods", "pods/log", "deployments", "jobs", "namespaces" ]
+    verbs: [ "get", "list", "watch", "create", "delete", "patch" ]
