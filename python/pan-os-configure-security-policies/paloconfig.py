@@ -8,11 +8,26 @@ from utils import logger
 
 
 class PaloConfig:
+    """
+    A class to manage the configuration of Palo Alto Networks Panorama.
+
+    This class provides methods to interact with Panorama, including creating device groups,
+    adding security rules, and committing changes to Panorama and device groups.
+
+    Attributes:
+        panorama (Panorama): The Panorama instance to interact with.
+    """
+
     def __init__(
         self,
         panorama: Panorama,
     ):
-        # Initialize the PaloConfig class with a Panorama object to interact with Panorama
+        """
+        Initialize the PaloConfig class with a Panorama object.
+
+        Args:
+            panorama (Panorama): The Panorama instance to interact with.
+        """
         self.panorama: Panorama = panorama
 
     @staticmethod
@@ -21,10 +36,22 @@ class PaloConfig:
         object_type,
         object_name: str,
     ) -> None:
-        # Find all objects of the given type in the device group
+        """
+        Find and create objects of a given type in a device group, and log the action.
+
+        Args:
+            device_group (DeviceGroup): The device group to search for objects.
+            object_type: The type of objects to find and create.
+            object_name (str): The name of the object type for logging purposes.
+
+        Returns:
+            None
+
+        Logs:
+            Information about the number of objects created or warnings if none found.
+        """
         objects = device_group.findall(object_type)
         if objects:
-            # If objects are found, create similar ones in bulk
             objects[0].create_similar()
             logger.info(f"Bulk created {len(objects)} {object_name}")
         else:
@@ -38,14 +65,29 @@ class PaloConfig:
         admins=None,
         device_groups=None,
     ):
+        """
+        Commit changes to Panorama with the given parameters.
+
+        Args:
+            description (str, optional): Description for the commit.
+            admins (list[str], optional): List of admin usernames to include in the commit.
+            device_groups (list[str], optional): List of device groups to include in the commit.
+
+        Raises:
+            PanDeviceError: If the commit operation fails.
+
+        Returns:
+            None
+
+        Logs:
+            Information about the success or failure of the commit operation.
+        """
         try:
-            # Create a PanoramaCommit object with the provided parameters
             commit_panorama = PanoramaCommit(
                 description=description,
                 admins=admins,
                 device_groups=device_groups,
             )
-            # Commit the changes to Panorama
             self.panorama.commit(cmd=commit_panorama)
             logger.info("Successfully committed changes to Panorama")
         except PanDeviceError as e:
@@ -62,8 +104,28 @@ class PaloConfig:
         force_template_values=None,
         devices=None,
     ):
+        """
+        Commit changes across multiple device groups or templates.
+
+        Args:
+            style (str): The style of the commit (e.g., 'device group', 'template').
+            name (str): The name of the device group or template.
+            description (str, optional): Description for the commit.
+            admins (list[str], optional): List of admin usernames to include in the commit.
+            include_template (bool, optional): Whether to include templates in the commit.
+            force_template_values (bool, optional): Force template values during commit.
+            devices (list[str], optional): List of devices to include in the commit.
+
+        Raises:
+            PanDeviceError: If the commit-all operation fails.
+
+        Returns:
+            None
+
+        Logs:
+            Information about the success or failure of the commit-all operation.
+        """
         try:
-            # Create a PanoramaCommitAll object to commit changes across multiple device groups or templates
             commit_all = PanoramaCommitAll(
                 style=style,
                 name=name,
@@ -73,7 +135,6 @@ class PaloConfig:
                 force_template_values=force_template_values,
                 devices=devices,
             )
-            # Commit the changes to all specified targets
             self.panorama.commit(cmd=commit_all)
             logger.info(f"Successfully committed changes to {style}: {name}")
         except PanDeviceError as e:
@@ -84,10 +145,23 @@ class PaloConfig:
         self,
         name: str,
     ) -> Optional[DeviceGroup]:
+        """
+        Create a device group in Panorama.
+
+        Args:
+            name (str): The name of the device group to create.
+
+        Returns:
+            DeviceGroup: The created DeviceGroup object, or None if creation fails.
+
+        Raises:
+            PanDeviceError: If the device group creation fails.
+
+        Logs:
+            Information about the success or failure of the device group creation.
+        """
         try:
-            # Create a new DeviceGroup object with the specified name
             device_group = DeviceGroup(name)
-            # Attach the device group to the Panorama object
             self.panorama.add(device_group)
             logger.info(
                 f"Successfully attached {name} device group object to Panorama object"
@@ -102,41 +176,36 @@ class PaloConfig:
         security_rule_configuration: List[Dict[str, Any]],
         device_group: DeviceGroup,
     ) -> None:
+        """
+        Configure security rules in a given device group.
+
+        Args:
+            security_rule_configuration (List[Dict[str, Any]]): List of security rule configurations.
+            device_group (DeviceGroup): The device group to add the security rules to.
+
+        Returns:
+            None
+
+        Logs:
+            Information about the success or failure of adding security rules.
+
+        Raises:
+            PanDeviceError: If there is an error in creating security rules.
+        """
         if not security_rule_configuration:
-            # Log a warning if no security rule configuration is provided
             logger.warning(
                 f"No security rule configuration found for {device_group.name} device group"
             )
             return
 
         try:
-            # Create a PreRulebase object and add it to the device group
             pre_rulebase = PreRulebase()
             device_group.add(pre_rulebase)
 
-            # Iterate through the provided security rule configurations
             for rule_config in security_rule_configuration:
-                # Create a SecurityRule object with the given parameters
-                security_rule = SecurityRule(
-                    name=rule_config["name"],
-                    fromzone=rule_config["fromzone"],
-                    tozone=rule_config["tozone"],
-                    source=rule_config["source"],
-                    destination=rule_config["destination"],
-                    application=rule_config["application"],
-                    service=rule_config["service"],
-                    action=rule_config["action"],
-                    description=rule_config.get("description", ""),
-                    tag=rule_config.get("tag", []),
-                    disabled=rule_config.get("disabled", False),
-                    log_setting=rule_config.get("log_setting"),
-                    group=rule_config.get("group"),
-                    category=rule_config.get("category"),
-                )
-                # Add the security rule to the PreRulebase
+                security_rule = SecurityRule(**rule_config)
                 pre_rulebase.add(security_rule)
 
-            # Find all security rules in the PreRulebase and create similar ones in bulk if possible
             security_rules = pre_rulebase.findall(SecurityRule)
             if security_rules:
                 security_rules[0].create_similar()

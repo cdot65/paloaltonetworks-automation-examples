@@ -51,8 +51,8 @@ def parse_arguments():
     )
     parser.add_argument(
         "--device-group",
-        required=True,
-        help="Device group name",
+        default="shared",
+        help="Device group name (default: shared)",
     )
     parser.add_argument(
         "--rule-name",
@@ -66,9 +66,8 @@ def parse_arguments():
     )
     parser.add_argument(
         "--rule-tag",
-        nargs="*",
-        default=[],
-        help="Security rule tags",
+        default="",
+        help="Security rule tags (comma-separated list)",
     )
     parser.add_argument(
         "--rule-disabled",
@@ -213,13 +212,20 @@ def main():
             "application": args.rule_application,
             "service": args.rule_service,
             "action": args.rule_action,
-            "description": args.rule_description,
-            "tag": args.rule_tag,
             "disabled": args.rule_disabled,
-            "log_setting": args.rule_log_setting,
-            "group": args.rule_security_profile_group,
-            "category": args.rule_category,
         }
+
+        # Add optional arguments if they are provided
+        if args.rule_description:
+            security_rule_config["description"] = args.rule_description
+        if args.rule_tag:
+            security_rule_config["tag"] = args.rule_tag
+        if args.rule_log_setting:
+            security_rule_config["log_setting"] = args.rule_log_setting
+        if args.rule_security_profile_group:
+            security_rule_config["group"] = args.rule_security_profile_group
+        if args.rule_category:
+            security_rule_config["category"] = args.rule_category
 
         # Configure security rule
         panorama_config.security_rules(
