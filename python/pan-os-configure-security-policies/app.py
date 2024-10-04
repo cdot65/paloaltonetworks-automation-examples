@@ -281,14 +281,17 @@ def main():
             admins=[args.username],
             include_template=True,
         )
-        return json.loads('{"status": "completed"}')
+        print('{"status": "completed"}')  # Print JSON to stdout
+        return 0
 
     except PanDeviceError as e:
         logger.critical(f"Critical error in PAN-OS operations: {e}")
-        return json.loads('{"status": "errored"}')
+        print('{"status": "errored"}')  # Print JSON to stdout
+        return 1
     except Exception as e:
         logger.critical(f"Unexpected error occurred: {e}")
-        return json.loads('{"status": "errored"}')
+        print('{"status": "errored"}')  # Print JSON to stdout
+        return 1
 
 
 if __name__ == "__main__":
