@@ -46,9 +46,9 @@ spec:
         string(name: 'DEVICE_GROUP', defaultValue: '', description: 'Panorama device group')
         string(name: 'ADDRESS_NAME', defaultValue: '', description: 'Address object name')
         string(name: 'ADDRESS_TYPE', defaultValue: '', description: 'Address object type')
+        string(name: 'ADDRESS_TAGS', defaultValue: '', description: 'Address tags')
         string(name: 'ADDRESS_VALUE', defaultValue: '', description: 'Address object value')
         string(name: 'ADDRESS_DESCRIPTION', defaultValue: '', description: 'Address description')
-        string(name: 'ADDRESS_TAGS', defaultValue: '', description: 'Address tags')
     }
     environment {
         NAMESPACE = "jenkins-pipeline-${env.BUILD_NUMBER}"
@@ -71,15 +71,6 @@ spec:
                     script {
                         sh """
                             cd paloaltonetworks-automation-examples/python/pan-os-configure-security-policies
-                            string(name: 'HOSTNAME', defaultValue: 'panorama1.cdot.io', description: 'Panorama password')
-                            string(name: 'USERNAME', defaultValue: 'officehours', description: 'Panorama username')
-                            string(name: 'PASSWORD', defaultValue: 'paloalto123', description: 'Panorama password')
-                            string(name: 'DEVICE_GROUP', defaultValue: '', description: 'Panorama device group')
-                            string(name: 'ADDRESS_NAME', defaultValue: '', description: 'Address object name')
-                            string(name: 'ADDRESS_TYPE', defaultValue: '', description: 'Address object type')
-                            string(name: 'ADDRESS_VALUE', defaultValue: '', description: 'Address object value')
-                            string(name: 'ADDRESS_DESCRIPTION', defaultValue: '', description: 'Address description')
-                            string(name: 'ADDRESS_TAGS', defaultValue: '', description: 'Address tags')
 
                             PARAM_HOSTNAME="--hostname '${HOSTNAME}'"
                             PARAM_USERNAME="--username '${USERNAME}'"

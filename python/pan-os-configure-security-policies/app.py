@@ -31,7 +31,7 @@ def parse_arguments():
     parser.add_argument("--password", required=True, help="Panorama password")
     parser.add_argument("--device-group", required=True, help="Device group name")
     parser.add_argument("--address-name", required=True, help="Address object name")
-    parser.add_argument("--address-type", required=True, choices=["ip-netmask", "fqdn", "ip-range", "ip-wildcard"], help="Address object type")
+    parser.add_argument("--address-type", required=True, help="Address object type")
     parser.add_argument("--address-value", required=True, help="Address object value")
     parser.add_argument("--address-description", default="", help="Address object description")
     parser.add_argument("--address-tags", nargs='*', default=[], help="Address object tags")
