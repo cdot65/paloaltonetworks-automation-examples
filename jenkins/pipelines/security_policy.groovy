@@ -43,21 +43,21 @@ spec:
         string(name: 'HOSTNAME', defaultValue: 'panorama1.cdot.io', description: 'Panorama hostname')
         string(name: 'USERNAME', defaultValue: 'officehours', description: 'Panorama username')
         password(name: 'PASSWORD', defaultValue: 'paloalto123', description: 'Panorama password')
-        string(name: 'DEVICE_GROUP', defaultValue: '', description: 'Panorama device group')
+        choice(name: 'DEVICE_GROUP', choices: ['shared', 'Magnolia-Proxmox', 'Magnolia-Edge', 'Dallas'], description: 'Panorama device group')
         string(name: 'SEC_RULE_NAME', defaultValue: '', description: 'Name of the security rule')
         string(name: 'SEC_RULE_DESCRIPTION', defaultValue: '', description: 'Description of the security rule')
-        string(name: 'SEC_RULE_TAG', defaultValue: '', description: 'Tags, comma seperated list')
-        string(name: 'SEC_RULE_DISABLED', defaultValue: '', description: 'Set the policy as disabled')
-        string(name: 'SEC_RULE_FROM_ZONE', defaultValue: '', description: 'Source security zone, comma seperated list')
-        string(name: 'SEC_RULE_TO_ZONE', defaultValue: '', description: 'Destination security zone, comma seperated list')
-        string(name: 'SEC_RULE_SOURCE', defaultValue: '', description: 'Source addresses, comma seperated list')
-        string(name: 'SEC_RULE_DESTINATION', defaultValue: '', description: 'Destination address, comma seperated list')
-        string(name: 'SEC_RULE_APPLICATION', defaultValue: '', description: 'App-ID, comma seperated list')
-        string(name: 'SEC_RULE_SERVICE', defaultValue: '', description: 'TCP/UDP services, comma seperated list')
-        string(name: 'SEC_RULE_CATEGORY', defaultValue: '', description: 'URL Categories, comma seperated list')
+        string(name: 'SEC_RULE_TAG', defaultValue: 'Jenkins', description: 'Tags, space-separated list')
+        booleanParam(name: 'SEC_RULE_DISABLED', defaultValue: false, description: 'Set the policy as disabled')
+        string(name: 'SEC_RULE_FROM_ZONE', defaultValue: 'any', description: 'Source security zone(s), space-separated list')
+        string(name: 'SEC_RULE_TO_ZONE', defaultValue: 'any', description: 'Destination security zone, space-separated list')
+        string(name: 'SEC_RULE_SOURCE', defaultValue: 'any', description: 'Source addresses, space-separated list')
+        string(name: 'SEC_RULE_DESTINATION', defaultValue: 'any', description: 'Destination addresses, space-separated list')
+        string(name: 'SEC_RULE_APPLICATION', defaultValue: 'any', description: 'App-ID, space-separated list')
+        string(name: 'SEC_RULE_SERVICE', defaultValue: 'any', description: 'TCP/UDP services, space-separated list')
+        string(name: 'SEC_RULE_CATEGORY', defaultValue: 'any', description: 'URL Categories, space-separated list')
         string(name: 'SEC_RULE_SECURITY_PROFILE_GROUP', defaultValue: '', description: 'Security profile group associated to rule')
         string(name: 'SEC_RULE_LOG_SETTING', defaultValue: '', description: 'Log forwarding profile')
-        string(name: 'SEC_RULE_ACTION', defaultValue: '', description: 'Allow, Deny, Drop, Reset Both, Reset Client, Reset Server')
+        choice(name: 'SEC_RULE_ACTION', choices: ['allow', 'deny', 'drop', 'reset-both', 'reset-client', 'reset-server'], description: 'Action for the rule')
     }
     stages {
         stage('Setup Workspace') {
@@ -73,36 +73,35 @@ spec:
             steps {
                 container('python') {
                     script {
+                        def ruleDisabledFlag = SEC_RULE_DISABLED ? '--rule-disabled' : ''
                         sh '''
                             cd paloaltonetworks-automation-examples/python/pan-os-configure-security-policies
 
                             set -e
                             python3 app.py \
-                                --hostname "${HOSTNAME}" \
-                                --username "${USERNAME}" \
-                                --password "${PASSWORD}" \
-                                --device-group "${DEVICE_GROUP}" \
-                                --rule-name "${SEC_RULE_NAME}" \
-                                --rule-description "${SEC_RULE_DESCRIPTION}" \
-                                --rule-tag "${SEC_RULE_TAG}" \
-                                --rule-disabled "${SEC_RULE_DISABLED}" \
-                                --rule-from-zone "${SEC_RULE_FROM_ZONE}" \
-                                --rule-to-zone "${SEC_RULE_TO_ZONE}" \
-                                --rule-source "${SEC_RULE_SOURCE}" \
-                                --rule-destination "${SEC_RULE_DESTINATION}" \
-                                --rule-application "${SEC_RULE_APPLICATION}" \
-                                --rule-service "${SEC_RULE_SERVICE}" \
-                                --rule-category "${SEC_RULE_CATEGORY}" \
-                                --rule-security-profile-group "${SEC_RULE_SECURITY_PROFILE_GROUP}" \
-                                --rule-log-setting "${SEC_RULE_LOG_SETTING}" \
-                                --rule-action ${SEC_RULE_ACTION} > output.json
+                                --hostname "$HOSTNAME" \
+                                --username "$USERNAME" \
+                                --password "$PASSWORD" \
+                                --device-group "$DEVICE_GROUP" \
+                                --rule-name "$SEC_RULE_NAME" \
+                                --rule-description "$SEC_RULE_DESCRIPTION" \
+                                --rule-tag $SEC_RULE_TAG \
+                                ${ruleDisabledFlag} \
+                                --rule-from-zone $SEC_RULE_FROM_ZONE \
+                                --rule-to-zone $SEC_RULE_TO_ZONE \
+                                --rule-source $SEC_RULE_SOURCE \
+                                --rule-destination $SEC_RULE_DESTINATION \
+                                --rule-application $SEC_RULE_APPLICATION \
+                                --rule-service $SEC_RULE_SERVICE \
+                                --rule-category $SEC_RULE_CATEGORY \
+                                --rule-security-profile-group "$SEC_RULE_SECURITY_PROFILE_GROUP" \
+                                --rule-log-setting "$SEC_RULE_LOG_SETTING" \
+                                --rule-action "$SEC_RULE_ACTION" > output.json
                         '''
+
                         try {
-                            // Read the output JSON
                             def jsonOutput = readFile('paloaltonetworks-automation-examples/python/pan-os-configure-security-policies/output.json').trim()
-                            // Parse the JSON
                             def json = readJSON text: jsonOutput
-                            // Use the JSON object as needed
                             echo "Script Output: ${json}"
                         } catch (Exception e) {
                             echo "Failed to parse JSON output: ${e}"
