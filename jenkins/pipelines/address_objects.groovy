@@ -65,7 +65,7 @@ spec:
                 container('python') {
                     script {
                         sh '''
-                            cd paloaltonetworks-automation-examples/python/pan-os-configure-security-policies
+                            cd paloaltonetworks-automation-examples/python/pan-os-configure-address-object
 
                             set -e
                             python3 app.py \
@@ -81,7 +81,7 @@ spec:
                         '''
                         try {
                             // Read the output JSON
-                            def jsonOutput = readFile('paloaltonetworks-automation-examples/python/pan-os-configure-security-policies/output.json').trim()
+                            def jsonOutput = readFile('paloaltonetworks-automation-examples/python/pan-os-configure-address-object/output.json').trim()
                             // Parse the JSON
                             def json = readJSON text: jsonOutput
                             // Use the JSON object as needed
