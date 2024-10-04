@@ -1,11 +1,11 @@
 # standard library imports
 import argparse
-import json
 import sys
 
 # pan-os-python SDK imports
-from panos.errors import PanDeviceError, PanObjectMissing, PanDeviceXapiError
-from panos.panorama import Panorama, PanoramaCommitAll
+from panos.errors import PanDeviceError
+from panos.panorama import Panorama, PanoramaCommitAll, DeviceGroup
+from panos.policies import PreRulebase, SecurityRule
 
 # local imports
 from paloconfig import PaloConfig
@@ -56,30 +56,80 @@ def parse_arguments():
         help="Device group name",
     )
     parser.add_argument(
-        "--address-name",
+        "--rule-name",
         required=True,
-        help="Address object name",
+        help="Security rule name",
     )
     parser.add_argument(
-        "--address-type",
-        required=True,
-        help="Address object type",
-    )
-    parser.add_argument(
-        "--address-value",
-        required=True,
-        help="Address object value",
-    )
-    parser.add_argument(
-        "--address-description",
+        "--rule-description",
         default="",
-        help="Address object description",
+        help="Security rule description",
     )
     parser.add_argument(
-        "--address-tags",
+        "--rule-tag",
         nargs="*",
         default=[],
-        help="Address object tags",
+        help="Security rule tags",
+    )
+    parser.add_argument(
+        "--rule-disabled",
+        action="store_true",
+        help="Disable the security rule",
+    )
+    parser.add_argument(
+        "--rule-from-zone",
+        required=True,
+        nargs="+",
+        help="From zone(s) for the security rule",
+    )
+    parser.add_argument(
+        "--rule-to-zone",
+        required=True,
+        nargs="+",
+        help="To zone(s) for the security rule",
+    )
+    parser.add_argument(
+        "--rule-source",
+        required=True,
+        nargs="+",
+        help="Source address(es) for the security rule",
+    )
+    parser.add_argument(
+        "--rule-destination",
+        required=True,
+        nargs="+",
+        help="Destination address(es) for the security rule",
+    )
+    parser.add_argument(
+        "--rule-application",
+        required=True,
+        nargs="+",
+        help="Application(s) for the security rule",
+    )
+    parser.add_argument(
+        "--rule-service",
+        required=True,
+        nargs="+",
+        help="Service(s) for the security rule",
+    )
+    parser.add_argument(
+        "--rule-category",
+        nargs="+",
+        help="URL category for the security rule",
+    )
+    parser.add_argument(
+        "--rule-security-profile-group",
+        help="Security profile group for the security rule",
+    )
+    parser.add_argument(
+        "--rule-log-setting",
+        help="Log setting for the security rule",
+    )
+    parser.add_argument(
+        "--rule-action",
+        required=True,
+        choices=["allow", "deny", "drop", "reset-client", "reset-server", "reset-both"],
+        help="Action for the security rule",
     )
     return parser.parse_args()
 
@@ -120,138 +170,6 @@ def connect_to_panorama(
         raise
 
 
-def build_and_apply_config(
-    panorama_config: PaloConfig,
-    dg_name: str,
-    dg_config: dict,
-):
-    """
-    Build and apply a Palo Alto Networks Panorama configuration by device group.
-
-    Creates a device group and configures various security configuration within it,
-    including tags, address objects, and address groups. Handles exceptions that may
-    occur during the configuration process.
-
-    Attributes:
-        panorama_config (PaloConfig): Configuration object for Palo Alto firewall.
-        dg_name (str): Name of the device group to be created.
-        dg_config (dict): Configuration dictionary for the device group.
-
-    Error:
-        PanObjectMissing: When a required object is missing.
-        PanDeviceXapiError: When an API error occurs.
-        Exception: For any unexpected errors during processing.
-    """
-    try:
-        device_group = panorama_config.create_device_group(dg_name)
-
-        # # Configure tags
-        # panorama_config.tags(
-        #     dg_config.get("objects", {}).get("tags", []),
-        #     device_group,
-        # )
-
-        # # Configure address objects
-        panorama_config.address_objects(
-            dg_config.get("objects", {}).get("address_objects", []),
-            device_group,
-        )
-
-        # # Configure address groups
-        # panorama_config.address_groups(
-        #     dg_config.get("objects", {}).get("address_groups", []),
-        #     device_group,
-        # )
-
-        # # Configure application containers
-        # panorama_config.application_containers(
-        #     dg_config.get("objects", {}).get("application_container", []),
-        #     device_group,
-        # )
-
-        # # Configure service objects
-        # panorama_config.service_objects(
-        #     dg_config.get("objects", {}).get("service_objects", []),
-        #     device_group,
-        # )
-
-        # # Configure service groups
-        # panorama_config.service_groups(
-        #     dg_config.get("objects", {}).get("service_groups", []),
-        #     device_group,
-        # )
-
-        # # Configure application objects
-        # panorama_config.application_objects(
-        #     dg_config.get("objects", {}).get("application_objects", []),
-        #     device_group,
-        # )
-
-        # # Configure application tags
-        # panorama_config.application_tags(
-        #     dg_config.get("objects", {}).get("application_tags", []),
-        #     device_group,
-        # )
-
-        # Perform bulk creation of objects
-        panorama_config.bulk_create_resources(device_group)
-
-    except PanObjectMissing as e:
-        logger.error(f"Error processing device group {dg_name}: {e}")
-    except PanDeviceXapiError as e:
-        logger.error(f"API error while processing device group {dg_name}: {e}")
-    except Exception as e:
-        logger.error(f"Unexpected error processing device group {dg_name}: {e}")
-
-
-def commit_changes(pan: Panorama) -> None:
-    """
-    Commit changes to Panorama and log the result.
-
-    Attempts to commit changes to the Panorama device synchronously and logs the outcome.
-    If successful, an info message is logged. If unsuccessful, an error is logged and an exception is raised.
-
-    Args:
-        pan (Panorama): The Panorama object to commit changes to.
-
-    Raises:
-        PanDeviceError: If the commit operation fails.
-    """
-    try:
-        pan.commit(sync=True)
-        logger.info("Successfully committed changes to Panorama")
-    except PanDeviceError as e:
-        logger.error(f"Failed to commit changes to Panorama: {e}")
-        raise
-
-
-def push_device_group(
-    pan: Panorama,
-    dg_name: str,
-) -> None:
-    """
-    Push configuration to a specified device group in Panorama.
-
-    Attempts to commit all changes to the specified device group using the Panorama object.
-    Logs the result of the operation, whether successful or failed.
-
-    Attributes:
-        pan (Panorama): The Panorama object to use for the commit operation.
-        dg_name (str): The name of the device group to push the configuration to.
-
-    Error:
-        PanDeviceError: Raised if the commit operation fails.
-    """
-    try:
-        pan.commit_all(
-            sync=True,
-            devicegroup=dg_name,
-        )
-        logger.info(f"Configuration pushed to device group: {dg_name}")
-    except PanDeviceError as e:
-        logger.error(f"Failed to push configuration to device group {dg_name}: {e}")
-
-
 def main():
     """
     This method is the entry point for the program. It performs the following steps:
@@ -286,18 +204,27 @@ def main():
         # Retrieve or create the device group
         device_group = panorama_config.create_device_group(args.device_group)
 
-        # Prepare address object configuration
-        addr_obj_config = {
-            "name": args.address_name,
-            "type": args.address_type,
-            "value": args.address_value,
-            "description": args.address_description,
-            "tag": args.address_tags,
+        # Prepare security rule configuration
+        security_rule_config = {
+            "name": args.rule_name,
+            "fromzone": args.rule_from_zone,
+            "tozone": args.rule_to_zone,
+            "source": args.rule_source,
+            "destination": args.rule_destination,
+            "application": args.rule_application,
+            "service": args.rule_service,
+            "action": args.rule_action,
+            "description": args.rule_description,
+            "tag": args.rule_tag,
+            "disabled": args.rule_disabled,
+            "log_setting": args.rule_log_setting,
+            "group": args.rule_security_profile_group,
+            "category": args.rule_category,
         }
 
-        # Configure address object
-        panorama_config.address_objects(
-            address_object_configuration=[addr_obj_config],
+        # Configure security rule
+        panorama_config.security_rules(
+            security_rule_configuration=[security_rule_config],
             device_group=device_group,
         )
 
