@@ -249,9 +249,6 @@ def main():
             "tag": args.address_tags,
         }
 
-        # Debug
-        import ipdb; ipdb.set_trace()
-
         # Configure address object
         panorama_config.address_objects([addr_obj_config], device_group)
 

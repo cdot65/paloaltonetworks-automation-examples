@@ -69,30 +69,20 @@ spec:
             steps {
                 container('python') {
                     script {
-                        sh """
+                        sh '''
                             cd paloaltonetworks-automation-examples/python/pan-os-configure-security-policies
 
-                            PARAM_HOSTNAME="--hostname '${HOSTNAME}'"
-                            PARAM_USERNAME="--username '${USERNAME}'"
-                            PARAM_PASSWORD="--password '${PASSWORD}'"
-                            PARAM_DEVICE_GROUP="--device-group '${DEVICE_GROUP}'"
-                            PARAM_ADDRESS_NAME="--address-name '${ADDRESS_NAME}'"
-                            PARAM_ADDRESS_TYPE="--address-type '${ADDRESS_TYPE}'"
-                            PARAM_ADDRESS_TAGS="--address-tags '${ADDRESS_TAGS}'"
-                            PARAM_ADDRESS_VALUE="--address-value '${ADDRESS_VALUE}'"
-                            PARAM_ADDRESS_DESCRIPTION="--address-description '${ADDRESS_DESCRIPTION}'"
-
-                            python3 app.py \\
-                                \$PARAM_HOSTNAME \\
-                                \$PARAM_USERNAME \\
-                                \$PARAM_PASSWORD \\
-                                \$PARAM_DEVICE_GROUP \\
-                                \$PARAM_ADDRESS_NAME \\
-                                \$PARAM_ADDRESS_TYPE \\
-                                \$PARAM_ADDRESS_TAGS \\
-                                \$PARAM_ADDRESS_VALUE \\
-                                \$PARAM_ADDRESS_DESCRIPTION > output.json
-                        """
+                            python3 app.py \
+                                --hostname "${HOSTNAME}" \
+                                --username "${USERNAME}" \
+                                --password "${PASSWORD}" \
+                                --device-group "${DEVICE_GROUP}" \
+                                --address-name "${ADDRESS_NAME}" \
+                                --address-type "${ADDRESS_TYPE}" \
+                                --address-value "${ADDRESS_VALUE}" \
+                                --address-description "${ADDRESS_DESCRIPTION}" \
+                                --address-tags ${ADDRESS_TAGS} > output.json
+                        '''
                         // Read the output JSON
                         def jsonOutput = readFile('paloaltonetworks-automation-examples/python/pan-os-configure-security-policies/output.json').trim()
                         // Parse the JSON
@@ -103,7 +93,6 @@ spec:
                 }
             }
         }
-        // Include previous stages like 'Setup Namespace' and 'Run Workload' if needed
     }
     post {
         always {
