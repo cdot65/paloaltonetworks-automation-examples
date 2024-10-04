@@ -4,8 +4,7 @@ import sys
 
 # pan-os-python SDK imports
 from panos.errors import PanDeviceError
-from panos.panorama import Panorama, PanoramaCommitAll, DeviceGroup
-from panos.policies import PreRulebase, SecurityRule
+from panos.panorama import Panorama, PanoramaCommitAll
 
 # local imports
 from paloconfig import PaloConfig
