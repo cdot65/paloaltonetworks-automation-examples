@@ -1,7 +1,6 @@
 pipeline {
     agent {
         kubernetes {
-            label 'dynamic-agent'
             defaultContainer 'jnlp'
             yaml """
 apiVersion: v1
@@ -26,6 +25,7 @@ spec:
           mountPath: /home/jenkins/agent
     - name: python
       image: ghcr.io/cdot65/pan-os-docker:python
+      imagePullPolicy: Always
       command:
         - cat
       tty: true
@@ -40,9 +40,9 @@ spec:
         }
     }
     parameters {
-        string(name: 'HOSTNAME', defaultValue: 'panorama1.cdot.io', description: 'Panorama password')
+        string(name: 'HOSTNAME', defaultValue: 'panorama1.cdot.io', description: 'Panorama hostname')
         string(name: 'USERNAME', defaultValue: 'officehours', description: 'Panorama username')
-        string(name: 'PASSWORD', defaultValue: 'paloalto123', description: 'Panorama password')
+        password(name: 'PASSWORD', defaultValue: 'paloalto123', description: 'Panorama password')
         string(name: 'DEVICE_GROUP', defaultValue: '', description: 'Panorama device group')
         string(name: 'ADDRESS_NAME', defaultValue: '', description: 'Address object name')
         string(name: 'ADDRESS_TYPE', defaultValue: '', description: 'Address object type')
@@ -50,18 +50,13 @@ spec:
         string(name: 'ADDRESS_VALUE', defaultValue: '', description: 'Address object value')
         string(name: 'ADDRESS_DESCRIPTION', defaultValue: '', description: 'Address description')
     }
-    environment {
-        NAMESPACE = "jenkins-pipeline-${env.BUILD_NUMBER}"
-    }
     stages {
         stage('Setup Workspace') {
             steps {
                 container('jnlp') {
-                    script {
-                        sh '''
-                            git clone https://github.com/cdot65/paloaltonetworks-automation-examples.git
-                        '''
-                    }
+                    sh '''
+                        git clone https://github.com/cdot65/paloaltonetworks-automation-examples.git
+                    '''
                 }
             }
         }
@@ -72,6 +67,7 @@ spec:
                         sh '''
                             cd paloaltonetworks-automation-examples/python/pan-os-configure-security-policies
 
+                            set -e
                             python3 app.py \
                                 --hostname "${HOSTNAME}" \
                                 --username "${USERNAME}" \
@@ -83,22 +79,20 @@ spec:
                                 --address-description "${ADDRESS_DESCRIPTION}" \
                                 --address-tags ${ADDRESS_TAGS} > output.json
                         '''
-                        // Read the output JSON
-                        def jsonOutput = readFile('paloaltonetworks-automation-examples/python/pan-os-configure-security-policies/output.json').trim()
-                        // Parse the JSON
-                        def json = readJSON text: jsonOutput
-                        // Use the JSON object as needed
-                        echo "Script Output: ${json}"
+                        try {
+                            // Read the output JSON
+                            def jsonOutput = readFile('paloaltonetworks-automation-examples/python/pan-os-configure-security-policies/output.json').trim()
+                            // Parse the JSON
+                            def json = readJSON text: jsonOutput
+                            // Use the JSON object as needed
+                            echo "Script Output: ${json}"
+                        } catch (Exception e) {
+                            echo "Failed to parse JSON output: ${e}"
+                            currentBuild.result = 'FAILURE'
+                            error("Pipeline aborted due to JSON parsing error.")
+                        }
                     }
                 }
-            }
-        }
-    }
-    post {
-        always {
-            script {
-                // Cleanup resources if applicable
-                sh "kubectl delete namespace ${NAMESPACE} || true"
             }
         }
     }

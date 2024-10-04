@@ -36,24 +36,59 @@ def parse_arguments():
         type=lambda x: x.lower(),
     )
     parser.add_argument(
-        "--hostname", required=True, help="Panorama hostname or IP address"
-    )
-    parser.add_argument("--username", required=True, help="Panorama username")
-    parser.add_argument("--password", required=True, help="Panorama password")
-    parser.add_argument("--device-group", required=True, help="Device group name")
-    parser.add_argument("--address-name", required=True, help="Address object name")
-    parser.add_argument("--address-type", required=True, help="Address object type")
-    parser.add_argument("--address-value", required=True, help="Address object value")
-    parser.add_argument(
-        "--address-description", default="", help="Address object description"
+        "--hostname",
+        required=True,
+        help="Panorama hostname or IP address",
     )
     parser.add_argument(
-        "--address-tags", nargs="*", default=[], help="Address object tags"
+        "--username",
+        required=True,
+        help="Panorama username",
+    )
+    parser.add_argument(
+        "--password",
+        required=True,
+        help="Panorama password",
+    )
+    parser.add_argument(
+        "--device-group",
+        required=True,
+        help="Device group name",
+    )
+    parser.add_argument(
+        "--address-name",
+        required=True,
+        help="Address object name",
+    )
+    parser.add_argument(
+        "--address-type",
+        required=True,
+        help="Address object type",
+    )
+    parser.add_argument(
+        "--address-value",
+        required=True,
+        help="Address object value",
+    )
+    parser.add_argument(
+        "--address-description",
+        default="",
+        help="Address object description",
+    )
+    parser.add_argument(
+        "--address-tags",
+        nargs="*",
+        default=[],
+        help="Address object tags",
     )
     return parser.parse_args()
 
 
-def connect_to_panorama(hostname: str, username: str, password: str) -> Panorama:
+def connect_to_panorama(
+    hostname: str,
+    username: str,
+    password: str,
+) -> Panorama:
     """
     Establishes a connection to a Panorama device.
 
@@ -169,7 +204,7 @@ def build_and_apply_config(
         logger.error(f"Unexpected error processing device group {dg_name}: {e}")
 
 
-def commit_changes(pan: Panorama):
+def commit_changes(pan: Panorama) -> None:
     """
     Commit changes to Panorama and log the result.
 
@@ -193,7 +228,7 @@ def commit_changes(pan: Panorama):
 def push_device_group(
     pan: Panorama,
     dg_name: str,
-):
+) -> None:
     """
     Push configuration to a specified device group in Panorama.
 

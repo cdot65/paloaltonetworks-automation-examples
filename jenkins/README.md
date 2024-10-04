@@ -1,18 +1,20 @@
 # Jenkins on Kubernetes with Dynamic Workload Instantiation
 
-This repository provides step-by-step instructions to deploy Jenkins on Kubernetes using Helm and configure it for dynamic workload instantiation. The Jenkins setup is enhanced to execute pipelines that spawn workloads within the Kubernetes cluster dynamically.
+This repository provides step-by-step instructions to deploy Jenkins on Kubernetes using Helm and configure it for
+dynamic workload instantiation. The Jenkins setup is enhanced to execute pipelines that spawn workloads within the
+Kubernetes cluster dynamically.
 
 ## Table of Contents
 
 - [Prerequisites](#prerequisites)
 - [Installation](#installation)
-  - [Deploy Jenkins using Helm](#deploy-jenkins-using-helm)
-  - [Configure Service Account and RBAC](#configure-service-account-and-rbac)
+    - [Deploy Jenkins using Helm](#deploy-jenkins-using-helm)
+    - [Configure Service Account and RBAC](#configure-service-account-and-rbac)
 - [Configuring Jenkins for Dynamic Workloads](#configuring-jenkins-for-dynamic-workloads)
-  - [Step 1: Create a Jenkins Agent Configuration](#step-1-create-a-jenkins-agent-configuration)
-  - [Step 2: Set Up the Kubernetes Plugin in Jenkins](#step-2-set-up-the-kubernetes-plugin-in-jenkins)
-  - [Step 3: Create a Jenkins Pipeline](#step-3-create-a-jenkins-pipeline)
-  - [Step 4: Implement Best Practices and Security Considerations](#step-4-implement-best-practices-and-security-considerations)
+    - [Step 1: Create a Jenkins Agent Configuration](#step-1-create-a-jenkins-agent-configuration)
+    - [Step 2: Set Up the Kubernetes Plugin in Jenkins](#step-2-set-up-the-kubernetes-plugin-in-jenkins)
+    - [Step 3: Create a Jenkins Pipeline](#step-3-create-a-jenkins-pipeline)
+    - [Step 4: Implement Best Practices and Security Considerations](#step-4-implement-best-practices-and-security-considerations)
 - [Pipeline Script Explanation](#pipeline-script-explanation)
 - [Additional Considerations](#additional-considerations)
 - [Conclusion](#conclusion)
@@ -26,8 +28,8 @@ This repository provides step-by-step instructions to deploy Jenkins on Kubernet
 - **Docker Registry**: Access to a Docker registry to push custom images.
 - **Git**: Git installed locally to clone repositories.
 - **Jenkins Plugins**: Jenkins should have the following plugins installed:
-  - Kubernetes Plugin
-  - Pipeline Utility Steps Plugin
+    - Kubernetes Plugin
+    - Pipeline Utility Steps Plugin
 
 ---
 
@@ -44,7 +46,8 @@ This repository provides step-by-step instructions to deploy Jenkins on Kubernet
 
 2. **Create `values.yaml` (Optional):**
 
-   Customize Jenkins installation by creating a `values.yaml` file. This can include custom configurations like persistence, service type, ingress, etc.
+   Customize Jenkins installation by creating a `values.yaml` file. This can include custom configurations like
+   persistence, service type, ingress, etc.
 
 3. **Install Jenkins:**
 
@@ -172,21 +175,21 @@ docker push yourregistry/jenkins-agent-kubectl:latest
 
 2. **Configure Kubernetes Cloud:**
 
-   - Go to `Manage Jenkins` > `Manage Nodes and Clouds` > `Configure Clouds`.
-   - Use the existing Kubernetes cloud configuration or add a new one if necessary.
-   - Ensure Jenkins can communicate with the Kubernetes cluster (Test Connection should succeed).
+    - Go to `Manage Jenkins` > `Manage Nodes and Clouds` > `Configure Clouds`.
+    - Use the existing Kubernetes cloud configuration or add a new one if necessary.
+    - Ensure Jenkins can communicate with the Kubernetes cluster (Test Connection should succeed).
 
 3. **Configure Pod Templates:**
 
-   - In the Kubernetes Cloud configuration, scroll to **Pod Templates**.
-   - Add a new Pod Template or modify the existing one.
-     - **Name:** `jenkins-agent`
-     - **Labels:** `dynamic-agent`
-     - **Containers:**
-       - **Name:** `jnlp`
-       - **Docker Image:** `yourregistry/jenkins-agent-kubectl:latest`
-     - **Volumes:**
-       - Add an **Empty Dir Volume** with a mount path of `/home/jenkins/agent`.
+    - In the Kubernetes Cloud configuration, scroll to **Pod Templates**.
+    - Add a new Pod Template or modify the existing one.
+        - **Name:** `jenkins-agent`
+        - **Labels:** `dynamic-agent`
+        - **Containers:**
+            - **Name:** `jnlp`
+            - **Docker Image:** `yourregistry/jenkins-agent-kubectl:latest`
+        - **Volumes:**
+            - Add an **Empty Dir Volume** with a mount path of `/home/jenkins/agent`.
 
 ### Step 3: Create a Jenkins Pipeline
 
@@ -198,7 +201,6 @@ Create a Jenkins pipeline that can spawn workloads and execute a Python script f
 pipeline {
     agent {
         kubernetes {
-            label 'dynamic-agent'
             defaultContainer 'jnlp'
             yaml """
 apiVersion: v1
@@ -210,7 +212,7 @@ spec:
   serviceAccountName: jenkins-agent-sa
   containers:
     - name: jnlp
-      image: yourregistry/jenkins-agent-kubectl:latest
+      image: ghcr.io/cdot65/jenkins-kubectl:latest
       resources:
         requests:
           cpu: "500m"
@@ -223,6 +225,7 @@ spec:
           mountPath: /home/jenkins/agent
     - name: python
       image: ghcr.io/cdot65/pan-os-docker:python
+      imagePullPolicy: Always
       command:
         - cat
       tty: true
@@ -237,23 +240,23 @@ spec:
         }
     }
     parameters {
-        string(name: 'NAME', defaultValue: '', description: 'Name parameter')
-        string(name: 'SOURCE_ZONE', defaultValue: '', description: 'Source zone(s), comma-separated')
-        string(name: 'DESTINATION_ZONE', defaultValue: '', description: 'Destination zone(s), comma-separated')
-        string(name: 'APPLICATION', defaultValue: '', description: 'Application(s), comma-separated')
-    }
-    environment {
-        NAMESPACE = "jenkins-pipeline-${env.BUILD_NUMBER}"
+        string(name: 'HOSTNAME', defaultValue: 'panorama1.cdot.io', description: 'Panorama hostname')
+        string(name: 'USERNAME', defaultValue: 'officehours', description: 'Panorama username')
+        password(name: 'PASSWORD', defaultValue: 'paloalto123', description: 'Panorama password')
+        string(name: 'DEVICE_GROUP', defaultValue: '', description: 'Panorama device group')
+        string(name: 'ADDRESS_NAME', defaultValue: '', description: 'Address object name')
+        string(name: 'ADDRESS_TYPE', defaultValue: '', description: 'Address object type')
+        string(name: 'ADDRESS_TAGS', defaultValue: '', description: 'Address tags')
+        string(name: 'ADDRESS_VALUE', defaultValue: '', description: 'Address object value')
+        string(name: 'ADDRESS_DESCRIPTION', defaultValue: '', description: 'Address description')
     }
     stages {
         stage('Setup Workspace') {
             steps {
                 container('jnlp') {
-                    script {
-                        sh '''
-                            git clone https://github.com/cdot65/paloaltonetworks-automation-examples.git
-                        '''
-                    }
+                    sh '''
+                        git clone https://github.com/cdot65/paloaltonetworks-automation-examples.git
+                    '''
                 }
             }
         }
@@ -261,72 +264,60 @@ spec:
             steps {
                 container('python') {
                     script {
-                        sh """
-                            cd paloaltonetworks-automation-examples/python/pan-os-global-search
+                        sh '''
+                            cd paloaltonetworks-automation-examples/python/pan-os-configure-security-policies
 
-                            NAME_PARAM="--name '${NAME}'"
-
-                            SOURCE_ZONE_PARAMS=""
-                            for zone in \$(echo "${SOURCE_ZONE}" | tr ',' '\\n'); do
-                                SOURCE_ZONE_PARAMS="\$SOURCE_ZONE_PARAMS --source-zone '\$zone'"
-                            done
-
-                            DESTINATION_ZONE_PARAMS=""
-                            for zone in \$(echo "${DESTINATION_ZONE}" | tr ',' '\\n'); do
-                                DESTINATION_ZONE_PARAMS="\$DESTINATION_ZONE_PARAMS --destination-zone '\$zone'"
-                            done
-
-                            APPLICATION_PARAMS=""
-                            for app in \$(echo "${APPLICATION}" | tr ',' '\\n'); do
-                                APPLICATION_PARAMS="\$APPLICATION_PARAMS --application '\$app'"
-                            done
-
-                            python3 app.py \\
-                                \$NAME_PARAM \\
-                                \$SOURCE_ZONE_PARAMS \\
-                                \$DESTINATION_ZONE_PARAMS \\
-                                \$APPLICATION_PARAMS > output.json
-                        """
-                        // Read the output JSON
-                        def jsonOutput = readFile('paloaltonetworks-automation-examples/python/pan-os-global-search/output.json').trim()
-                        // Parse the JSON
-                        def json = readJSON text: jsonOutput
-                        // Use the JSON object as needed
-                        echo "Script Output: ${json}"
+                            set -e
+                            python3 app.py \
+                                --hostname "${HOSTNAME}" \
+                                --username "${USERNAME}" \
+                                --password "${PASSWORD}" \
+                                --device-group "${DEVICE_GROUP}" \
+                                --address-name "${ADDRESS_NAME}" \
+                                --address-type "${ADDRESS_TYPE}" \
+                                --address-value "${ADDRESS_VALUE}" \
+                                --address-description "${ADDRESS_DESCRIPTION}" \
+                                --address-tags ${ADDRESS_TAGS} > output.json
+                        '''
+                        try {
+                            // Read the output JSON
+                            def jsonOutput = readFile('paloaltonetworks-automation-examples/python/pan-os-configure-security-policies/output.json').trim()
+                            // Parse the JSON
+                            def json = readJSON text: jsonOutput
+                            // Use the JSON object as needed
+                            echo "Script Output: ${json}"
+                        } catch (Exception e) {
+                            echo "Failed to parse JSON output: ${e}"
+                            currentBuild.result = 'FAILURE'
+                            error("Pipeline aborted due to JSON parsing error.")
+                        }
                     }
                 }
             }
         }
     }
-    post {
-        always {
-            script {
-                // Cleanup resources if applicable
-                sh "kubectl delete namespace ${NAMESPACE} || true"
-            }
-        }
-    }
 }
+
 ```
 
 ### Step 4: Implement Best Practices and Security Considerations
 
 1. **Namespaces for Isolation:**
 
-   - Each pipeline run creates a unique Kubernetes namespace for resource isolation.
-   - Resources are cleaned up in the `post` section to prevent resource exhaustion.
+    - Each pipeline run creates a unique Kubernetes namespace for resource isolation.
+    - Resources are cleaned up in the `post` section to prevent resource exhaustion.
 
 2. **RBAC Policies:**
 
-   - The `ClusterRole` and `ClusterRoleBinding` restrict Jenkins' permissions to necessary operations.
+    - The `ClusterRole` and `ClusterRoleBinding` restrict Jenkins' permissions to necessary operations.
 
 3. **Secrets Management:**
 
-   - Use Jenkins Credentials Binding plugin and Kubernetes Secrets to handle sensitive information securely.
+    - Use Jenkins Credentials Binding plugin and Kubernetes Secrets to handle sensitive information securely.
 
 4. **Resource Quotas:**
 
-   - Implement Kubernetes `ResourceQuota` to limit resource usage per namespace.
+    - Implement Kubernetes `ResourceQuota` to limit resource usage per namespace.
 
    ```yaml
    # resource-quota.yaml
@@ -356,34 +347,34 @@ spec:
 
 - **Agent Configuration:**
 
-  - Uses a Kubernetes agent with two containers:
-    - **`jnlp` Container:**
-      - Custom Jenkins agent image with `kubectl` and `git` installed.
-      - Handles cloning repositories and interacting with Kubernetes.
-    - **`python` Container:**
-      - Uses `ghcr.io/cdot65/pan-os-docker:python` image.
-      - Executes the Python script.
+    - Uses a Kubernetes agent with two containers:
+        - **`jnlp` Container:**
+            - Custom Jenkins agent image with `kubectl` and `git` installed.
+            - Handles cloning repositories and interacting with Kubernetes.
+        - **`python` Container:**
+            - Uses `ghcr.io/cdot65/pan-os-docker:python` image.
+            - Executes the Python script.
 
 - **Parameters:**
 
-  - Collects user input for `NAME`, `SOURCE_ZONE`, `DESTINATION_ZONE`, and `APPLICATION`.
+    - Collects user input for `NAME`, `SOURCE_ZONE`, `DESTINATION_ZONE`, and `APPLICATION`.
 
 - **Environment Variables:**
 
-  - `NAMESPACE` is set to `jenkins-pipeline-${env.BUILD_NUMBER}` for unique namespace creation.
+    - `NAMESPACE` is set to `jenkins-pipeline-${env.BUILD_NUMBER}` for unique namespace creation.
 
 - **Stages:**
 
-  1. **Setup Workspace:**
-     - Clones the repository containing the Python script.
-  2. **Run Python Script:**
-     - Executes the Python script with user-provided parameters.
-     - Handles comma-separated values and converts them into script arguments.
-     - Captures and parses the JSON output.
+    1. **Setup Workspace:**
+        - Clones the repository containing the Python script.
+    2. **Run Python Script:**
+        - Executes the Python script with user-provided parameters.
+        - Handles comma-separated values and converts them into script arguments.
+        - Captures and parses the JSON output.
 
 - **Post Actions:**
 
-  - Cleans up Kubernetes resources by deleting the namespace created for the pipeline.
+    - Cleans up Kubernetes resources by deleting the namespace created for the pipeline.
 
 ---
 
@@ -391,23 +382,23 @@ spec:
 
 - **Plugin Dependencies:**
 
-  - Ensure the **Pipeline Utility Steps** plugin is installed for JSON parsing.
+    - Ensure the **Pipeline Utility Steps** plugin is installed for JSON parsing.
 
 - **Script Compatibility:**
 
-  - Verify that the Python script accepts parameters as provided.
+    - Verify that the Python script accepts parameters as provided.
 
 - **Security:**
 
-  - Use Jenkins credentials and Kubernetes secrets for any sensitive data required by the Python script.
+    - Use Jenkins credentials and Kubernetes secrets for any sensitive data required by the Python script.
 
 - **Container Requirements:**
 
-  - Ensure the `python` container has all necessary dependencies for the script.
+    - Ensure the `python` container has all necessary dependencies for the script.
 
 - **Error Handling:**
 
-  - Implement error handling in the pipeline to manage failures gracefully.
+    - Implement error handling in the pipeline to manage failures gracefully.
 
 ---
 
