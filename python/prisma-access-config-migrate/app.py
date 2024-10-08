@@ -1,26 +1,24 @@
 # standard library imports
-import logging
 import argparse
+import logging
 import sys
-from typing import Dict, List, Optional, Tuple, Any
-
-# third party library imports
-from config import settings
+from typing import Dict, List, Tuple, Any
 
 # Palo Alto Networks Prisma imports
 from panapi import PanApiSession
-from panapi.config.objects import Address as PrismaAddress
-from panapi.config.objects import AddressGroup as PrismaAddressGroup
+from panapi.config.objects import Address, AddressGroup
 from panapi.config.security import SecurityRule as PrismaSecurityRule
 
+# third party library imports
+from config import settings
 
 # ----------------------------------------------------------------------------
 # Configure logging
 # ----------------------------------------------------------------------------
 logging.basicConfig(
-    level=logging.DEBUG, format="%(asctime)s [%(levelname)s] %(message)s"
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(message)s",
 )
-
 
 # ----------------------------------------------------------------------------
 # Load environment variables from .secrets file
@@ -43,6 +41,14 @@ destination_prisma_access = {
 # Function to parse command line arguments
 # ----------------------------------------------------------------------------
 def parse_arguments():
+    """
+    Parse command line arguments.
+
+    Parses the arguments provided to the script from the command line and returns them.
+
+    Returns:
+        argparse.Namespace: An argparse Namespace object containing the parsed arguments.
+    """
     parser = argparse.ArgumentParser(
         description="Parse arguments passed from Saute frontend."
     )
@@ -58,60 +64,118 @@ def parse_arguments():
 # ----------------------------------------------------------------------------
 # Function to filter rules that contain the specified tag
 # ----------------------------------------------------------------------------
-def filter_rules_by_tag(rules_data, tag):
+def filter_rules_by_tag(
+    rules_data: List[Dict[str, Any]], tag: str
+) -> List[Dict[str, Any]]:
+    """
+    Filter rules that contain the specified tag.
+
+    Args:
+        rules_data (List[Dict[str, Any]]): A list of rule data dictionaries.
+        tag (str): The tag to filter rules by.
+
+    Returns:
+        List[Dict[str, Any]]: A list of rule data dictionaries that contain the specified tag.
+    """
     filtered_rules_data = []
     for rule_data in rules_data:
-        # Check if the rule has tags and the specified tag is in the rule's tags
         if "tag" in rule_data and tag in rule_data["tag"]:
             filtered_rules_data.append(rule_data)
     return filtered_rules_data
 
 
 # ----------------------------------------------------------------------------
-# Prisma address objects
+# Function to retrieve address objects and groups from the source tenant
 # ----------------------------------------------------------------------------
-def get_address_objects_and_groups(session: PanApiSession) -> Tuple[List, List]:
+def get_address_objects_and_groups(
+    session: PanApiSession,
+) -> Tuple[List[Address], List[AddressGroup]]:
+    """
+    Retrieve address objects and address groups from the source tenant.
 
-    # name of our folder
+    Args:
+        session (PanApiSession): An authenticated PanApiSession for the source tenant.
+
+    Returns:
+        Tuple[List[Address], List[AddressGroup]]:
+            A tuple containing a list of address objects and a list of address groups.
+    """
     folder = {"folder": "Prisma Access"}
 
-    # collect existing address objects in source tenant and append them to our empty placeholder address_objects
-    source_address = PrismaAddress(**folder)
+    source_address = Address(**folder)
     address_objects = source_address.list(session)
 
-    # collect existing address group in source tenant and append them to our empty placeholder address_groups
-    source_address_groups = PrismaAddressGroup(**folder)
+    source_address_groups = AddressGroup(**folder)
     address_groups = source_address_groups.list(session)
 
     return address_objects, address_groups
 
 
+# ----------------------------------------------------------------------------
+# Function to create Prisma address objects
+# ----------------------------------------------------------------------------
 def create_prisma_address_objects(
-    address_objects: List[PrismaAddress],
+    address_objects: List[Address],
     session: PanApiSession,
 ) -> List[Dict[str, str]]:
+    """
+    Create address objects in the destination Prisma Access tenant.
 
-    # empty placeholder
+    Iterates over the list of address objects from the source tenant,
+    extracts necessary attributes, and creates corresponding address objects
+    in the destination tenant.
+
+    Args:
+        address_objects (List[Address]): A list of address objects from the source tenant.
+        session (PanApiSession): An authenticated PanApiSession for the destination tenant.
+
+    Returns:
+        List[Dict[str, str]]: A list of dictionaries representing the created address objects.
+
+    Raises:
+        Exception: If there is an error creating an address object.
+    """
     prisma_address_objects = []
 
     for address_object in address_objects:
-        logging.debug(address_object)
-        ao = address_object.payload()
-        # ao = {
-        #     "folder": "Prisma Access",
-        # }
-        # if getattr(address_object, "name"):
-        #     ao["name"] = address_object.name
-        #
-        # if getattr(address_object, "description"):
-        #     ao["description"] = address_object.description
-        #
-        # if getattr(address_object, "value"):
-        #     ao["value"] = address_object.value
+        logging.debug(
+            "Processing address_object: %s",
+            address_object,
+        )
 
-        prisma_address = PrismaAddress(**ao)
-        prisma_address.create(session)
-        prisma_address_objects.append(address_object)
+        # Extract the necessary attributes
+        prisma_address_data = {
+            "name": address_object.name,
+            "folder": "Prisma Access",
+        }
+
+        # Extract a description, if one exists
+        if getattr(address_object, "description", None):
+            prisma_address_data["description"] = address_object.description
+
+        # Determine the type of address object and include the appropriate field
+        if getattr(address_object, "ip_netmask", None):
+            prisma_address_data["ip_netmask"] = address_object.ip_netmask
+        elif getattr(address_object, "fqdn", None):
+            prisma_address_data["fqdn"] = address_object.fqdn
+        elif getattr(address_object, "ip_range", None):
+            prisma_address_data["ip_range"] = address_object.ip_range
+        else:
+            logging.warning(
+                "Address object %s has no valid address type.", address_object.name
+            )
+            continue  # Skip if there's no valid address type
+
+        logging.debug("prisma_address_data: %s", prisma_address_data)
+
+        try:
+            prisma_address = Address(**prisma_address_data)
+            prisma_address.create(session)
+            prisma_address_objects.append(prisma_address_data)
+        except Exception as e:
+            logging.error("Error creating prisma address: %s", e)
+            raise
+
     return prisma_address_objects
 
 
@@ -119,28 +183,57 @@ def create_prisma_address_objects(
 # Function to create Prisma address groups
 # ----------------------------------------------------------------------------
 def create_prisma_address_groups(
-    address_groups: List[PrismaAddressGroup], session: PanApiSession
+    address_groups: List[AddressGroup],
+    session: PanApiSession,
 ) -> List[Dict[str, str]]:
+    """
+    Create address groups in the destination Prisma Access tenant.
+
+    Iterates over the list of address groups from the source tenant,
+    extracts necessary attributes, and creates corresponding address groups
+    in the destination tenant.
+
+    Args:
+        address_groups (List[AddressGroup]): A list of address groups from the source tenant.
+        session (PanApiSession): An authenticated PanApiSession for the destination tenant.
+
+    Returns:
+        List[Dict[str, str]]: A list of dictionaries representing the created address groups.
+
+    Raises:
+        SystemExit: If there is an error creating an address group.
+    """
     prisma_address_groups = []
+
     for address_group in address_groups:
-        logging.debug("address_group: %s", address_group)
         try:
-            # Create a new list of address object names for Prisma
-            prisma_static_value = [
-                f"{address_group.source}-{name}" for name in address_group.static_value
-            ]
             prisma_address_group_data = {
                 "folder": "Prisma Access",
-                "name": f"{address_group.source}-{address_group.name}",
-                "description": address_group.description,
-                "static": prisma_static_value,
+                "name": address_group.name,
             }
-            prisma_address_group = PrismaAddressGroup(**prisma_address_group_data)
+
+            # Add description if it exists
+            if getattr(address_group, "description", None):
+                prisma_address_group_data["description"] = address_group.description
+
+            # Handle static address groups
+            if getattr(address_group, "static", None):
+                prisma_static_value = [name for name in address_group.static]
+                prisma_address_group_data["static"] = prisma_static_value
+
+            # Handle dynamic address groups
+            if getattr(address_group, "dynamic", None):
+                prisma_address_group_data["dynamic"] = {
+                    "filter": address_group.dynamic["filter"]
+                }
+
+            prisma_address_group = AddressGroup(**prisma_address_group_data)
             prisma_address_group.create(session)
+            prisma_address_groups.append(prisma_address_group_data)
         except Exception as e:
             logging.error("Error creating address group object: %s", e)
             sys.exit(1)
-        prisma_address_groups.append(prisma_address_group_data)
+
     return prisma_address_groups
 
 
@@ -148,8 +241,25 @@ def create_prisma_address_groups(
 # Function to create Prisma security rules
 # ----------------------------------------------------------------------------
 def create_prisma_security_rules(
-    security_rules: Dict[str, Any], session: PanApiSession
+    security_rules: Dict[str, Any],
+    session: PanApiSession,
 ) -> List[Dict[str, str]]:
+    """
+    Create security rules in the destination Prisma Access tenant.
+
+    Iterates over the security rules from the source tenant,
+    and creates corresponding security rules in the destination tenant.
+
+    Args:
+        security_rules (Dict[str, Any]): A dictionary containing security rules categorized by device groups.
+        session (PanApiSession): An authenticated PanApiSession for the destination tenant.
+
+    Returns:
+        List[Dict[str, str]]: A list of dictionaries representing the created security rules.
+
+    Raises:
+        SystemExit: If there is an error creating a security rule.
+    """
     prisma_security_rules = []
 
     for device_group, rulebases in security_rules.items():
@@ -161,10 +271,6 @@ def create_prisma_security_rules(
             for rule in rulebases["pre_rules"]:
                 logging.debug("rule: %s", rule)
                 try:
-                    # import ipdb
-
-                    # ipdb.set_trace()
-
                     prisma_security_rule_data = {
                         "name": rule["rule_name"],
                         "folder": "Prisma Access",
@@ -188,10 +294,9 @@ def create_prisma_security_rules(
                     )
                     logging.debug("prisma_security_rule: %s", prisma_security_rule)
                     prisma_security_rule.create(session)
+                    prisma_security_rules.append(prisma_security_rule_data)
                 except Exception as e:
                     logging.error("Error creating security rule: %s", e)
-
-                prisma_security_rules.append(prisma_security_rule_data)
 
         if len(rulebases["post_rules"]) > 0:
             logging.debug("post_rules: %s", rulebases["post_rules"])
@@ -221,11 +326,11 @@ def create_prisma_security_rules(
                     )
                     logging.debug("prisma_security_rule: %s", prisma_security_rule)
                     prisma_security_rule.create(session)
+                    prisma_security_rules.append(prisma_security_rule_data)
                 except Exception as e:
                     logging.error("Error creating security rule: %s", e)
                     sys.exit(1)
 
-                prisma_security_rules.append(prisma_security_rule_data)
     return prisma_security_rules
 
 
@@ -233,27 +338,30 @@ def create_prisma_security_rules(
 # Main execution of our script
 # ----------------------------------------------------------------------------
 def run_prisma_access_migrate(config_objects: str) -> Dict[str, Any]:
+    """
+    Main function to migrate configuration from source to destination Prisma Access tenant.
 
-    # initialize result dictionary
+    Authenticates with both the source and destination Prisma Access tenants,
+    retrieves the specified configuration objects from the source tenant,
+    and creates them in the destination tenant.
+
+    Args:
+        config_objects (str): Comma-separated list of configuration objects to process.
+            Options: 'address-objects', 'address-groups', 'security-rules', 'all'.
+
+    Returns:
+        Dict[str, Any]: A dictionary containing the results of the migration.
+    """
     result = {}
 
-    # process config objects to determine which parts of the config we will work on
+    # Determine which config objects to process
     config_objects_list = [item.strip() for item in config_objects.split(",")]
     process_all = "all" in config_objects_list
-    process_address_objects = process_all or "address_objects" in config_objects_list
-    process_address_groups = process_all or "address_groups" in config_objects_list
-    process_security_rules = process_all or "security_rules" in config_objects_list
+    process_address_objects = process_all or "address-objects" in config_objects_list
+    process_address_groups = process_all or "address-groups" in config_objects_list
+    process_security_rules = process_all or "security-rules" in config_objects_list
 
-    # Pseduo code
-    # 1: authenticate with source Prisma Access Tenant
-    # 2: retrieve all existing address objects
-    # 3: retrieve all existing address groups
-    # 4: authenticate with destination Prisma Access Tenant
-    # 5: create all new address objects
-    # 6: create all new address groups
-    # 7: celebrate
-
-    # authenticate with source Prisma Access Tenant
+    # Authenticate with source Prisma Access tenant
     try:
         source_session = PanApiSession()
         logging.info("Authenticating with source Prisma Access tenant...")
@@ -268,8 +376,7 @@ def run_prisma_access_migrate(config_objects: str) -> Dict[str, Any]:
         logging.error(f"Error with Prisma authentication: {e}")
         return {"error": str(e)}
 
-    # fetch address objects and groups from source
-
+    # Fetch address objects and groups from source
     address_objects = []
     address_groups = []
     if process_address_objects or process_address_groups:
@@ -282,7 +389,7 @@ def run_prisma_access_migrate(config_objects: str) -> Dict[str, Any]:
             logging.error("Error retrieving address objects and groups: %s", e)
             sys.exit(1)
 
-    # authenticate with destination Prisma Access Tenant
+    # Authenticate with destination Prisma Access tenant
     try:
         destination_session = PanApiSession()
         logging.info("Authenticating with destination Prisma Access tenant...")
@@ -301,134 +408,32 @@ def run_prisma_access_migrate(config_objects: str) -> Dict[str, Any]:
     if process_address_objects:
         try:
             logging.info(
-                "Creating Prisma address objects in destination prisma access tenant..."
+                "Creating Prisma address objects in destination Prisma Access tenant..."
             )
             prisma_address_objects = create_prisma_address_objects(
                 address_objects,
                 destination_session,
             )
+            result["prisma_address_objects"] = prisma_address_objects
         except Exception as e:
             logging.error(f"Error with Prisma API calls: {e}")
             return {"error": str(e)}
 
-        # Add to result dictionary
-        result["prisma_address_objects"] = prisma_address_objects
+    # Create Prisma address groups
+    if process_address_groups:
+        try:
+            logging.info(
+                "Creating Prisma address groups in destination Prisma Access tenant..."
+            )
+            prisma_address_groups = create_prisma_address_groups(
+                address_groups,
+                destination_session,
+            )
+            result["prisma_address_groups"] = prisma_address_groups
+        except Exception as e:
+            logging.error(f"Error with Prisma API calls: {e}")
+            return {"error": str(e)}
 
-    # # Create Prisma address groups
-    # if process_address_groups:
-    #     try:
-    #         logging.info("Creating Prisma address groups...")
-    #         prisma_address_groups = create_prisma_address_groups(
-    #             address_groups, session
-    #         )
-    #     except Exception as e:
-    #         logging.error(f"Error with Prisma API calls: {e}")
-    #         return {"error": str(e)}
-    #
-    #     # Add to result dictionary
-    #     result["prisma_address_groups"] = prisma_address_groups
-    #
-    # # Create Prisma security rules
-    # if process_security_rules:
-    #     # fetch security rules
-    #     try:
-    #         logging.info("Retrieving security rules...")
-    #
-    #         # Fetch and process device groups
-    #         device_groups = DeviceGroup.refreshall(pan)
-    #         security_policy = {"shared": {"pre_rules": [], "post_rules": []}}
-    #
-    #         for dg in device_groups:
-    #             dg_name = dg.name
-    #
-    #             # Skip the specified DeviceGroup
-    #             if dg_name == "Service_Conn_Device_Group":
-    #                 logging.info(f"Skipping DeviceGroup: {dg_name}")
-    #                 continue
-    #
-    #             logging.info(f"Processing device group: {dg_name}")
-    #
-    #             # Fetch and convert security rules to SecurityRuleData
-    #             dg_pre_rules_data = [
-    #                 rule.dict()
-    #                 for rule in get_security_rules(
-    #                     pan,
-    #                     device_group=dg,
-    #                     position="pre",
-    #                 )
-    #             ]
-    #             dg_post_rules_data = [
-    #                 rule.dict()
-    #                 for rule in get_security_rules(
-    #                     pan,
-    #                     device_group=dg,
-    #                     position="post",
-    #                 )
-    #             ]
-    #
-    #             # Filter the converted rules
-    #             dg_pre_rules_filtered = filter_rules_by_tag(
-    #                 dg_pre_rules_data, "GlobalProtect"
-    #             )
-    #             dg_post_rules_filtered = filter_rules_by_tag(
-    #                 dg_post_rules_data, "GlobalProtect"
-    #             )
-    #
-    #             # Store filtered rules in the security policy dictionary
-    #             security_policy[dg_name] = {
-    #                 "pre_rules": dg_pre_rules_filtered,
-    #                 "post_rules": dg_post_rules_filtered,
-    #             }
-    #
-    #         # Fetch and convert shared rules to SecurityRuleData
-    #         shared_pre_rules_data = [
-    #             rule.dict()
-    #             for rule in get_security_rules(
-    #                 pan,
-    #                 position="pre",
-    #             )
-    #         ]
-    #         shared_post_rules_data = [
-    #             rule.dict()
-    #             for rule in get_security_rules(
-    #                 pan,
-    #                 position="post",
-    #             )
-    #         ]
-    #
-    #         # Filter the converted shared rules
-    #         filtered_shared_pre_rules = filter_rules_by_tag(
-    #             shared_pre_rules_data, "GlobalProtect"
-    #         )
-    #         filtered_shared_post_rules = filter_rules_by_tag(
-    #             shared_post_rules_data, "GlobalProtect"
-    #         )
-    #
-    #         # Update the security policy dictionary with filtered shared rules
-    #         security_policy["shared"] = {
-    #             "pre_rules": filtered_shared_pre_rules,
-    #             "post_rules": filtered_shared_post_rules,
-    #         }
-    #         logging.debug(security_policy)
-    #     except Exception as e:
-    #         logging.error("Error retrieving security rules: %s", e)
-    #         return
-    #
-    #     # Add to result dictionary
-    #     result["panorama_security_rules"] = security_policy
-    #     try:
-    #         logging.info("Creating Prisma security rules...")
-    #         prisma_security_rules = create_prisma_security_rules(
-    #             security_policy, session
-    #         )
-    #     except Exception as e:
-    #         logging.error(f"Error with Prisma API calls: {e}")
-    #         return {"error": str(e)}
-    #
-    #     # Add to result dictionary
-    #     result["prisma_security_rules"] = prisma_security_rules
-
-    logging.info("Completed job successfully!")
     return result
 
 
