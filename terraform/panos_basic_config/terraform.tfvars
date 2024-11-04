@@ -1,8 +1,8 @@
 /* Firewall Connectivity -------------------------------------------------- */
 firewall = {
-  fw_ip    = "austin-fw3.cdot.io"
-  username = "officehours"
-  password = "paloalto123"
+  fw_ip    = "austin1"
+  username = "terraform"
+  password = "this-is-an-example"
 }
 
 /* Ethernet Interfaces ---------------------------------------------------- */
