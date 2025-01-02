@@ -88,17 +88,145 @@ Dependencies are managed via `depends_on` blocks.
 1. Copy `terraform.tfvars.example` to `terraform.tfvars`
 2. Update variables for your environment  
 3. Initialize:
-```bash
-terraform init
-```
+
+    ```bash
+    terraform init
+    ```
+
 4. Preview changes:
-```bash
-terraform plan
-```
+
+    ```bash
+    terraform plan
+    ```
+
 5. Apply configuration:
-```bash 
-terraform apply
+
+    ```bash 
+    terraform apply
+    ```
+
+## Configuration Structure
+
+### Main Resources
+Our `main.tf` is organized into logical sections:
+
+1. DNS Settings
+2. NTP Settings  
+3. Templates
+4. Template Stacks
+5. Interface Management Profiles
+6. Template Variables
+7. Network Interfaces
+8. Security Zones
+9. Virtual Routers
+10. Device Groups
+11. Administrative Tags
+12. Address Objects & Groups
+13. Service Objects & Groups 
+14. Security Policies
+15. Custom URL Categories
+
+### Variable Structure
+The `terraform.tfvars` file needs to match the resource structure. Example configuration sections:
+
+#### Template Configuration
+```hcl
+templates = {
+  Branch = {
+    name        = "Branch-Template"
+    description = "Branch Office Template"
+  }
+}
 ```
+
+#### Device Groups
+```hcl
+device_groups = {
+  Branch = {
+    location = {
+      panorama = {}
+    }
+    name = "Branch-DG" 
+  }
+  Dallas = {
+    location = {
+      panorama = {}
+    }
+    name = "Dallas-DG"
+    devices = ["serial-1"]
+  }
+}
+```
+
+#### Security Policies
+```hcl
+security_policies = {
+  Branch = {
+    location = {
+      device_group = {
+        name = "Branch-DG"
+        rulebase = "pre-rulebase"
+      }
+    }
+    policy_rules = [
+      {
+        name = "Allow-Web"
+        source_zones = ["trust"]
+        destination_zones = ["untrust"]
+        action = "allow"
+      }
+    ]
+  }
+}
+```
+
+### Making Changes
+
+1. Identify Resource Section
+   - Locate relevant section in `main.tf`
+   - Note variable structure used
+
+2. Update `terraform.tfvars`
+   - Match hierarchical structure
+   - Keep consistent naming
+   - Ensure all required fields populated
+
+3. Example Change: Adding Security Rule
+    ```hcl
+    # Original
+    security_policies = {
+      Branch = {
+        policy_rules = [
+          {
+            name = "Allow-Web"
+          }
+        ]
+      }
+    }
+    
+    # Modified
+    security_policies = {
+      Branch = {
+        policy_rules = [
+          {
+            name = "Allow-Web"
+          },
+          {
+            name = "Allow-DNS"
+            source_zones = ["trust"]
+            destination_zones = ["untrust"]
+            services = ["dns"]
+          }
+        ]
+      }
+    }
+    ```
+
+4. Validate
+   - Run `terraform plan`
+   - Review changes
+   - Apply with `terraform apply`
+
 
 ## Limitations
 
