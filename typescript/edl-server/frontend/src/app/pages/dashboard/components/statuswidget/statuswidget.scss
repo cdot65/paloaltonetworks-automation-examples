@@ -1,0 +1,18 @@
+// src/app/pages/dashboard/components/statuswidget/statuswidget.scss
+.edl-status-widget {
+    :host ::ng-deep .p-card {
+        .p-card-body {
+            padding: 1.5rem;
+        }
+    }
+
+    .surface-card {
+        background-color: var(--surface-card);
+        border: 1px solid var(--surface-border);
+        transition: all 0.2s ease-in-out;
+
+        &:hover {
+            border-color: var(--primary-color);
+        }
+    }
+}

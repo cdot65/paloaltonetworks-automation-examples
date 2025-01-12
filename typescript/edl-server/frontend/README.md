@@ -1,27 +1,83 @@
-# Frontend
+# Pomegranate EDL Manager
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 18.2.12.
+A modern Angular application for managing Palo Alto Networks External Dynamic Lists (EDLs). This project is built using Angular 19 and the Sakai-NG admin template.
 
-## Development server
+## Project Overview
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+Pomegranate EDL Manager provides a web interface for performing CRUD operations on Palo Alto Networks EDLs (External Dynamic Lists). The application allows users to:
 
-## Code scaffolding
+- View EDL status and statistics
+- Manage IP blocklists
+- Manage domain blocklists
+- Manage URL blocklists
+- Handle custom lists
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+## Technical Stack
 
-## Build
+- Angular 19
+- Standalone Components
+- New Angular Control Flow (@if, @else)
+- PrimeNG UI Components
+- TailwindCSS
+- Sakai-NG Admin Template
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+## Prerequisites
 
-## Running unit tests
+- Node.js (v18 or higher)
+- npm (v9 or higher)
+- Angular CLI
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+## Installation
 
-## Running end-to-end tests
+1. Clone the repository:
+```bash
+git clone [repository-url]
+cd pomegranate
+```
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+2. Install dependencies:
+```bash
+npm install
+```
 
-## Further help
+3. Start the development server:
+```bash
+ng serve
+```
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+4. Navigate to `http://localhost:4200/` in your browser.
+
+## Project Structure
+
+The application follows a strict component structure:
+```
+{component_name}/
+├── {component_name}.scss
+├── {component_name}.html
+└── {component_name}.ts
+```
+
+## Development Notes
+
+- The application uses Angular's new control flow syntax (@if, @else)
+- @ngIf and @ngClass are not used in favor of the new syntax
+- All components are standalone
+- Component templates must be in separate .html files
+
+## Features
+
+- Dashboard with EDL status overview
+- Real-time EDL statistics
+- CRUD operations for lists
+- Dark/Light theme support
+- Responsive design
+
+## Building for Production
+
+To build the application for production:
+
+```bash
+ng build --configuration production
+```
+
+The build artifacts will be stored in the `dist/` directory.

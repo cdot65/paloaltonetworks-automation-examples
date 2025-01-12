@@ -1,18 +1,16 @@
 /** @type {import('tailwindcss').Config} */
+const primeui = require('tailwindcss-primeui');
 module.exports = {
-    content: ['./src/**/*.{html,ts}'],
+    darkMode: ['selector', '[class="app-dark"]'],
+    content: ['./src/**/*.{html,ts,scss,css}', './index.html'],
+    plugins: [primeui],
     theme: {
-        extend: {
-            keyframes: {
-                'fade-in': {
-                    '0%': { opacity: '0', transform: 'translateY(-10px)' },
-                    '100%': { opacity: '1', transform: 'translateY(0)' },
-                },
-            },
-            animation: {
-                'fade-in': 'fade-in 0.5s ease-out',
-            },
-        },
-    },
-    plugins: [],
+        screens: {
+            sm: '576px',
+            md: '768px',
+            lg: '992px',
+            xl: '1200px',
+            '2xl': '1920px'
+        }
+    }
 };

@@ -1,22 +1,9 @@
 // src/app/pages/interfaces/edl.interface.ts
-export type EdlType = 'IP' | 'URL' | 'DOMAIN' | 'IMEI' | 'IMSI';
-
-export interface EDL {
-    id: string;
-    name: string;
-    description: string;
-    type: EdlType;
-    createdAt: string;
-    updatedAt: string;
-    createdBy: string | null;
-    entries: EdlEntry[];
-}
-
-export interface EdlEntry {
+export interface EDLEntry {
     id: string;
     address: string;
-    comment?: string;
-    type: EdlType;
+    comment: string;
+    type: 'IP' | 'URL' | 'DOMAIN';
     isEnabled: boolean;
     createdAt: string;
     updatedAt: string;
@@ -24,15 +11,35 @@ export interface EdlEntry {
     listName: string;
 }
 
+export interface EDL {
+    id: string;
+    name: string;
+    description: string;
+    type: 'IP' | 'URL' | 'DOMAIN';
+    createdAt: string;
+    updatedAt: string;
+    createdBy: string | null;
+    entries: EDLEntry[];
+}
+
 export interface CreateEdlListDto {
     name: string;
     description: string;
-    type: EdlType;
+    type: 'IP' | 'URL' | 'DOMAIN';
 }
 
 export interface CreateEdlEntryDto {
     address: string;
     comment?: string;
-    type: EdlType;
     listName: string;
+}
+
+// View model for the table display
+export interface EDLViewModel {
+    id: string;
+    name: string;
+    description: string;
+    type: 'IP' | 'URL' | 'DOMAIN';
+    entryCount: number;
+    lastUpdated: string;
 }

@@ -83,3 +83,4 @@ ehthumbs.db
 venv
 *.py
 /scripts/logo.svg
+/k8s/dev/certs/fullchain.cer
