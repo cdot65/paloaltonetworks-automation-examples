@@ -1,0 +1,22 @@
+http:
+  routers:
+    https-redirect:
+      entryPoints:
+        - web
+      rule: HostRegexp(`{host:.+}`)
+      middlewares:
+        - redirect-to-https
+      service: noop@internal
+
+  middlewares:
+    redirect-to-https:
+      redirectScheme:
+        scheme: https
+        permanent: true
+
+tls:
+  stores:
+    default:
+      defaultCertificate:
+        certFile: /certs/cert.pem
+        keyFile: /certs/key.pem

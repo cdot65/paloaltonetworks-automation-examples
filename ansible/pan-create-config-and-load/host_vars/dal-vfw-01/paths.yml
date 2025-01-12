@@ -1,0 +1,8 @@
+---
+# create local paths for directories and files
+temporary_folder: "config/tmp/{{ inventory_hostname }}"
+completed_folder: "config/completed"
+completed_config_file: "{{ completed_folder }}/{{ inventory_hostname }}_ansible.xml"
+
+# change python interpreter to prevent choking on /usr/bin/python3
+ansible_python_interpreter: "{{ ansible_playbook_python }}"

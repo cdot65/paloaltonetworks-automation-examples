@@ -1,0 +1,6 @@
+---
+panos:
+  hostname: "your panos firewall here"
+  apikey: "your panos firewall api key here"
+  trusted_users: ["trusteduser1", "trusteduser2"]
+  dag_tag: "your dag tag here"

@@ -1,0 +1,30 @@
+- name: "Receive logs sourced from HTTP Server Profile in PAN-OS"
+  hosts: "localhost"
+
+  sources:
+    - paloaltonetworks.panos.logs:
+        host: 0.0.0.0
+        port: 5000
+        type: decryption
+
+  rules:
+    - name: "Troubleshoot Decryption Failure"
+      condition: event.meta.log_type == "decryption"
+
+      action:
+        run_playbook:
+          name: "playbooks/decryption.yaml"
+
+    - name: "Slack Alert on DLP Violation"
+      condition: event.meta.log_type == "data"
+
+      action:
+        run_playbook:
+          name: "playbooks/send_slack_message.yaml"
+
+    - name: "ServiceNow Ticket on hardware failure"
+      condition: event.meta.log_type == "system"
+
+      action:
+        run_playbook:
+          name: "playbooks/create_snow_ticket.yaml"

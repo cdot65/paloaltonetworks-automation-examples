@@ -1,0 +1,32 @@
+---
+- name: Retrieve Panorama configuration
+  hosts: panorama
+  connection: local
+  gather_facts: false
+  collections:
+    - paloaltonetworks.panos
+    - community.general
+
+  tasks:
+    - name: Retrieve security pre-rule base
+      panos_security_rule_facts:
+        provider:
+          ip_address: "{{ ansible_host }}"
+          api_key: "{{ panorama_api_key }}"
+        rulebase: "pre-rulebase"
+        details: True
+      register: pre_rule_base
+
+    - name: Retrieve security post-rule base
+      panos_security_rule_facts:
+        provider:
+          ip_address: "{{ ansible_host }}"
+          api_key: "{{ panorama_api_key }}"
+        rulebase: "post-rulebase"
+        details: True
+      register: post_rule_base
+
+    - name: Parse data and write to CSV file with Jinja2
+      template:
+        src: "./templates/security_profile_group.j2"
+        dest: "./test.csv"

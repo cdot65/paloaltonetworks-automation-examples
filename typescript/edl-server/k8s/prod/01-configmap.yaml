@@ -1,0 +1,10 @@
+# 01-configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: pomegranate-config
+  namespace: pomegranate
+data:
+  POSTGRES_DB: "edl_db"
+  POSTGRES_PORT: "5432"
+  FRONTEND_URL: "https://edl.example.io"

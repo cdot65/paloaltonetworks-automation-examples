@@ -1,0 +1,24 @@
+---
+# ------------------------------------------------------------------------
+# DISABLE SIP ALG
+# ------------------------------------------------------------------------
+- hosts: all
+  connection: local
+  gather_facts: False
+  become: False
+  collections:
+    - paloaltonetworks.panos
+    - ansible.utils
+
+  tasks:
+    - name: SIP ALG Disable
+      paloaltonetworks.panos.panos_config_element:
+        provider:
+          ip_address: "{{ ansible_host }}"
+          username: "this-is-just-a-placeholder"
+          password: "this-is-just-a-placeholder"
+        xpath: "/config/shared/alg-override/application"
+        element: |
+          "<entry name='sip'>
+            <alg-disabled>yes</alg-disabled>
+          </entry>"

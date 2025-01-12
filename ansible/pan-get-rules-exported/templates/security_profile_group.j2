@@ -1,0 +1,7 @@
+Name,Description,ProfileGroup
+{% for each in pre_rule_base["rule_details"] %}
+{{ each["rule_name"] }},"{{ each["description"] }}",{{ each["group_profile"] }}
+{% endfor %}
+{% for each in post_rule_base["rule_details"] %}
+{{ each["rule_name"] }},"{{ each["description"] }}",{{ each["group_profile"] }}
+{% endfor %}

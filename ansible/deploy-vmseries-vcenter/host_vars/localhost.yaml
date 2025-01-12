@@ -1,0 +1,14 @@
+# vCenter connection parameters
+vcenter_hostname: "your_vcenter_hostname"
+vcenter_username: "your_vcenter_username"
+vcenter_password: "your_vcenter_password"
+validate_certs: False
+
+# vCenter parameters
+datacenter: "your_datacenter"
+folder: "your_folder"
+esxi_host: "your_esxi_host"
+
+# VM specifics
+template: "your_template"
+vm_name: "your_vm_name"

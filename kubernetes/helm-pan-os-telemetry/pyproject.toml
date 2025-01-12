@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "pan-os-telemetry"
+version = "0.1.0"
+description = "Helm chart for deploying a telemetry stack to monitor PAN-OS firewalls"
+authors = ["Calvin Remsburg <cremsburg.dev@gmail.com>"]
+license = "Apache 2.0"
+readme = "README.md"
+packages = [{include = "pan_os_telemetry"}]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+
+[tool.poetry.group.dev.dependencies]
+black = "^24.4.2"
+flake8 = "^7.0.0"
+invoke = "^2.2.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

@@ -1,0 +1,29 @@
+---
+#------------------------------------------------------------------------
+# CHECK TO SEE IF PANORAMA WOULD ALLOW ME TO CREATE A SECURITY OBJECT
+#------------------------------------------------------------------------
+- hosts: panorama
+  connection: local
+  gather_facts: False
+  become: False
+  collections:
+    - paloaltonetworks.panos
+    - ansible.utils
+
+  tasks:
+    - name: "Validate that Panorama would allow us to create an object, check mode"
+      panos_address_object:
+        provider:
+          ip_address: "{{ ansible_host }}"
+          username: "{{ panorama_username }}"
+          api_key: "{{ panorama_api_key }}"
+        name: "Gaming-PC"
+        address_type: "fqdn"
+        value: "gaming.example.com"
+        description: "Gaming PC"
+      check_mode: yes
+      register: result
+
+    - name: "Print result to the console"
+      debug:
+        msg: "{{ result }}"

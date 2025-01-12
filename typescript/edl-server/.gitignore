@@ -1,0 +1,85 @@
+# dependencies
+/node_modules
+/.pnp
+.pnp.js
+
+# testing
+/coverage
+
+# next.js
+/.next/
+/out/
+next-env.d.ts
+
+# production
+/build
+
+# misc
+.DS_Store
+*.pem
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# local env files
+.env*
+.env*.local
+.env.development
+.env.test
+.env.production
+
+# vercel
+.vercel
+
+# typescript
+*.tsbuildinfo
+
+# IDE - VSCode
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# IDE - JetBrains
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# Prisma
+/prisma/migrations/
+/prisma/*.db
+/prisma/*.db-journal
+
+# Docker
+docker-compose.override.yml
+.docker/data/
+
+# System Files
+Thumbs.db
+desktop.ini
+
+# Logs
+logs
+*.log
+
+# Cache directories
+.npm
+.eslintcache
+.stylelintcache
+
+# Optional
+*.swp
+*.swo
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+venv
+*.py
+/scripts/logo.svg

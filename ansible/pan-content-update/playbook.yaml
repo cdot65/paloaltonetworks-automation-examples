@@ -1,0 +1,71 @@
+---
+#------------------------------------------------------------------------
+# UPDATE SOFTWARE PACKAGES WITHIN PANORAMA
+#------------------------------------------------------------------------
+- hosts: panorama
+  connection: local
+  gather_facts: False
+  become: False
+  collections:
+    - paloaltonetworks.panos
+    - ansible.utils
+
+  tasks:
+    - name: Check latest content
+      # Get an updated dynamic content list
+      paloaltonetworks.panos.panos_op:
+        provider:
+          ip_address: "{{ panorama_hostname }}"
+          api_key: "{{ panorama_api_key }}"
+        cmd: "request content upgrade check"
+      register: result
+
+    - name: Download latest Application and Threats content
+      # Download the latest version
+      paloaltonetworks.panos.panos_op:
+        provider:
+          ip_address: "{{ panorama_hostname }}"
+          api_key: "{{ panorama_api_key }}"
+        cmd: |
+          <request><content><upgrade><download>
+          <latest></latest>
+          </download></upgrade></content></request>
+        cmd_is_xml: true
+      register: download
+
+    - name: Check content download result
+      # wait for this job to finish
+      paloaltonetworks.panos.panos_op:
+        provider:
+          ip_address: "{{ panorama_hostname }}"
+          api_key: "{{ panorama_api_key }}"
+        cmd: "show jobs id {{ (download.stdout | from_json).response.result.job }}"
+      register: download_job
+      until: download_job is not failed and (download_job.stdout | from_json).response.result.job.status == 'FIN'
+      retries: 20
+      delay: 30
+
+    - name: Download latest Antivirus updates
+      # Download the latest version
+      paloaltonetworks.panos.panos_op:
+        provider:
+          ip_address: "{{ panorama_hostname }}"
+          api_key: "{{ panorama_api_key }}"
+        cmd: |
+          <request><anti-virus><upgrade><download>
+          <latest></latest>
+          </download></upgrade></anti-virus></request>
+        cmd_is_xml: true
+      register: download_av
+
+    - name: Check content download_av result
+      # wait for this job to finish
+      paloaltonetworks.panos.panos_op:
+        provider:
+          ip_address: "{{ panorama_hostname }}"
+          api_key: "{{ panorama_api_key }}"
+        cmd: "show jobs id {{ (download_av.stdout | from_json).response.result.job }}"
+      register: download_av_job
+      until: download_av_job is not failed and (download_av_job.stdout | from_json).response.result.job.status == 'FIN'
+      retries: 20
+      delay: 30

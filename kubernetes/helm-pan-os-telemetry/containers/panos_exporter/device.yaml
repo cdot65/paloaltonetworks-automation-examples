@@ -1,0 +1,9 @@
+# containers/panos_exporter/device.yaml
+
+devices:
+  192.168.255.11:
+    username: officehours
+    password: paloalto123
+  192.168.255.12:
+    username: officehours
+    password: paloalto123

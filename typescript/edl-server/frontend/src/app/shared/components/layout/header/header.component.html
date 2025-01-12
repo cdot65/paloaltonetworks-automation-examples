@@ -1,0 +1,42 @@
+<header class="bg-gray-950 text-white">
+    <nav class="container mx-auto px-4 py-3">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-8">
+
+                <a href="/" class="inline-block">
+                    <img ngSrc="assets/icons/pomegranate.svg" class="w-12 h-12" height="200" width="200" alt="logo">
+                </a>
+                <div class="hidden md:flex space-x-4">
+                    <a
+                        class="hover:text-yellow-300"
+                        routerLink="/edl"
+                        routerLinkActive="text-yellow-400"
+                    >EDLs</a
+                    >
+                    <a
+                        class="hover:text-yellow-300"
+                        routerLink="/search"
+                        routerLinkActive="text-yellow-400"
+                    >Search</a
+                    >
+                    <a
+                        class="hover:text-yellow-300"
+                        routerLink="/chat"
+                        routerLinkActive="text-yellow-400"
+                    >Chat</a
+                    >
+                </div>
+            </div>
+            <div class="flex items-center space-x-4">
+                <a class="hover:text-yellow-300" routerLink="/auth/login"
+                >Login</a
+                >
+                <a
+                    class="bg-yellow-500 text-black px-4 py-2 rounded hover:bg-yellow-400"
+                    routerLink="/auth/register"
+                >Sign Up</a
+                >
+            </div>
+        </div>
+    </nav>
+</header>

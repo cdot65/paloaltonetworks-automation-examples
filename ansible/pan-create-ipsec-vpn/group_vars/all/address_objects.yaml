@@ -1,0 +1,12 @@
+shared_address_objects:
+  - name: "Dallas-WAN-IP"
+    address_type: "ip-netmask"
+    value: "51.95.83.2"
+    description: "Dallas WAN IP address for VPN"
+    tag: ["VPN"]
+
+  - name: "SanAntonio-WAN-IP"
+    address_type: "ip-netmask"
+    value: "46.58.79.2"
+    description: "SanAntonio WAN IP address for VPN"
+    tag: ["VPN"]

@@ -1,0 +1,7 @@
+collections:
+  - name: paloaltonetworks.panos
+    type: galaxy
+    version: 2.17.0
+  - name: community.general
+    type: galaxy
+    version: 8.0.2

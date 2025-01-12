@@ -1,0 +1,71 @@
+# 06-traefik.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: traefik-config
+  namespace: pomegranate
+data:
+  traefik.yml: |
+    api:
+      dashboard: true
+      insecure: true
+    log:
+      level: DEBUG
+    entryPoints:
+      web:
+        address: ":80"
+        http:
+          redirections:
+            entryPoint:
+              to: websecure
+              scheme: https
+      websecure:
+        address: ":443"
+        http:
+          tls: {}
+    providers:
+      kubernetesIngress: {}  # Changed this line
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: traefik
+  namespace: pomegranate
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: traefik
+  template:
+    metadata:
+      labels:
+        app: traefik
+    spec:
+      serviceAccountName: traefik-account
+      containers:
+        - name: traefik
+          image: traefik:v2.10
+          args:
+            - "--configFile=/etc/traefik/traefik.yml"
+            - "--log.level=DEBUG"
+            - "--accesslog=true"
+            - "--providers.kubernetesingress.ingressclass=traefik"  # Added this line
+          volumeMounts:
+            - name: cert
+              mountPath: /certs
+              readOnly: true
+            - name: traefik-config
+              mountPath: /etc/traefik
+              readOnly: true
+          ports:
+            - name: web
+              containerPort: 80
+            - name: websecure
+              containerPort: 443
+      volumes:
+        - name: cert
+          secret:
+            secretName: tls-cert
+        - name: traefik-config
+          configMap:
+            name: traefik-config

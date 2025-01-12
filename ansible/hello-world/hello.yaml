@@ -1,0 +1,17 @@
+---
+- name: Hello World Sample
+  hosts: all
+  become: false
+  vars:
+    message: "Hello World!"
+  tasks:
+    - name: Hello Message
+      debug:
+        msg: "{{ message }}"
+      tags:
+        - debug
+  handlers:
+    - name: Print done
+      debug:
+        msg: "Done"
+      listen: "done"

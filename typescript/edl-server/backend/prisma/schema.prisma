@@ -1,0 +1,50 @@
+// backend/prisma/schema.prisma
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum EntryType {
+  IP
+  URL
+  DOMAIN
+  IMEI
+  IMSI
+}
+
+enum ListType {
+  IP
+  URL
+  DOMAIN
+  EQUIPMENT_IDENTITY
+  SUBSCRIBER_IDENTITY
+}
+
+model EdlEntry {
+  id        String    @id @default(uuid())
+  address   String    @unique
+  comment   String?
+  type      EntryType @default(IP)
+  isEnabled Boolean   @default(true)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  createdBy String?
+  listName  String
+  list      EdlList   @relation(fields: [listName], references: [name])
+}
+
+model EdlList {
+  id          String     @id @default(uuid())
+  name        String     @unique
+  description String?
+  type        ListType
+  entries     EdlEntry[] @relation()
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  createdBy   String?
+}

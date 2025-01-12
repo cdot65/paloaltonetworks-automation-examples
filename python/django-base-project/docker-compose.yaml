@@ -1,0 +1,32 @@
+services:
+  web:
+    build:
+        context: ./django
+        dockerfile: Dockerfile
+    command: /code/start.sh
+    volumes:
+      - ./django:/code
+    environment:
+      - "DJANGO_SECRET_KEY=XNaZeqVx7B8o4p9K9C_4ICD9-c9fCeEnRnW6JR-2MAe8-xmuNQc"
+      - "SENDGRID_API_KEY=this-is-just-a-placeholder"
+      - "DJANGO_DEBUG=True"
+    ports:
+      - 8000:8000
+    depends_on:
+      - db
+    env_file:
+        - ./django/.env
+
+  db:
+      image: postgres:14
+      volumes:
+          - postgres_data:/var/lib/postgresql/data/
+      environment:
+          - "POSTGRES_HOST_AUTH_METHOD=trust"
+      env_file:
+          - ./django/.env
+      ports:
+          - "5432:5432"
+
+volumes:
+  postgres_data:

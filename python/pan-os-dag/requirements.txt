@@ -1,0 +1,2 @@
+pan-os-python==1.12.1
+pan-python==0.17.0

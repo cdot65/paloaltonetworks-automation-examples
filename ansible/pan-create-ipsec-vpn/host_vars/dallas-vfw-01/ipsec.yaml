@@ -1,0 +1,5 @@
+ipsec_tunnels:
+  - name: "SanAntonio-VPN"
+    tunnel: "tunnel.10"
+    gateway: "SanAntonio-IKE-GW"
+    profile: "remote-branch-ipsec-profile"

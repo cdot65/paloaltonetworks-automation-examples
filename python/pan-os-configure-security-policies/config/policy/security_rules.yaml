@@ -1,0 +1,27 @@
+# config/policy/security_rules.yaml
+panos_config:
+  device_groups:
+    Magnolia:
+
+      policy:
+        security_rules:
+          pre_rules:
+            - name: "Allow_Inbound_Web"
+              from_zone: ["Untrust"]
+              to_zone: ["Trust"]
+              source: ["any"]
+              destination: ["Web_Servers"]
+              application: ["web-browsing"]
+              service: ["application-default"]
+              action: "allow"
+          # Add more pre-rules here
+          post_rules:
+            - name: "Deny Any"
+              from_zone: ["any"]
+              to_zone: ["any"]
+              source: ["any"]
+              destination: ["any"]
+              application: ["any"]
+              service: ["any"]
+              action: "deny"
+          # Add more post-rules here

@@ -1,0 +1,4 @@
+# Variables related to all Panorama API connections
+panorama_credentials:
+  username: "automation"
+  password: "supersecretpassword"

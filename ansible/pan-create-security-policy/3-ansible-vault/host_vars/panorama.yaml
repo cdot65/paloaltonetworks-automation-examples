@@ -1,0 +1,26 @@
+# Variables related to the security rule
+security_rule:
+  rule_name: "Permit DMZ to WAN"
+  description: "Allow Kubernetes hosts outbound access to the WAN"
+  source_zone:
+    - "DMZ"
+  destination_zone:
+    - "WAN"
+  source_ip:
+    - "any"
+  source_user:
+    - "any"
+  destination_ip:
+    - "any"
+  category:
+    - "any"
+  application:
+    - "any"
+  service:
+    - "application-default"
+  hip_profiles:
+    - "any"
+  # tag_name:
+  # - "Outbound Web"
+  action: "allow"
+  device_group: "shared"

@@ -1,0 +1,2 @@
+pan-os-python==1.12.0
+pulumi==3.116.1

@@ -1,0 +1,31 @@
+---
+- name: Override and Disable Captive Portal
+  hosts: panos_firewall
+  gather_facts: no
+  roles:
+    - panos_config
+
+  tasks:
+    - name: Override Captive Portal
+      include_role:
+        name: panos_config
+        tasks_from: configure_captive_portal.yaml
+      register: config_result
+      ignore_errors: yes
+
+    - name: Display configuration output
+      debug:
+        var: config_result
+      when: config_result is defined
+
+    - name: Disable Captive Portal
+      include_role:
+        name: panos_config
+        tasks_from: disable_captive_portal.yaml
+      register: disable_result
+      ignore_errors: yes
+
+    - name: Display disable output
+      debug:
+        var: disable_result
+      when: disable_result is defined

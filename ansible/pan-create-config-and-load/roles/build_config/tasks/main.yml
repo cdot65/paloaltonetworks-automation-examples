@@ -1,0 +1,20 @@
+---
+- name: building '<mgt-config>' config document
+  template:
+    src: "mgt_config.j2"
+    dest: "{{ temporary_folder }}/01_mgt_config.xml"
+
+- name: building '<shared>' config document
+  template:
+    src: "shared.j2"
+    dest: "{{ temporary_folder }}/02_shared.xml"
+
+- name: building '<devices>' config document
+  template:
+    src: "devices.j2"
+    dest: "{{ temporary_folder }}/03_devices.xml"
+#
+# - name: building full config document
+#   template:
+#     src: "full.j2"
+#     dest: "{{ temporary_folder }}/01_full.xml"

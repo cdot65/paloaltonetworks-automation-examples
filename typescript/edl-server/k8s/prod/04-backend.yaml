@@ -1,0 +1,66 @@
+# 04-backend.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+  namespace: pomegranate
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      imagePullSecrets:
+        - name: ghcr-secret
+      containers:
+        - name: backend
+          image: ghcr.io/cdot65/pomegranate-backend:0.1.2
+          imagePullPolicy: Always
+          env:
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: pomegranate-secret
+                  key: POSTGRES_USER
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: pomegranate-secret
+                  key: POSTGRES_PASSWORD
+            - name: POSTGRES_DB
+              valueFrom:
+                configMapKeyRef:
+                  name: pomegranate-config
+                  key: POSTGRES_DB
+            - name: POSTGRES_HOST
+              value: "postgres.pomegranate.svc.cluster.local"
+            - name: POSTGRES_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: pomegranate-config
+                  key: POSTGRES_PORT
+            - name: DATABASE_URL
+              value: "postgresql://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@$(POSTGRES_HOST):$(POSTGRES_PORT)/$(POSTGRES_DB)"
+            - name: FRONTEND_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: pomegranate-config
+                  key: FRONTEND_URL
+          ports:
+            - containerPort: 3000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend
+  namespace: pomegranate
+spec:
+  ports:
+    - port: 3000
+      targetPort: 3000
+  selector:
+    app: backend

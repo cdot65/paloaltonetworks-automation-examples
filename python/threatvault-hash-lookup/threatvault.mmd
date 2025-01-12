@@ -1,0 +1,50 @@
+graph TD
+    A[Start] --> B[Define directory path]
+    B --> C{Get SHA256 hashes of files in directory}
+    C -->|FileNotFoundError| D[Return]
+    C --> E{Check if any SHA256 hashes were found}
+    E -->|No| F[Print message: No files found in directory]
+    F --> D
+    E -->|Yes| G[Call threat_vault_lookup with SHA256 hashes]
+    G --> H{Check if threat data is retrieved}
+    H -->|Yes| I[Print retrieved data as formatted JSON]
+    H -->|No| J[Print error message: Failed to retrieve threat data]
+    I --> K[Call threat_vault_lookup again with the same SHA256 hashes]
+    K --> L{Check if threat data is retrieved}
+    L -->|Yes| M[Print retrieved data as formatted JSON]
+    L -->|No| N[Print error message: Failed to retrieve threat data]
+    M --> O[End]
+    N --> O
+
+    subgraph threat_vault_lookup
+        G1[Start] --> G2[Prepare API request]
+        G2 --> G3{Send POST request to ThreatVault API}
+        G3 -->|Success| G4[Parse JSON response]
+        G3 -->|Error| G5[Print error message and return None]
+        G4 -->|Success| G6[Return threat data]
+        G4 -->|Error| G7[Print error message and return None]
+    end
+
+    subgraph get_file_hashes
+        C1[Start] --> C2{Directory exists?}
+        C2 -->|Yes| C3[Initialize empty list for hashes]
+        C3 --> C4{Iterate over files in directory}
+        C4 -->|File| C5[Calculate SHA-256 hash of file]
+        C5 --> C6[Append hash value to list]
+        C6 --> C4
+        C4 -->|No more files| C7[Return list of hashes]
+        C2 -->|No| C8[Raise FileNotFoundError]
+        C8 --> C9[Print error message]
+        C9 --> C10[End]
+    end
+
+    subgraph calculate_sha256
+        A1[Start] --> B1[Initialize SHA-256 hash object]
+        B1 --> C1[Open file at file_path]
+        C1 --> D1{Read chunk of 4096 bytes}
+        D1 -->|Chunk read| E1[Update SHA-256 hash object with chunk]
+        E1 --> D1
+        D1 -->|End of file| F1[Close file]
+        F1 --> G1[Get hexadecimal representation of SHA-256 hash]
+        G1 --> H1[Return hexadecimal representation]
+    end

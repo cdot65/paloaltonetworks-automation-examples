@@ -1,0 +1,13 @@
+---
+deviceconfig:
+  timezone: "US/Central"
+  hostname: "{{ ansible_host }}"
+  ip_address: "10.60.0.44"
+  netmask: "255.255.0.0"
+  gateway: "10.60.0.1"
+  dns:
+    primary: "10.30.0.50"
+    secondary: "10.30.0.51"
+  panorama:
+    - type: "local-panorama"
+      host: "hdq-pan-01.example.com"

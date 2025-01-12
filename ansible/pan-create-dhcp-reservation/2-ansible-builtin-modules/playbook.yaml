@@ -1,0 +1,55 @@
+---
+#------------------------------------------------------------------------
+# CREATE DHCP RESERVATIONS WITHIN PANORAMA
+#------------------------------------------------------------------------
+- hosts: panorama
+  connection: local
+  gather_facts: False
+  become: False
+  vars:
+    interface: "ethernet1/2"
+    template: "BaseTemplate"
+  collections:
+    - ansible.utils
+
+  tasks:
+    - name: Login to a form based webpage, then use the returned cookie to access the app in later tasks
+      ansible.builtin.uri:
+        url: https://panorama/api
+        method: POST
+        body_format: form-urlencoded
+        body:
+          - [key, "{{ panorama_api_key}}"]
+          - [type, config]
+          - [action, set]
+          - [
+              xpath,
+              "/config/devices/entry[@name='localhost.localdomain']/template/entry[@name='{{ template }}']/config/devices/entry[@name='localhost.localdomain']/network/dhcp/interface/entry[@name='{{ interface }}']/server/reserved",
+            ]
+          - [
+              element,
+              "<entry name='{{ item.ip_address }}'><mac>{{ item.mac }}</mac><description>{{ item.description }}</description></entry>",
+            ]
+        status_code: 200
+        validate_certs: no
+      loop:
+        - {
+            ip_address: "192.168.101.20",
+            mac: "00:50:56:11:20:44",
+            description: "server20",
+          }
+        - {
+            ip_address: "192.168.101.21",
+            mac: "00:50:56:11:21:44",
+            description: "server21",
+          }
+        - {
+            ip_address: "192.168.101.22",
+            mac: "00:50:56:11:22:44",
+            description: "server22",
+          }
+        - {
+            ip_address: "192.168.101.23",
+            mac: "00:50:56:11:23:44",
+            description: "server23",
+          }

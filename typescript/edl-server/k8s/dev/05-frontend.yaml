@@ -1,0 +1,43 @@
+---
+# 05-frontend.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+  namespace: dev-edl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+    spec:
+      imagePullSecrets:
+        - name: ghcr-secret
+      containers:
+        - name: frontend
+          image: ghcr.io/cdot65/pomegranate-frontend:dev
+          imagePullPolicy: Always
+          env:
+            - name: FRONTEND_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: pomegranate-config
+                  key: FRONTEND_URL
+          ports:
+            - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend
+  namespace: dev-edl
+spec:
+  ports:
+    - port: 80
+      targetPort: 80
+  selector:
+    app: frontend
