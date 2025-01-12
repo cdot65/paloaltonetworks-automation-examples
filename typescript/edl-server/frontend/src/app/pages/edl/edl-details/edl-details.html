@@ -1,0 +1,114 @@
+<div class="card">
+    <p-toast></p-toast>
+    <p-toolbar styleClass="mb-6">
+        <ng-template pTemplate="start">
+            <p-button label="New" icon="pi pi-plus" severity="secondary" class="mr-2" (onClick)="openNew()"/>
+            <p-button severity="secondary" label="Delete" icon="pi pi-trash" outlined
+                      (onClick)="deleteSelectedEntries()"
+                      [disabled]="!selectedEntries || !selectedEntries.length"/>
+        </ng-template>
+        <ng-template pTemplate="end">
+            <p-button
+                icon="pi pi-download"
+                label="Export Plaintext"
+                severity="secondary"
+                [outlined]="true"
+                (onClick)="exportPlaintext()"
+                [disabled]="!entries().length"
+                pTooltip="Download entries in plaintext format"
+                tooltipPosition="left"
+            ></p-button>
+        </ng-template>
+    </p-toolbar>
+
+    <p-table
+        #dt
+        [value]="entries()"
+        [rows]="10"
+        [columns]="cols"
+        [paginator]="true"
+        [globalFilterFields]="['address', 'comment']"
+        [tableStyle]="{ 'min-width': '75rem' }"
+        [(selection)]="selectedEntries"
+        [rowHover]="true"
+        dataKey="id"
+        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+        [showCurrentPageReport]="true"
+        [rowsPerPageOptions]="[10, 20, 30]"
+    >
+        <ng-template pTemplate="caption">
+            <div class="flex items-center justify-between">
+                <h5 class="m-0">EDL Entries for {{ edl?.name }}</h5>
+                <p-iconfield>
+                    <p-inputicon styleClass="pi pi-search"/>
+                    <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Search..."/>
+                </p-iconfield>
+            </div>
+        </ng-template>
+        <ng-template pTemplate="header">
+            <tr>
+                <th style="width: 3rem">
+                    <p-tableHeaderCheckbox/>
+                </th>
+                <th pSortableColumn="address" style="min-width:16rem">
+                    Value
+                    <p-sortIcon field="address"/>
+                </th>
+                <th style="min-width:20rem">Description</th>
+                <th pSortableColumn="createdAt" style="min-width:12rem">
+                    Added Date
+                    <p-sortIcon field="createdAt"/>
+                </th>
+                <th pSortableColumn="updatedAt" style="min-width:12rem">
+                    Last Updated
+                    <p-sortIcon field="updatedAt"/>
+                </th>
+                <th style="min-width:4rem"></th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-entry>
+            <tr>
+                <td>
+                    <p-tableCheckbox [value]="entry"/>
+                </td>
+                <td>{{ entry.address }}</td>
+                <td>{{ entry.comment }}</td>
+                <td>{{ entry.createdAt | date:'medium' }}</td>
+                <td>{{ entry.updatedAt | date:'medium' }}</td>
+                <td>
+                    <p-button icon="pi pi-pencil" [rounded]="true" [outlined]="true"
+                              (click)="editEntry(entry)"/>
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+
+    <p-dialog [(visible)]="entryDialog" [style]="{ width: '450px' }" header="Entry Details" [modal]="true">
+        <ng-template pTemplate="content">
+            <div class="flex flex-col gap-6">
+                <div>
+                    <label for="address" class="block font-bold mb-3">Value</label>
+                    <input type="text" pInputText id="address" [(ngModel)]="entry.address" required autofocus fluid/>
+                    @if (submitted) {
+                        @if (!entry.address) {
+                            <small class="text-red-500">Value is required.</small>
+                        } @else if (!validateEntry(entry.address)) {
+                            <small class="text-red-500">Invalid format for {{ edlType }} type.</small>
+                        }
+                    }
+                </div>
+                <div>
+                    <label for="comment" class="block font-bold mb-3">Description</label>
+                    <input type="text" pInputText id="comment" [(ngModel)]="entry.comment" fluid/>
+                </div>
+            </div>
+        </ng-template>
+
+        <ng-template pTemplate="footer">
+            <p-button label="Cancel" icon="pi pi-times" text (click)="hideDialog()"/>
+            <p-button label="Save" icon="pi pi-check" (click)="saveEntry()"/>
+        </ng-template>
+    </p-dialog>
+
+    <p-confirmDialog [style]="{ width: '450px' }"></p-confirmDialog>
+</div>

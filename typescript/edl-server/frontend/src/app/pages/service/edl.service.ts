@@ -1,4 +1,3 @@
-// src/app/pages/services/edl.service.ts
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
@@ -7,7 +6,9 @@ import {
     EDL,
     EDLEntry,
     CreateEdlListDto,
-    CreateEdlEntryDto
+    CreateEdlEntryDto,
+    UpdateEdlListDto,
+    UpdateEdlEntryDto
 } from '../interfaces/edl.interface';
 
 @Injectable({
@@ -22,57 +23,82 @@ export class EdlService {
     constructor(private http: HttpClient) {}
 
     // EDL List Operations
+    getAllEdlLists(): Observable<EDL[]> {
+        return this.http.get<EDL[]>(
+            `${this.apiUrl}`,
+            { headers: this.headers }
+        );
+    }
+
     createEdlList(edlList: CreateEdlListDto): Observable<EDL> {
         return this.http.post<EDL>(
-            `${this.apiUrl}/lists`,
+            `${this.apiUrl}`,
             edlList,
             { headers: this.headers }
         );
     }
 
-    getAllEdlLists(): Observable<EDL[]> {
-        return this.http.get<EDL[]>(
-            `${this.apiUrl}/lists`,
+    getEdlList(id: string): Observable<EDL> {
+        return this.http.get<EDL>(
+            `${this.apiUrl}/${id}`,
             { headers: this.headers }
         );
     }
 
-    getEdlListByName(name: string): Observable<EDL> {
-        return this.http.get<EDL>(
-            `${this.apiUrl}/lists/${name}`,
+    updateEdlList(id: string, edlList: UpdateEdlListDto): Observable<EDL> {
+        return this.http.patch<EDL>(
+            `${this.apiUrl}/${id}`,
+            edlList,
+            { headers: this.headers }
+        );
+    }
+
+    deleteEdlList(id: string): Observable<EDL> {
+        return this.http.delete<EDL>(
+            `${this.apiUrl}/${id}`,
             { headers: this.headers }
         );
     }
 
     // EDL Entry Operations
-    createEDLEntry(entry: CreateEdlEntryDto): Observable<EDLEntry> {
-        return this.http.post<EDLEntry>(
-            `${this.apiUrl}/entries`,
-            entry,
-            { headers: this.headers }
-        );
-    }
-
-    getEntriesByListName(listName: string): Observable<EDLEntry[]> {
+    getListEntries(listId: string): Observable<EDLEntry[]> {
         return this.http.get<EDLEntry[]>(
-            `${this.apiUrl}/entries?listName=${listName}`,
+            `${this.apiUrl}/${listId}/entries`,
             { headers: this.headers }
         );
     }
 
-    updateEntry(id: string, entry: Partial<EDLEntry>): Observable<EDLEntry> {
-        return this.http.patch<EDLEntry>(
-            `${this.apiUrl}/entries/${id}`,
+    createEntry(listId: string, entry: CreateEdlEntryDto): Observable<EDLEntry> {
+        return this.http.post<EDLEntry>(
+            `${this.apiUrl}/${listId}/entries`,
             entry,
             { headers: this.headers }
         );
     }
 
-    deleteEntry(id: string): Observable<void> {
-        return this.http.delete<void>(
-            `${this.apiUrl}/entries/${id}`,
+    updateEntry(listId: string, entryId: string, entry: UpdateEdlEntryDto): Observable<EDLEntry> {
+        return this.http.patch<EDLEntry>(
+            `${this.apiUrl}/${listId}/entries/${entryId}`,
+            entry,
             { headers: this.headers }
         );
     }
 
+    deleteEntry(listId: string, entryId: string): Observable<EDLEntry> {
+        return this.http.delete<EDLEntry>(
+            `${this.apiUrl}/${listId}/entries/${entryId}`,
+            { headers: this.headers }
+        );
+    }
+
+    // Special Formats
+    getListPlaintext(listId: string): Observable<string> {
+        return this.http.get(
+            `${this.apiUrl}/${listId}/plaintext`,
+            {
+                headers: this.headers,
+                responseType: 'text'
+            }
+        );
+    }
 }
