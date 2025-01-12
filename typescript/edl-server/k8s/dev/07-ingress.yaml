@@ -3,7 +3,7 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: pomegranate-ingress
+  name: dev-edl-ingress
   namespace: dev-edl
   annotations:
     kubernetes.io/ingress.class: traefik

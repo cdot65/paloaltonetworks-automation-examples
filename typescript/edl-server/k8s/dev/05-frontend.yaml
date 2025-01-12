@@ -19,13 +19,13 @@ spec:
         - name: ghcr-secret
       containers:
         - name: frontend
-          image: ghcr.io/cdot65/pomegranate-frontend:dev
+          image: ghcr.io/cdot65/edl-frontend:dev
           imagePullPolicy: Always
           env:
             - name: FRONTEND_URL
               valueFrom:
                 configMapKeyRef:
-                  name: pomegranate-config
+                  name: dev-edl-config
                   key: FRONTEND_URL
           ports:
             - containerPort: 80

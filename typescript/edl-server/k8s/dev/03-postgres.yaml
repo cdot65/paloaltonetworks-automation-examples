@@ -34,17 +34,17 @@ spec:
             - name: POSTGRES_USER
               valueFrom:
                 secretKeyRef:
-                  name: pomegranate-secret
+                  name: dev-edl-secret
                   key: POSTGRES_USER
             - name: POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: pomegranate-secret
+                  name: dev-edl-secret
                   key: POSTGRES_PASSWORD
             - name: POSTGRES_DB
               valueFrom:
                 configMapKeyRef:
-                  name: pomegranate-config
+                  name: dev-edl-config
                   key: POSTGRES_DB
           ports:
             - containerPort: 5432

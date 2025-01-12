@@ -3,7 +3,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: pomegranate-config
+  name: dev-edl-config
   namespace: dev-edl
 data:
   POSTGRES_DB: "edl_db"

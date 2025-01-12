@@ -23,9 +23,15 @@ data:
       websecure:
         address: ":443"
         http:
-          tls: {}
+          tls: { }
     providers:
-      kubernetesIngress: {}  # Changed this line
+      kubernetesIngress: { }
+      file:
+        directory: /certs
+    tls:
+      certificates:
+        - certFile: /certs/tls.crt
+          keyFile: /certs/tls.key
 ---
 apiVersion: apps/v1
 kind: Deployment

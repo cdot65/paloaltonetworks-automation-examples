@@ -19,37 +19,37 @@ spec:
         - name: ghcr-secret
       containers:
         - name: backend
-          image: ghcr.io/cdot65/pomegranate-backend:dev
+          image: ghcr.io/cdot65/edl-backend:dev
           imagePullPolicy: Always
           env:
             - name: POSTGRES_USER
               valueFrom:
                 secretKeyRef:
-                  name: pomegranate-secret
+                  name: dev-edl-secret
                   key: POSTGRES_USER
             - name: POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: pomegranate-secret
+                  name: dev-edl-secret
                   key: POSTGRES_PASSWORD
             - name: POSTGRES_DB
               valueFrom:
                 configMapKeyRef:
-                  name: pomegranate-config
+                  name: dev-edl-config
                   key: POSTGRES_DB
             - name: POSTGRES_HOST
               value: "postgres.dev-edl.svc.cluster.local"
             - name: POSTGRES_PORT
               valueFrom:
                 configMapKeyRef:
-                  name: pomegranate-config
+                  name: dev-edl-config
                   key: POSTGRES_PORT
             - name: DATABASE_URL
               value: "postgresql://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@$(POSTGRES_HOST):$(POSTGRES_PORT)/$(POSTGRES_DB)"
             - name: FRONTEND_URL
               valueFrom:
                 configMapKeyRef:
-                  name: pomegranate-config
+                  name: dev-edl-config
                   key: FRONTEND_URL
           ports:
             - containerPort: 3000
