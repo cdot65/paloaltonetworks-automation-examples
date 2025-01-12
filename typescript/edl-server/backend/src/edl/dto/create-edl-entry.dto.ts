@@ -17,9 +17,6 @@ export class CreateEdlEntryDto {
     @IsOptional()
     isEnabled?: boolean;
 
-    @IsString()
-    listName: string;
-
     @IsOptional()
     @IsString()
     createdBy?: string;

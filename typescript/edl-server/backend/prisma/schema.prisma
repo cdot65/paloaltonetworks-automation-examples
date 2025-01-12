@@ -34,8 +34,10 @@ model EdlEntry {
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   createdBy String?
-  listName  String
-  list      EdlList   @relation(fields: [listName], references: [name])
+  listId    String
+  list      EdlList   @relation(fields: [listId], references: [id])
+
+  @@index([listId])
 }
 
 model EdlList {
@@ -43,7 +45,7 @@ model EdlList {
   name        String     @unique
   description String?
   type        ListType
-  entries     EdlEntry[] @relation()
+  entries     EdlEntry[]
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
   createdBy   String?

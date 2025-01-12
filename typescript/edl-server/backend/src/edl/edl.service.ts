@@ -29,6 +29,7 @@ export class EdlService {
     async createList(createEdlListDto: CreateEdlListDto): Promise<EdlList> {
         const list = await this.prisma.edlList.create({
             data: createEdlListDto,
+            include: { entries: true },
         });
         return this.mapToEdlList(list);
     }
@@ -40,39 +41,118 @@ export class EdlService {
         return lists.map((list) => this.mapToEdlList(list));
     }
 
-    async getList(name: string): Promise<EdlList> {
+    async getList(id: string): Promise<EdlList> {
         const list = await this.prisma.edlList.findUnique({
-            where: { name },
+            where: { id },
             include: { entries: true },
         });
-        if (!list) throw new NotFoundException(`EDL List ${name} not found`);
+        if (!list) throw new NotFoundException(`EDL List ${id} not found`);
         return this.mapToEdlList(list);
     }
 
     async updateList(
-        name: string,
+        id: string,
         updateEdlListDto: UpdateEdlListDto,
     ): Promise<EdlList> {
-        await this.getList(name);
+        const existingList = await this.getList(id);
+
+        // If name is being updated, check if new name is available
+        if (
+            updateEdlListDto.name &&
+            updateEdlListDto.name !== existingList.name
+        ) {
+            const nameExists = await this.prisma.edlList.findUnique({
+                where: { name: updateEdlListDto.name },
+            });
+            if (nameExists) {
+                throw new Error(
+                    `EDL List with name ${updateEdlListDto.name} already exists`,
+                );
+            }
+        }
+
         const list = await this.prisma.edlList.update({
-            where: { name },
+            where: { id },
             data: updateEdlListDto,
+            include: { entries: true },
         });
         return this.mapToEdlList(list);
     }
 
-    async deleteList(name: string): Promise<EdlList> {
-        await this.getList(name);
+    async deleteList(id: string): Promise<EdlList> {
+        await this.getList(id);
         const list = await this.prisma.edlList.delete({
-            where: { name },
+            where: { id },
+            include: { entries: true },
         });
         return this.mapToEdlList(list);
     }
 
-    async createEntry(createEdlEntryDto: CreateEdlEntryDto): Promise<EdlEntry> {
-        await this.getList(createEdlEntryDto.listName);
+    async getListByName(name: string): Promise<EdlList | null> {
+        const list = await this.prisma.edlList.findUnique({
+            where: { name },
+            include: { entries: true },
+        });
+        return list ? this.mapToEdlList(list) : null;
+    }
+
+    async createEntry(
+        createEdlEntryDto: CreateEdlEntryDto & { listId: string },
+    ): Promise<EdlEntry> {
+        // Check if the list exists
+        const list = await this.prisma.edlList.findUnique({
+            where: { id: createEdlEntryDto.listId },
+        });
+        if (!list) {
+            throw new NotFoundException(
+                `EDL List with ID ${createEdlEntryDto.listId} not found`,
+            );
+        }
+
         const entry = await this.prisma.edlEntry.create({
-            data: createEdlEntryDto,
+            data: {
+                address: createEdlEntryDto.address,
+                comment: createEdlEntryDto.comment,
+                type: createEdlEntryDto.type,
+                isEnabled: createEdlEntryDto.isEnabled ?? true,
+                createdBy: createEdlEntryDto.createdBy,
+                list: {
+                    connect: { id: createEdlEntryDto.listId },
+                },
+            },
+            include: { list: true },
+        });
+        return this.mapToEdlEntry(entry);
+    }
+
+    async updateEntry(
+        entryId: string,
+        updateEdlEntryDto: UpdateEdlEntryDto & { listId?: string },
+    ): Promise<EdlEntry> {
+        const existingEntry = await this.getEntry(entryId);
+
+        // Verify the entry belongs to the specified list if listId is provided
+        if (
+            updateEdlEntryDto.listId &&
+            existingEntry.listId !== updateEdlEntryDto.listId
+        ) {
+            throw new NotFoundException(
+                `Entry ${entryId} does not belong to list ${updateEdlEntryDto.listId}`,
+            );
+        }
+
+        const entry = await this.prisma.edlEntry.update({
+            where: { id: entryId },
+            data: {
+                address: updateEdlEntryDto.address,
+                comment: updateEdlEntryDto.comment,
+                type: updateEdlEntryDto.type,
+                isEnabled: updateEdlEntryDto.isEnabled,
+                list: updateEdlEntryDto.listId
+                    ? { connect: { id: updateEdlEntryDto.listId } }
+                    : undefined,
+            },
+            include: { list: true },
         });
         return this.mapToEdlEntry(entry);
     }
@@ -87,34 +167,32 @@ export class EdlService {
         return this.mapToEdlEntry(entry);
     }
 
-    async updateEntry(
-        id: string,
-        updateEdlEntryDto: UpdateEdlEntryDto,
-    ): Promise<EdlEntry> {
-        await this.getEntry(id);
-        if (updateEdlEntryDto.listName) {
-            await this.getList(updateEdlEntryDto.listName);
-        }
-        const entry = await this.prisma.edlEntry.update({
+    async getListEntries(id: string): Promise<EdlEntry[]> {
+        const list = await this.prisma.edlList.findUnique({
             where: { id },
-            data: updateEdlEntryDto,
+            include: { entries: true },
         });
-        return this.mapToEdlEntry(entry);
+
+        if (!list) {
+            throw new NotFoundException(`EDL List ${id} not found`);
+        }
+
+        return list.entries.map((entry) => this.mapToEdlEntry(entry));
     }
 
     async deleteEntry(id: string): Promise<EdlEntry> {
         await this.getEntry(id);
         const entry = await this.prisma.edlEntry.delete({
             where: { id },
+            include: { list: true },
         });
         return this.mapToEdlEntry(entry);
     }
 
-    async getListPlaintext(name: string): Promise<string> {
-        this.logger.debug(`Generating plaintext for EDL list: ${name}`);
-        const list = await this.getList(name);
+    async getListPlaintext(id: string): Promise<string> {
+        this.logger.debug(`Generating plaintext for EDL list: ${id}`);
+        const list = await this.getList(id);
 
-        // Only include enabled entries and format based on list type
         return list.entries
             .filter((entry: EdlEntry) => entry.isEnabled)
             .map((entry: EdlEntry) => {
@@ -123,7 +201,6 @@ export class EdlService {
                         return `${entry.address}`;
                     case ListType.DOMAIN:
                     case ListType.URL:
-                        // Strip protocol if present and ensure trailing slash for URLs
                         const cleanAddress = entry.address.replace(
                             /^(http|https):\/\//,
                             '',

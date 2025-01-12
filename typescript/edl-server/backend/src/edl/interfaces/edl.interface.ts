@@ -10,7 +10,7 @@ export interface EdlEntry {
     createdAt: Date;
     updatedAt: Date;
     createdBy?: string;
-    listName: string; // Changed from listId
+    listId: string;
     list?: EdlList;
 }
 

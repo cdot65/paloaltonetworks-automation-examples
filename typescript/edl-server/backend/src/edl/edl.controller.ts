@@ -1,4 +1,3 @@
-// backend/src/edl/edl.controller.ts
 import {
     Controller,
     Get,
@@ -20,63 +19,78 @@ import { UpdateEdlEntryDto } from './dto/update-edl-entry.dto';
 export class EdlController {
     constructor(private readonly edlService: EdlService) {}
 
-    // List Management Endpoints
-    @Post('lists')
-    createList(@Body() createEdlListDto: CreateEdlListDto) {
-        return this.edlService.createList(createEdlListDto);
-    }
-
-    @Get('lists')
+    // EDL List CRUD Operations
+    @Get()
     getAllLists() {
         return this.edlService.getAllLists();
     }
 
-    @Get('lists/:name')
-    getList(@Param('name') name: string) {
-        return this.edlService.getList(name);
+    @Post()
+    createList(@Body() createEdlListDto: CreateEdlListDto) {
+        return this.edlService.createList(createEdlListDto);
     }
 
-    @Patch('lists/:name')
+    @Get(':id')
+    getList(@Param('id', ParseUUIDPipe) id: string) {
+        return this.edlService.getList(id);
+    }
+
+    @Patch(':id')
     updateList(
-        @Param('name') name: string,
+        @Param('id', ParseUUIDPipe) id: string,
         @Body() updateEdlListDto: UpdateEdlListDto,
     ) {
-        return this.edlService.updateList(name, updateEdlListDto);
+        return this.edlService.updateList(id, updateEdlListDto);
     }
 
-    @Delete('lists/:name')
-    deleteList(@Param('name') name: string) {
-        return this.edlService.deleteList(name);
+    @Delete(':id')
+    deleteList(@Param('id', ParseUUIDPipe) id: string) {
+        return this.edlService.deleteList(id);
     }
 
-    // Entry Management Endpoints
-    @Post('entries')
-    createEntry(@Body() createEdlEntryDto: CreateEdlEntryDto) {
-        return this.edlService.createEntry(createEdlEntryDto);
+    // EDL Entries Operations
+    @Get(':id/entries')
+    getListEntries(@Param('id', ParseUUIDPipe) id: string) {
+        return this.edlService.getListEntries(id);
     }
 
-    @Get('entries/:id')
-    getEntry(@Param('id', ParseUUIDPipe) id: string) {
-        return this.edlService.getEntry(id);
+    @Post(':id/entries')
+    async createEntry(
+        @Param('id', ParseUUIDPipe) listId: string,
+        @Body() createEdlEntryDto: CreateEdlEntryDto,
+    ) {
+        // Create a new object with the listId from the URL parameter
+        const entryData = {
+            ...createEdlEntryDto,
+            listId, // Add the listId from the URL parameter
+        };
+
+        return this.edlService.createEntry(entryData);
     }
 
-    @Patch('entries/:id')
+    @Patch(':listId/entries/:entryId')
     updateEntry(
-        @Param('id', ParseUUIDPipe) id: string,
+        @Param('listId', ParseUUIDPipe) listId: string,
+        @Param('entryId', ParseUUIDPipe) entryId: string,
         @Body() updateEdlEntryDto: UpdateEdlEntryDto,
     ) {
-        return this.edlService.updateEntry(id, updateEdlEntryDto);
+        // Ensure the listId matches the URL parameter
+        updateEdlEntryDto.listId = listId;
+        return this.edlService.updateEntry(entryId, updateEdlEntryDto);
     }
 
-    @Delete('entries/:id')
-    deleteEntry(@Param('id', ParseUUIDPipe) id: string) {
-        return this.edlService.deleteEntry(id);
+    @Delete(':listId/entries/:entryId')
+    deleteEntry(
+        @Param('listId', ParseUUIDPipe) listId: string,
+        @Param('entryId', ParseUUIDPipe) entryId: string,
+    ) {
+        return this.edlService.deleteEntry(entryId);
     }
 
-    // Plaintext Export Endpoint
-    @Get(':name/plaintext')
+    // Plaintext Export
+    @Get(':id/plaintext')
     @Header('Content-Type', 'text/plain')
-    getListPlaintext(@Param('name') name: string) {
-        return this.edlService.getListPlaintext(name);
+    getListPlaintext(@Param('id', ParseUUIDPipe) id: string) {
+        return this.edlService.getListPlaintext(id);
     }
 }
