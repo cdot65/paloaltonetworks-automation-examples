@@ -4,18 +4,17 @@
         <ng-template pTemplate="start">
             <p-button label="New" icon="pi pi-plus" severity="secondary" class="mr-2" (onClick)="openNew()"/>
             <p-button severity="secondary" label="Delete" icon="pi pi-trash" outlined
-                      (onClick)="deleteSelectedEntries()"
-                      [disabled]="!selectedEntries || !selectedEntries.length"/>
+                      (onClick)="deleteSelectedEntries()" [disabled]="!selectedEntries || !selectedEntries.length"/>
         </ng-template>
         <ng-template pTemplate="end">
             <p-button
-                icon="pi pi-download"
-                label="Export Plaintext"
+                pButtonIcon="pi pi-copy"
+                label="Copy URL for a PAN-OS EDL"
                 severity="secondary"
                 [outlined]="true"
-                (onClick)="exportPlaintext()"
+                (onClick)="copyToClipboard(getEdlUrl())"
                 [disabled]="!entries().length"
-                pTooltip="Download entries in plaintext format"
+                pTooltip="Copy EDL URL for PAN-OS configuration"
                 tooltipPosition="left"
             ></p-button>
         </ng-template>
@@ -50,20 +49,20 @@
                 <th style="width: 3rem">
                     <p-tableHeaderCheckbox/>
                 </th>
-                <th pSortableColumn="address" style="min-width:16rem">
+                <th pSortableColumn="address" style="min-width: 16rem">
                     Value
                     <p-sortIcon field="address"/>
                 </th>
-                <th style="min-width:20rem">Description</th>
-                <th pSortableColumn="createdAt" style="min-width:12rem">
+                <th style="min-width: 20rem">Description</th>
+                <th pSortableColumn="createdAt" style="min-width: 12rem">
                     Added Date
                     <p-sortIcon field="createdAt"/>
                 </th>
-                <th pSortableColumn="updatedAt" style="min-width:12rem">
+                <th pSortableColumn="updatedAt" style="min-width: 12rem">
                     Last Updated
                     <p-sortIcon field="updatedAt"/>
                 </th>
-                <th style="min-width:4rem"></th>
+                <th style="min-width: 4rem"></th>
             </tr>
         </ng-template>
         <ng-template pTemplate="body" let-entry>
@@ -76,8 +75,7 @@
                 <td>{{ entry.createdAt | date:'medium' }}</td>
                 <td>{{ entry.updatedAt | date:'medium' }}</td>
                 <td>
-                    <p-button icon="pi pi-pencil" [rounded]="true" [outlined]="true"
-                              (click)="editEntry(entry)"/>
+                    <p-button icon="pi pi-pencil" [rounded]="true" [outlined]="true" (click)="editEntry(entry)"/>
                 </td>
             </tr>
         </ng-template>

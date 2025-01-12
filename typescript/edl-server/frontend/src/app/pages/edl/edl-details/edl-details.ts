@@ -18,6 +18,7 @@ import { firstValueFrom } from 'rxjs';
 import { EdlService } from '../../service/edl.service';
 import { CreateEdlEntryDto, EDL, EDLEntry, EntryType, ListType } from '../../interfaces/edl.interface';
 import { TooltipModule } from 'primeng/tooltip';
+import { PopoverModule } from 'primeng/popover';
 
 interface Column {
     field: string;
@@ -27,7 +28,7 @@ interface Column {
 @Component({
     selector: 'app-edl-details',
     standalone: true,
-    imports: [CommonModule, TableModule, ButtonModule, RippleModule, ToastModule, ToolbarModule, InputTextModule, DialogModule, TagModule, ConfirmDialogModule, FormsModule, InputIconModule, IconFieldModule, TooltipModule],
+    imports: [CommonModule, TableModule, ButtonModule, RippleModule, ToastModule, ToolbarModule, InputTextModule, DialogModule, TagModule, ConfirmDialogModule, FormsModule, InputIconModule, IconFieldModule, TooltipModule, PopoverModule],
     providers: [MessageService, ConfirmationService],
     templateUrl: './edl-details.html'
 })
@@ -54,8 +55,17 @@ export class EdlDetails implements OnInit {
 
     ngOnInit() {
         this.route.params.subscribe((params) => {
-            this.edlId = params['id']; // Updated to use id instead of name
-            this.loadEdlDetails();
+            this.edlId = params['id'];
+            if (this.edlId) {
+                this.loadEdlDetails();
+            } else {
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Error',
+                    detail: 'Invalid EDL ID',
+                    life: 3000
+                });
+            }
         });
 
         this.cols = [
@@ -64,6 +74,32 @@ export class EdlDetails implements OnInit {
             { field: 'createdAt', header: 'Added Date' },
             { field: 'updatedAt', header: 'Last Updated' }
         ];
+    }
+
+    copyToClipboard(text: string) {
+        navigator.clipboard
+            .writeText(text)
+            .then(() => {
+                this.messageService.add({
+                    severity: 'success',
+                    summary: 'Copied',
+                    detail: 'URL copied to clipboard',
+                    life: 3000
+                });
+            })
+            .catch((err) => {
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Error',
+                    detail: 'Failed to copy URL',
+                    life: 3000
+                });
+                console.error('Failed to copy text: ', err);
+            });
+    }
+
+    getEdlUrl(): string {
+        return `${window.location.origin}/api/v1/edl/${this.edlId}/plaintext`;
     }
 
     loadEdlDetails() {

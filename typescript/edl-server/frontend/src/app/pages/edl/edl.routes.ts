@@ -5,6 +5,6 @@ import { EdlDetails } from './edl-details/edl-details';
 
 export default [
     { path: '', component: EdlList },
-    { path: ':name', component: EdlDetails },
+    { path: ':id', component: EdlDetails },
     { path: '**', redirectTo: '' }
 ] as Routes;

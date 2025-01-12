@@ -2,8 +2,9 @@
     <p-toast></p-toast>
     <p-toolbar styleClass="mb-6">
         <ng-template pTemplate="start">
-            <p-button label="New" icon="pi pi-plus" severity="secondary" class="mr-2" (onClick)="openNew()" />
-            <p-button severity="secondary" label="Delete" icon="pi pi-trash" outlined (onClick)="deleteSelectedEdls()" [disabled]="!selectedEdls || !selectedEdls.length" />
+            <p-button label="New" icon="pi pi-plus" severity="secondary" class="mr-2" (onClick)="openNew()"/>
+            <p-button severity="secondary" label="Delete" icon="pi pi-trash" outlined (onClick)="deleteSelectedEdls()"
+                      [disabled]="!selectedEdls || !selectedEdls.length"/>
         </ng-template>
     </p-toolbar>
 
@@ -26,32 +27,32 @@
             <div class="flex items-center justify-between">
                 <h5 class="m-0">Manage EDL Lists</h5>
                 <p-iconfield>
-                    <p-inputicon styleClass="pi pi-search" />
-                    <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Search..." />
+                    <p-inputicon styleClass="pi pi-search"/>
+                    <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Search..."/>
                 </p-iconfield>
             </div>
         </ng-template>
         <ng-template pTemplate="header">
             <tr>
                 <th style="width: 3rem">
-                    <p-tableHeaderCheckbox />
+                    <p-tableHeaderCheckbox/>
                 </th>
                 <th pSortableColumn="name" style="min-width: 16rem">
                     Name
-                    <p-sortIcon field="name" />
+                    <p-sortIcon field="name"/>
                 </th>
                 <th pSortableColumn="type" style="min-width: 10rem">
                     Type
-                    <p-sortIcon field="type" />
+                    <p-sortIcon field="type"/>
                 </th>
                 <th style="min-width: 20rem">Description</th>
                 <th pSortableColumn="entryCount" style="min-width: 8rem">
                     Entries
-                    <p-sortIcon field="entryCount" />
+                    <p-sortIcon field="entryCount"/>
                 </th>
                 <th pSortableColumn="lastUpdated" style="min-width: 12rem">
                     Last Updated
-                    <p-sortIcon field="lastUpdated" />
+                    <p-sortIcon field="lastUpdated"/>
                 </th>
                 <th style="min-width: 4rem"></th>
             </tr>
@@ -59,19 +60,20 @@
         <ng-template pTemplate="body" let-edl>
             <tr>
                 <td>
-                    <p-tableCheckbox [value]="edl" />
+                    <p-tableCheckbox [value]="edl"/>
                 </td>
                 <td>
-                    <a class="text-blue-500 hover:text-blue-700 cursor-pointer" (click)="navigateToEdlDetails(edl.name)"> {{ edl.name }} </a>
+                    <a class="text-blue-500 hover:text-blue-700 cursor-pointer"
+                       (click)="navigateToEdlDetails(edl.id)"> {{ edl.name }} </a>
                 </td>
                 <td>
-                    <p-tag [value]="edl.type" [severity]="getSeverity(edl.type)" />
+                    <p-tag [value]="edl.type" [severity]="getSeverity(edl.type)"/>
                 </td>
                 <td>{{ edl.description }}</td>
                 <td>{{ edl.entryCount }}</td>
                 <td>{{ edl.lastUpdated | date:'medium' }}</td>
                 <td>
-                    <p-button icon="pi pi-pencil" [rounded]="true" [outlined]="true" (click)="editEdl(edl)" />
+                    <p-button icon="pi pi-pencil" [rounded]="true" [outlined]="true" (click)="editEdl(edl)"/>
                 </td>
             </tr>
         </ng-template>
@@ -82,28 +84,30 @@
             <div class="flex flex-col gap-6">
                 <div>
                     <label for="name" class="block font-bold mb-3">Name</label>
-                    <input type="text" pInputText id="name" [(ngModel)]="edl.name" required autofocus fluid />
+                    <input type="text" pInputText id="name" [(ngModel)]="edl.name" required autofocus fluid/>
                     @if (submitted && !edl.name) {
-                    <small class="text-red-500">Name is required.</small>
+                        <small class="text-red-500">Name is required.</small>
                     }
                 </div>
                 <div>
                     <span class="block font-bold mb-3">Type</span>
-                    <p-select [(ngModel)]="edl.type" inputId="type" [options]="edlTypes" optionLabel="label" optionValue="value" placeholder="Select a Type" fluid />
+                    <p-select [(ngModel)]="edl.type" inputId="type" [options]="edlTypes" optionLabel="label"
+                              optionValue="value" placeholder="Select a Type" fluid/>
                     @if (submitted && !edl.type) {
-                    <small class="text-red-500">Type is required.</small>
+                        <small class="text-red-500">Type is required.</small>
                     }
                 </div>
                 <div>
                     <label for="description" class="block font-bold mb-3">Description</label>
-                    <textarea id="description" pTextarea [(ngModel)]="edl.description" required rows="3" cols="20" fluid></textarea>
+                    <textarea id="description" pTextarea [(ngModel)]="edl.description" required rows="3" cols="20"
+                              fluid></textarea>
                 </div>
             </div>
         </ng-template>
 
         <ng-template pTemplate="footer">
-            <p-button label="Cancel" icon="pi pi-times" text (click)="hideDialog()" />
-            <p-button label="Save" icon="pi pi-check" (click)="saveEdl()" />
+            <p-button label="Cancel" icon="pi pi-times" text (click)="hideDialog()"/>
+            <p-button label="Save" icon="pi pi-check" (click)="saveEdl()"/>
         </ng-template>
     </p-dialog>
 

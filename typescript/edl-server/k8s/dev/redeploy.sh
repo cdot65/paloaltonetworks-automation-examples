@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+docker compose build frontend && docker tag edl-server-frontend ghcr.io/cdot65/edl-frontend:dev && docker push ghcr.io/cdot65/edl-frontend:dev && kubectl delete pod -n dev-edl -l app=frontend
+docker compose build backend && docker tag edl-server-backend ghcr.io/cdot65/edl-backend:dev && docker push ghcr.io/cdot65/edl-backend:dev && kubectl delete pod -n dev-edl -l app=backend
+
 kubectl apply -f k8s/dev/00-namespace.yaml \
 && kubectl apply -f k8s/dev/01-configmap.yaml \
 && kubectl apply -f k8s/dev/02-secret.yaml \
