@@ -19,6 +19,7 @@ import { EdlService } from '../../service/edl.service';
 import { CreateEdlEntryDto, EDL, EDLEntry, EntryType, ListType } from '../../interfaces/edl.interface';
 import { TooltipModule } from 'primeng/tooltip';
 import { PopoverModule } from 'primeng/popover';
+import { TextareaModule } from 'primeng/textarea';
 
 interface Column {
     field: string;
@@ -28,7 +29,24 @@ interface Column {
 @Component({
     selector: 'app-edl-details',
     standalone: true,
-    imports: [CommonModule, TableModule, ButtonModule, RippleModule, ToastModule, ToolbarModule, InputTextModule, DialogModule, TagModule, ConfirmDialogModule, FormsModule, InputIconModule, IconFieldModule, TooltipModule, PopoverModule],
+    imports: [
+        CommonModule,
+        TableModule,
+        ButtonModule,
+        RippleModule,
+        ToastModule,
+        ToolbarModule,
+        InputTextModule,
+        DialogModule,
+        TagModule,
+        ConfirmDialogModule,
+        FormsModule,
+        InputIconModule,
+        IconFieldModule,
+        TooltipModule,
+        PopoverModule,
+        TextareaModule
+    ],
     providers: [MessageService, ConfirmationService],
     templateUrl: './edl-details.html'
 })
@@ -292,36 +310,47 @@ export class EdlDetails implements OnInit {
         table.filterGlobal((event.target as HTMLInputElement).value, 'contains');
     }
 
+    private validateIP(input: string): boolean {
+        // IPv4 with optional CIDR notation (e.g., 192.168.1.1 or 192.168.1.0/24)
+        const ipv4WithPrefix = /^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(?:\/(?:3[0-2]|[1-2]?[0-9]))?$/;
+
+        // IPv6 with optional prefix (e.g., 2001:db8::/32)
+        const ipv6WithPrefix =
+            /^(?:(?:[0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}|(?:[0-9a-fA-F]{1,4}:){1,7}:|(?:[0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|(?:[0-9a-fA-F]{1,4}:){1,5}(?::[0-9a-fA-F]{1,4}){1,2}|(?:[0-9a-fA-F]{1,4}:){1,4}(?::[0-9a-fA-F]{1,4}){1,3}|(?:[0-9a-fA-F]{1,4}:){1,3}(?::[0-9a-fA-F]{1,4}){1,4}|(?:[0-9a-fA-F]{1,4}:){1,2}(?::[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:(?::[0-9a-fA-F]{1,4}){1,6}|:(?:(?::[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(?::[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(?:ffff(?::0{1,4}){0,1}:){0,1}(?:(?:25[0-5]|(?:2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(?:25[0-5]|(?:2[0-4]|1{0,1}[0-9]){0,1}[0-9])|(?:[0-9a-fA-F]{1,4}:){1,4}:(?:(?:25[0-5]|(?:2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(?:25[0-5]|(?:2[0-4]|1{0,1}[0-9]){0,1}[0-9]))(?:\/(?:12[0-8]|1[0-1][0-9]|[1-9]?[0-9]))?$/;
+
+        return ipv4WithPrefix.test(input) || ipv6WithPrefix.test(input);
+    }
+
+    private validateDomain(input: string): boolean {
+        // Domain regex that allows wildcards and subdomain levels
+        const domainRegex = /^(\*\.)?[a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?(\.[a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?)*\.[a-zA-Z]{2,}$/;
+        return domainRegex.test(this.stripProtocol(input));
+    }
+
+    private validateURL(input: string): boolean {
+        // URL regex that allows wildcards and various URL formats
+        const urlRegex = /^(\*\.)?(([a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?\.)+[a-zA-Z]{2,})(\/[a-zA-Z0-9._/-]*)*$/;
+        return urlRegex.test(this.stripProtocol(input));
+    }
+
+    private stripProtocol(input: string): string {
+        // Strip any protocol prefix (http://, https://, ftp://, etc.)
+        return input.replace(/^[a-zA-Z]+:\/\//, '');
+    }
+
     validateEntry(value: string): boolean {
+        const sanitizedValue = this.stripProtocol(value);
+
         switch (this.edlType) {
             case ListType.IP:
-                return this.validateIP(value);
+                return this.validateIP(sanitizedValue);
             case ListType.URL:
-                return this.validateURL(value);
+                return this.validateURL(sanitizedValue);
             case ListType.DOMAIN:
-                return this.validateDomain(value);
+                return this.validateDomain(sanitizedValue);
             default:
                 return false;
         }
-    }
-
-    private validateIP(ip: string): boolean {
-        const ipRegex = /^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
-        return ipRegex.test(ip);
-    }
-
-    private validateURL(url: string): boolean {
-        try {
-            new URL(url);
-            return true;
-        } catch {
-            return false;
-        }
-    }
-
-    private validateDomain(domain: string): boolean {
-        const domainRegex = /^(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,}$/;
-        return domainRegex.test(domain);
     }
 
     async exportPlaintext() {

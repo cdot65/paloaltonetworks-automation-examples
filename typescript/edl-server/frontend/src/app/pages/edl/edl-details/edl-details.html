@@ -86,25 +86,88 @@
             <div class="flex flex-col gap-6">
                 <div>
                     <label for="address" class="block font-bold mb-3">Value</label>
-                    <input type="text" pInputText id="address" [(ngModel)]="entry.address" required autofocus fluid/>
+                    <input
+                        type="text"
+                        pInputText
+                        id="address"
+                        [(ngModel)]="entry.address"
+                        required
+                        autofocus
+                        class="w-full"
+                        [ngClass]="{'ng-invalid ng-dirty': submitted && (!entry.address || !validateEntry(entry.address))}"
+                        placeholder="Enter value for this entry"
+                    />
                     @if (submitted) {
                         @if (!entry.address) {
-                            <small class="text-red-500">Value is required.</small>
+                            <small class="p-error block mt-2">Value is required.</small>
                         } @else if (!validateEntry(entry.address)) {
-                            <small class="text-red-500">Invalid format for {{ edlType }} type.</small>
+                            <small class="p-error block mt-2">
+                                @switch (edlType) {
+                                    @case ('IP') {
+                                        Invalid IP format. Examples:<br/>
+                                        - IPv4: 192.168.1.1 or 192.168.1.0/24<br/>
+                                        - IPv6: 2001:db8::1 or 2001:db8::/32
+                                    }
+                                    @case ('DOMAIN') {
+                                        Invalid domain format. Examples:<br/>
+                                        - example.com<br/>
+                                        - sub.example.com<br/>
+                                        - *.example.com
+                                    }
+                                    @case ('URL') {
+                                        Invalid URL format. Examples:<br/>
+                                        - example.com/path<br/>
+                                        - sub.example.com/path/to/resource<br/>
+                                        - *.example.com/path
+                                    }
+                                }
+                            </small>
                         }
                     }
+                    @if (entry.address && !submitted) {
+                        <small class="text-gray-600 block mt-2 ">
+                            @switch (edlType) {
+                                @case ('IP') {
+                                    Supported formats:<br/>
+                                    - IPv4 address (e.g., 192.168.1.1)<br/>
+                                    - IPv4 with prefix (e.g., 192.168.1.0/24)<br/>
+                                    - IPv6 address (e.g., 2001:db8::1)<br/>
+                                    - IPv6 with prefix (e.g., 2001:db8::/32)
+                                }
+                                @case ('DOMAIN') {
+                                    Supported formats:<br/>
+                                    - Simple domain (e.g., example.com)<br/>
+                                    - Subdomain (e.g., sub.example.com)<br/>
+                                    - Wildcard domain (e.g., *.example.com)
+                                }
+                                @case ('URL') {
+                                    Supported formats:<br/>
+                                    - Simple URL (e.g., example.com/path)<br/>
+                                    - URL with subpath (e.g., example.com/path/to/resource)<br/>
+                                    - Wildcard URL (e.g., *.example.com/path)<br/>
+                                    Note: Protocol prefixes (http://, https://, etc.) will be automatically removed
+                                }
+                            }
+                        </small>
+                    }
                 </div>
+
                 <div>
                     <label for="comment" class="block font-bold mb-3">Description</label>
-                    <input type="text" pInputText id="comment" [(ngModel)]="entry.comment" fluid/>
+                    <textarea id="comment" pTextarea [(ngModel)]="entry.comment" rows="3" cols="20" [autoResize]="true"
+                              class="w-full"
+                              placeholder="Enter a description for this entry (optional)"></textarea>
                 </div>
             </div>
         </ng-template>
 
         <ng-template pTemplate="footer">
-            <p-button label="Cancel" icon="pi pi-times" text (click)="hideDialog()"/>
-            <p-button label="Save" icon="pi pi-check" (click)="saveEntry()"/>
+            <div class="flex justify-end gap-2">
+                <p-button label="Cancel" pButtonIcon="pi pi-times" (onClick)="hideDialog()"
+                          styleClass="p-button-text"></p-button>
+                <p-button label="Save" pButtonIcon="pi pi-check" (onClick)="saveEntry()"
+                          [disabled]="submitted && (!entry.address || !validateEntry(entry.address))"></p-button>
+            </div>
         </ng-template>
     </p-dialog>
 
