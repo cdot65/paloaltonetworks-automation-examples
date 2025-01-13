@@ -34,7 +34,7 @@ export class AppMenu {
                         label: 'EDLs',
                         icon: 'pi pi-fw pi-list',
                         routerLink: ['/edl/']
-                    },
+                    }
                     // { label: 'Details', icon: 'pi pi-fw pi-home', routerLink: ['/edl/edl-details'] }
                 ]
             },
@@ -56,33 +56,8 @@ export class AppMenu {
                                 label: 'Login',
                                 icon: 'pi pi-fw pi-sign-in',
                                 routerLink: ['/auth/login']
-                            },
-                            {
-                                label: 'Error',
-                                icon: 'pi pi-fw pi-times-circle',
-                                routerLink: ['/auth/error']
-                            },
-                            {
-                                label: 'Access Denied',
-                                icon: 'pi pi-fw pi-lock',
-                                routerLink: ['/auth/access']
                             }
                         ]
-                    },
-                    {
-                        label: 'Crud',
-                        icon: 'pi pi-fw pi-pencil',
-                        routerLink: ['/pages/crud']
-                    },
-                    {
-                        label: 'Not Found',
-                        icon: 'pi pi-fw pi-exclamation-circle',
-                        routerLink: ['/pages/notfound']
-                    },
-                    {
-                        label: 'Empty',
-                        icon: 'pi pi-fw pi-circle-off',
-                        routerLink: ['/pages/empty']
                     }
                 ]
             },
@@ -166,7 +141,7 @@ export class AppMenu {
                     {
                         label: 'View Source',
                         icon: 'pi pi-fw pi-github',
-                        url: 'https://github.com/primefaces/frontend',
+                        url: 'https://github.com/cdot65/paloaltonetworks-automation-examples/tree/main/typescript/edl-server',
                         target: '_blank'
                     }
                 ]

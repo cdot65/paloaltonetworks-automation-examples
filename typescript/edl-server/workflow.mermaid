@@ -1,0 +1,27 @@
+sequenceDiagram
+    participant C as Client Application
+    participant P as Panorama
+    participant FW1 as Firewall 1
+    participant FW2 as Firewall 2
+    participant FW3 as Firewall 3
+    note over P: Configured as<br/>Redistribution Agent
+    C ->>+ P: XML API Request:<br/>Register new IP tag
+    P ->> P: Process IP tag<br/>registration
+    P -->>- C: Response: Success
+
+    rect rgb(200, 220, 255)
+        note over P, FW3: Tag Distribution Phase
+        par Distribution to Firewalls
+            P ->> FW1: Push IP tag update
+            P ->> FW2: Push IP tag update
+            P ->> FW3: Push IP tag update
+        end
+    end
+
+    par Acknowledgment
+        FW1 -->> P: Confirm tag received
+        FW2 -->> P: Confirm tag received
+        FW3 -->> P: Confirm tag received
+    end
+
+    note over FW1, FW3: Firewalls update their<br/>local DAG memberships

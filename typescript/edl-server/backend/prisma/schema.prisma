@@ -35,7 +35,7 @@ model EdlEntry {
   updatedAt DateTime  @updatedAt
   createdBy String?
   listId    String
-  list      EdlList   @relation(fields: [listId], references: [id])
+  list      EdlList   @relation(fields: [listId], references: [id], onDelete: Cascade)
 
   @@index([listId])
 }

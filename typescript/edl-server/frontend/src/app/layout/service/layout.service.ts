@@ -29,7 +29,7 @@ interface MenuChangeEvent {
 export class LayoutService {
     _config: layoutConfig = {
         preset: 'Aura',
-        primary: 'emerald',
+        primary: 'rose',
         surface: null,
         darkTheme: false,
         menuMode: 'static'
@@ -146,9 +146,15 @@ export class LayoutService {
         }
 
         if (this.isDesktop()) {
-            this.layoutState.update((prev) => ({ ...prev, staticMenuDesktopInactive: !this.layoutState().staticMenuDesktopInactive }));
+            this.layoutState.update((prev) => ({
+                ...prev,
+                staticMenuDesktopInactive: !this.layoutState().staticMenuDesktopInactive
+            }));
         } else {
-            this.layoutState.update((prev) => ({ ...prev, staticMenuMobileActive: !this.layoutState().staticMenuMobileActive }));
+            this.layoutState.update((prev) => ({
+                ...prev,
+                staticMenuMobileActive: !this.layoutState().staticMenuMobileActive
+            }));
 
             if (this.layoutState().staticMenuMobileActive) {
                 this.overlayOpen.next(null);
