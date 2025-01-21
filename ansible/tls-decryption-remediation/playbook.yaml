@@ -1,0 +1,30 @@
+- name: Pull Firewall Certificate
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Export Certificate from PAN-OS
+      import_role:
+        name: panos
+
+- name: Push Certificate to Server
+  hosts: all
+  gather_facts: true
+  tasks:
+    - name: Push for RHEL workstations
+      block:
+        - name: RHEL desktops
+          import_role:
+            name: rhel
+          when: ansible_facts['os_family'] == 'RedHat'
+
+        - name: Windows desktops
+          import_role:
+            name: windows
+          when: ansible_facts['os_family'] == 'Windows'
+
+      rescue:
+        - name: Handle task errors
+          debug:
+            msg: "An error occurred while executing the block."
+
+      when: inventory_hostname == target_server

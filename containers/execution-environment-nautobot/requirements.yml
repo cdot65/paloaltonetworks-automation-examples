@@ -1,0 +1,4 @@
+---
+collections:
+  - name: networktocode.nautobot
+    version: 4.1.1

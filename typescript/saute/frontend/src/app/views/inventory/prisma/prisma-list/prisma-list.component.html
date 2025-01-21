@@ -1,0 +1,59 @@
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <strong>Prisma Inventory</strong>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <button
+                                class="btn btn-primary"
+                                (click)="navigateToCreate()"
+                            >
+                                Create New Prisma Tenant
+                            </button>
+                        </div>
+                    </div>
+                    <table
+                        class="table table-striped table-hover"
+                        style="width: 100%"
+                    >
+                        <thead>
+                            <tr>
+                                <th>Tenant Name</th>
+                                <th>Client ID</th>
+                                <th>TSG ID</th>
+                                <th class="text-right">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let row of prismaData">
+                                <td>{{ row.tenant_name }}</td>
+                                <td>{{ row.client_id }}</td>
+                                <td>{{ row.tsg_id }}</td>
+                                <td class="text-right">
+                                    <button
+                                        class="btn btn-warning btn-sm"
+                                        (click)="navigateToDetails(row.id)"
+                                    >
+                                        Edit
+                                    </button>
+                                    <button
+                                        class="btn btn-danger btn-sm ms-1"
+                                        (click)="
+                                            showDeleteConfirmationDialog(row.id)
+                                        "
+                                    >
+                                        Delete
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

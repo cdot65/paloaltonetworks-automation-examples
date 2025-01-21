@@ -1,0 +1,14 @@
+{
+  "cSpell.words": [
+    "edan",
+    "epao",
+    "Fatalf",
+    "fwauth",
+    "Ldate",
+    "Lmicroseconds",
+    "Ltime",
+    "pango"
+  ],
+  "restructuredtext.pythonRecommendation.disabled": true,
+  "ansible.python.interpreterPath": "/Users/cdot/Library/Caches/pypoetry/virtualenvs/cloudflare-aDtmaDsv-py3.11/bin/python"
+}

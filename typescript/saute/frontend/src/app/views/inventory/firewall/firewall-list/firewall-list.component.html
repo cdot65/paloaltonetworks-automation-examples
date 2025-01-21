@@ -1,0 +1,60 @@
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <strong>Firewall Inventory</strong>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <button
+                                class="btn btn-primary"
+                                (click)="navigateToCreate()"
+                            >
+                                Add Firewall
+                            </button>
+                        </div>
+                    </div>
+                    <table
+                        cTable
+                        class="table table-striped table-hover"
+                        style="width: 100%"
+                    >
+                        <thead>
+                            <tr>
+                                <th scope="col">Hostname</th>
+                                <th scope="col">Platform</th>
+                                <th scope="col">IPv4</th>
+                                <th scope="col">IPv6</th>
+                                <th scope="col" class="text-right">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let row of firewallData">
+                                <td>{{ row.hostname }}</td>
+                                <td>{{ row.platform }}</td>
+                                <td>{{ row.ipv4_address }}</td>
+                                <td>{{ row.ipv6_address }}</td>
+                                <td class="text-right">
+                                    <button
+                                        class="btn btn-warning btn-sm"
+                                        (click)="navigateToDetails(row.uuid)"
+                                    >
+                                        Edit
+                                    </button>
+                                    <button
+                                        class="btn btn-danger btn-sm ms-1"
+                                        (click)="deleteEntry(row.uuid)"
+                                    >
+                                        Delete
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

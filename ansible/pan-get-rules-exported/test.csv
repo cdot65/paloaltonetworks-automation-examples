@@ -1,0 +1,14 @@
+Name,Description,ProfileGroup
+Block Quic,"Block all use of Google's Quic protocol, enabling the use of SSL decrypt",
+Block Gaming URLs,"",['Outbound']
+AD servers,"",
+Allow DNS,"Managed by Hashicorp Consul",
+SSH,"",
+Network Services,"Permit network diagnostic applications to troubleshoot",
+Active Directory Inbound,"Permit Active Directory requests",
+k8s api,"Permit API management of k8s",
+k8s nodeports,"Permit 30000-32000 ports for k8s",
+Ansible EDA permit,"Allow port 5000 destined to Ansible EDA servers",
+LAN Outbound,"Allow internet access to corporate LAN",['Outbound']
+DMZ Outbound,"Control outbound internet access for DMZ",['Outbound']
+

@@ -1,0 +1,19 @@
+- name: Create shared address objects universal to all firewalls
+  panos_address_object:
+    provider: "{{ provider }}"
+    name: "{{ item.name }}"
+    address_type: "{{ item.address_type }}"
+    value: "{{ item.value }}"
+    description: "{{ item.description }}"
+    tag: "{{ item.tag }}"
+  loop: "{{ shared_address_objects }}"
+
+- name: Create address objects local to a specific firewall
+  panos_address_object:
+    provider: "{{ provider }}"
+    name: "{{ item.name }}"
+    address_type: "{{ item.address_type }}"
+    value: "{{ item.value }}"
+    description: "{{ item.description }}"
+    tag: "{{ item.tag }}"
+  loop: "{{ local_address_objects }}"

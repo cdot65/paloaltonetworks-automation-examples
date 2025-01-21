@@ -1,0 +1,501 @@
+#jinja2: lstrip_blocks: "True (or False)", trim_blocks: "True (or False)"
+{#- ---------------------------------------------------------------------------------- #}
+{# devices configuration                                                               #}
+{# ---------------------------------------------------------------------------------- -#}
+{% if configuration.devices is defined %}
+    <devices>
+        <entry name="localhost.localdomain">
+            <network>
+                <interface>
+                    {% if network.interface is defined %}
+                    <ethernet>
+                    {% for each in network.interface %}
+                        <entry name="{{ each.name }}">
+                            <layer3>
+                                <ndp-proxy>
+                                    <enabled>no</enabled>
+                                </ndp-proxy>
+                                <sdwan-link-settings>
+                                    <upstream-nat>
+                                        <enable>no</enable>
+                                        <static-ip/>
+                                    </upstream-nat>
+                                    <enable>no</enable>
+                                </sdwan-link-settings>
+                                <ip>
+                                    {% for ip in each.layer3.ip %}
+                                    <entry name="{{ ip.name }}"/>
+                                    {% endfor %}
+                                </ip>
+                                <lldp>
+                                    <enable>no</enable>
+                                </lldp>
+                            </layer3>
+                        </entry>
+                    {% endfor %}
+                    </ethernet>
+                    {% else %}
+                    <ethernet/>
+                    {% endif %}
+                </interface>
+                <profiles>
+                    <monitor-profile>
+                        <entry name="default">
+                            <interval>3</interval>
+                            <threshold>5</threshold>
+                            <action>wait-recover</action>
+                        </entry>
+                    </monitor-profile>
+                </profiles>
+                <ike>
+                    <crypto-profiles>
+                        <ike-crypto-profiles>
+                            <entry name="default">
+                                <encryption>
+                                    <member>aes-128-cbc</member>
+                                    <member>3des</member>
+                                </encryption>
+                                <hash>
+                                    <member>sha1</member>
+                                </hash>
+                                <dh-group>
+                                    <member>group2</member>
+                                </dh-group>
+                                <lifetime>
+                                    <hours>8</hours>
+                                </lifetime>
+                            </entry>
+                            <entry name="Suite-B-GCM-128">
+                                <encryption>
+                                    <member>aes-128-cbc</member>
+                                </encryption>
+                                <hash>
+                                    <member>sha256</member>
+                                </hash>
+                                <dh-group>
+                                    <member>group19</member>
+                                </dh-group>
+                                <lifetime>
+                                    <hours>8</hours>
+                                </lifetime>
+                            </entry>
+                            <entry name="Suite-B-GCM-256">
+                                <encryption>
+                                    <member>aes-256-cbc</member>
+                                </encryption>
+                                <hash>
+                                    <member>sha384</member>
+                                </hash>
+                                <dh-group>
+                                    <member>group20</member>
+                                </dh-group>
+                                <lifetime>
+                                    <hours>8</hours>
+                                </lifetime>
+                            </entry>
+                        </ike-crypto-profiles>
+                        <ipsec-crypto-profiles>
+                            <entry name="default">
+                                <esp>
+                                    <encryption>
+                                        <member>aes-128-cbc</member>
+                                        <member>3des</member>
+                                    </encryption>
+                                    <authentication>
+                                        <member>sha1</member>
+                                    </authentication>
+                                </esp>
+                                <dh-group>group2</dh-group>
+                                <lifetime>
+                                    <hours>1</hours>
+                                </lifetime>
+                            </entry>
+                            <entry name="Suite-B-GCM-128">
+                                <esp>
+                                    <encryption>
+                                        <member>aes-128-gcm</member>
+                                    </encryption>
+                                    <authentication>
+                                        <member>none</member>
+                                    </authentication>
+                                </esp>
+                                <dh-group>group19</dh-group>
+                                <lifetime>
+                                    <hours>1</hours>
+                                </lifetime>
+                            </entry>
+                            <entry name="Suite-B-GCM-256">
+                                <esp>
+                                    <encryption>
+                                        <member>aes-256-gcm</member>
+                                    </encryption>
+                                    <authentication>
+                                        <member>none</member>
+                                    </authentication>
+                                </esp>
+                                <dh-group>group20</dh-group>
+                                <lifetime>
+                                    <hours>1</hours>
+                                </lifetime>
+                            </entry>
+                        </ipsec-crypto-profiles>
+                        <global-protect-app-crypto-profiles>
+                            <entry name="default">
+                                <encryption>
+                                    <member>aes-128-cbc</member>
+                                </encryption>
+                                <authentication>
+                                    <member>sha1</member>
+                                </authentication>
+                            </entry>
+                        </global-protect-app-crypto-profiles>
+                    </crypto-profiles>
+                </ike>
+                <qos>
+                    <profile>
+                        <entry name="default">
+                            <class-bandwidth-type>
+                                <mbps>
+                                    <class>
+                                        <entry name="class1">
+                                            <priority>real-time</priority>
+                                        </entry>
+                                        <entry name="class2">
+                                            <priority>high</priority>
+                                        </entry>
+                                        <entry name="class3">
+                                            <priority>high</priority>
+                                        </entry>
+                                        <entry name="class4">
+                                            <priority>medium</priority>
+                                        </entry>
+                                        <entry name="class5">
+                                            <priority>medium</priority>
+                                        </entry>
+                                        <entry name="class6">
+                                            <priority>low</priority>
+                                        </entry>
+                                        <entry name="class7">
+                                            <priority>low</priority>
+                                        </entry>
+                                        <entry name="class8">
+                                            <priority>low</priority>
+                                        </entry>
+                                    </class>
+                                </mbps>
+                            </class-bandwidth-type>
+                        </entry>
+                    </profile>
+                </qos>
+                <virtual-router>
+                    {% for each in vr %}
+                    <entry name="{{ each.name }}">
+                        {% if each.ecmp is defined %}
+                        <ecmp>
+                            <algorithm>
+                                <ip-modulo/>
+                            </algorithm>
+                        </ecmp>
+                        {% endif %}
+                        <protocol>
+                            <bgp>
+                                {% if each.protocol.bgp.graceful is defined %}
+                                <routing-options>
+                                    <graceful-restart>
+                                        <enable>yes</enable>
+                                    </graceful-restart>
+                                </routing-options>
+                                {% endif %}
+                                {% if each.protocol.bgp.dampening_profile is defined %}
+                                <dampening-profile>
+                                    {% for profile in each.protocol.bgp.dampening_profile %}
+                                    <entry name="{{ profile.name }}">
+                                        <cutoff>1.25</cutoff>
+                                        <reuse>0.5</reuse>
+                                        <max-hold-time>900</max-hold-time>
+                                        <decay-half-life-reachable>300</decay-half-life-reachable>
+                                        <decay-half-life-unreachable>900</decay-half-life-unreachable>
+                                        <enable>yes</enable>
+                                    </entry>
+                                    {% endfor %}
+                                </dampening-profile>
+                                {% endif %}
+                                <peer-group>
+                                    {% for group in each.protocol.bgp.peer_group %}
+                                    <entry name="{{ group.name }}">
+                                        <enable>{{ group.enable }}</enable>
+                                        <type>
+                                            {% if group.type == 'ebgp' %}
+                                            <ebgp>
+                                                <export-nexthop>resolve</export-nexthop>
+                                                <import-nexthop>original</import-nexthop>
+                                            </ebgp>
+                                            {% endif %}
+                                        </type>
+                                    </entry>
+                                    {% endfor %}
+                                    {% for peer in each.protocol.bgp.peer_group %}
+                                    {% endfor %}
+                                </peer-group>
+                                <enable>{{ each.protocol.bgp.enable }}</enable>
+                            </bgp>
+                        </protocol>
+                    </entry>
+                    {% endfor %}
+                    <entry name="Blue">
+                        <ecmp>
+                            <algorithm>
+                                <ip-modulo/>
+                            </algorithm>
+                        </ecmp>
+                        <protocol>
+                            <bgp>
+                                <routing-options>
+                                    <graceful-restart>
+                                        <enable>yes</enable>
+                                    </graceful-restart>
+                                </routing-options>
+                                <peer-group>
+                                    <entry name="WAN">
+                                        <type>
+                                            <ebgp>
+                                                <remove-private-as>yes</remove-private-as>
+                                                <import-nexthop>original</import-nexthop>
+                                                <export-nexthop>resolve</export-nexthop>
+                                            </ebgp>
+                                        </type>
+                                        <peer>
+                                            <entry name="ISP1">
+                                                <peer-address>
+                                                    <ip>74.51.192.1</ip>
+                                                </peer-address>
+                                                <connection-options>
+                                                    <incoming-bgp-connection>
+                                                        <remote-port>0</remote-port>
+                                                        <allow>yes</allow>
+                                                    </incoming-bgp-connection>
+                                                    <outgoing-bgp-connection>
+                                                        <local-port>0</local-port>
+                                                        <allow>yes</allow>
+                                                    </outgoing-bgp-connection>
+                                                    <multihop>0</multihop>
+                                                    <keep-alive-interval>30</keep-alive-interval>
+                                                    <open-delay-time>0</open-delay-time>
+                                                    <hold-time>90</hold-time>
+                                                    <idle-hold-time>15</idle-hold-time>
+                                                    <min-route-adv-interval>30</min-route-adv-interval>
+                                                </connection-options>
+                                                <subsequent-address-family-identifier>
+                                                    <unicast>yes</unicast>
+                                                    <multicast>no</multicast>
+                                                </subsequent-address-family-identifier>
+                                                <local-address>
+                                                    <interface>ethernet1/1</interface>
+                                                </local-address>
+                                                <bfd>
+                                                    <profile>Inherit-vr-global-setting</profile>
+                                                </bfd>
+                                                <max-prefixes>5000</max-prefixes>
+                                                <enable>yes</enable>
+                                                <peer-as>4200</peer-as>
+                                                <enable-mp-bgp>yes</enable-mp-bgp>
+                                                <address-family-identifier>ipv4</address-family-identifier>
+                                                <enable-sender-side-loop-detection>yes</enable-sender-side-loop-detection>
+                                                <reflector-client>non-client</reflector-client>
+                                                <peering-type>unspecified</peering-type>
+                                            </entry>
+                                        </peer>
+                                        <aggregated-confed-as-path>yes</aggregated-confed-as-path>
+                                        <soft-reset-with-stored-info>yes</soft-reset-with-stored-info>
+                                        <enable>yes</enable>
+                                    </entry>
+                                </peer-group>
+                                <enable>yes</enable>
+                                <reject-default-route>no</reject-default-route>
+                                <router-id>74.51.192.2</router-id>
+                                <local-as>4201</local-as>
+                                <install-route>yes</install-route>
+                                <policy>
+                                    <export>
+                                        <rules>
+                                            <entry name="Connected">
+                                                <action>
+                                                    <allow>
+                                                        <update>
+                                                            <as-path>
+                                                                <none/>
+                                                            </as-path>
+                                                            <community>
+                                                                <none/>
+                                                            </community>
+                                                            <extended-community>
+                                                                <none/>
+                                                            </extended-community>
+                                                        </update>
+                                                    </allow>
+                                                </action>
+                                                <match>
+                                                    <address-prefix>
+                                                        <entry name="192.168.100.0/24">
+                                                            <exact>yes</exact>
+                                                        </entry>
+                                                    </address-prefix>
+                                                    <route-table>unicast</route-table>
+                                                </match>
+                                                <used-by>
+                                                    <member>WAN</member>
+                                                </used-by>
+                                                <enable>yes</enable>
+                                            </entry>
+                                        </rules>
+                                    </export>
+                                </policy>
+                                <redist-rules>
+                                    <entry name="Connected">
+                                        <address-family-identifier>ipv4</address-family-identifier>
+                                        <enable>yes</enable>
+                                        <set-origin>incomplete</set-origin>
+                                    </entry>
+                                </redist-rules>
+                            </bgp>
+                            <rip>
+                                <enable>no</enable>
+                            </rip>
+                            <ospf>
+                                <enable>no</enable>
+                            </ospf>
+                            <ospfv3>
+                                <enable>no</enable>
+                            </ospfv3>
+                            <redist-profile>
+                                <entry name="Connected">
+                                    <filter>
+                                        <type>
+                                            <member>connect</member>
+                                        </type>
+                                        <interface>
+                                            <member>ethernet1/2</member>
+                                        </interface>
+                                    </filter>
+                                    <priority>1</priority>
+                                    <action>
+                                        <redist/>
+                                    </action>
+                                </entry>
+                            </redist-profile>
+                        </protocol>
+                        <interface>
+                            <member>ethernet1/1</member>
+                            <member>ethernet1/2</member>
+                        </interface>
+                    </entry>
+                </virtual-router>
+            </network>
+            <deviceconfig>
+                <system>
+                    <type>
+                        <static/>
+                    </type>
+                    <update-server>updates.paloaltonetworks.com</update-server>
+                    <update-schedule>
+                        <threats>
+                            <recurring>
+                                <weekly>
+                                    <day-of-week>wednesday</day-of-week>
+                                    <at>01:02</at>
+                                    <action>download-only</action>
+                                </weekly>
+                            </recurring>
+                        </threats>
+                    </update-schedule>
+                    <timezone>{{ deviceconfig.timezone }}</timezone>
+                    <service>
+                        <disable-telnet>yes</disable-telnet>
+                        <disable-http>yes</disable-http>
+                    </service>
+                    <hostname>{{ deviceconfig.hostname }}</hostname>
+                    <ip-address>{{ deviceconfig.ip_address }}</ip-address>
+                    <netmask>{{ deviceconfig.netmask }}</netmask>
+                    <default-gateway>{{ deviceconfig.gateway }}</default-gateway>
+                    <dns-setting>
+                        <servers>
+                            <primary>{{ deviceconfig.dns.primary }}</primary>
+                            {% if deviceconfig.dns.secondary %}
+                            <secondary>{{ deviceconfig.dns.secondary }}</secondary>
+                            {% endif %}
+                        </servers>
+                    </dns-setting>
+                    <device-telemetry>
+                        <device-health-performance>yes</device-health-performance>
+                        <product-usage>yes</product-usage>
+                        <threat-prevention>yes</threat-prevention>
+                        <region>Americas</region>
+                    </device-telemetry>
+                    {% if deviceconfig.panorama is defined %}
+                    <panorama>
+                        {% for each in deviceconfig.panorama %}
+                        {% if each.type == 'local-panorama' %}
+                        <local-panorama>
+                            <panorama-server>{{ each.host }}</panorama-server>
+                        </local-panorama>
+                        {% endif %}
+                        {% endfor %}
+                    </panorama>
+                    {% endif %}
+                </system>
+                <setting>
+                    <config>
+                        <rematch>yes</rematch>
+                    </config>
+                    <management>
+                        <hostname-type-in-syslog>FQDN</hostname-type-in-syslog>
+                    </management>
+                    <auto-mac-detect>yes</auto-mac-detect>
+                </setting>
+            </deviceconfig>
+            <vsys>
+                <entry name="vsys1">
+                    <application/>
+                    <application-group/>
+                    <zone>
+                        {% for zone in vsys.zones %}
+                        <entry name="{{ zone.name }}">
+                            <network>
+                                {% if zone.mode == "layer3" %}
+                                <layer3>
+                                    <member>{{ zone.iface }}</member>
+                                </layer3>
+                                {% else %}
+                                <layer2>
+                                    <member>{{ zone.iface }}</member>
+                                </layer2>
+                                {% endif %}
+                            </network>
+                        </entry>
+                        {% endfor %}
+                    </zone>
+                    <service/>
+                    <service-group/>
+                    <schedule/>
+                    <rulebase/>
+                    <import>
+                        <network>
+                            <interface/>
+                        </network>
+                    </import>
+                    <address>
+                        {% for address in vsys.addresses %}
+                        <entry name="{{ address.name }}">
+                            <ip-netmask>{{ address.ip_mask }}</ip-netmask>
+                            {% if address.description is defined %}
+                            <description>{{ address.description }}</description>
+                            {% endif %}
+                        </entry>
+                        {% endfor %}
+                    </address>
+                </entry>
+            </vsys>
+        </entry>
+    </devices>
+{% endif %}
+</config>

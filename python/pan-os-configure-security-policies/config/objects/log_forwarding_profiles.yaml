@@ -1,0 +1,19 @@
+# config/objects/log_forwarding_profiles.yaml
+panos_config:
+  device_groups:
+    Magnolia:
+
+      objects:
+
+        log_forwarding_profiles:
+          - name: "Standard_Logging"
+            description: "Standard log forwarding profile for general use"
+            enhanced_logging: true
+
+          - name: "High_Security_Logging"
+            description: "Enhanced logging profile for sensitive areas"
+            enhanced_logging: true
+
+          - name: "Compliance_Logging"
+            description: "Logging profile for compliance requirements"
+            enhanced_logging: true

@@ -1,0 +1,4 @@
+collections:
+  - name: netbox.netbox
+    type: galaxy
+    version: 3.18.0

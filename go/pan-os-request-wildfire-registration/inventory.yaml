@@ -1,0 +1,7 @@
+inventory:
+  - hostname: 'fw1'
+    ip_address: '192.168.1.1'
+  - hostname: 'fw2'
+    ip_address: '192.168.1.2'
+  - hostname: 'fw3'
+    ip_address: '192.168.1.3'

@@ -1,0 +1,48 @@
+- name: Create Security Policy
+  hosts: panorama
+  connection: local
+  gather_facts: false
+  become: false
+
+  vars:
+    provider_ip: "{{ ansible_host }}" # this will point to the host defined in the inventory.yaml file
+    provider_username: "this-is-just-a-placeholder" # Use Ansible Vault for sensitive data
+    provider_password: "this-is-just-a-placeholder" # Use Ansible Vault for sensitive data
+
+  tasks:
+    - name: Add test pre-rule to Panorama
+      paloaltonetworks.panos.panos_security_rule:
+        provider:
+          ip_address: "{{ provider_ip }}"
+          username: "{{ provider_username }}"
+          password: "{{ provider_password }}"
+        rule_name: "Permit DMZ to WAN"
+        description: "Allow Kubernetes hosts outbound access to the WAN"
+        source_zone:
+          - "DMZ"
+        destination_zone:
+          - "WAN"
+        source_ip:
+          - "any"
+        source_user:
+          - "any"
+        destination_ip:
+          - "any"
+        category:
+          - "any"
+        application:
+          - "web-browsing"
+        service:
+          - "application-default"
+        hip_profiles:
+          - "any"
+        # tag_name:
+        # - "Outbound Web"
+        action: "allow"
+        device_group: "DataCenter"
+        commit: false
+      register: results
+
+    - name: Print results to console
+      ansible.builtin.debug:
+        msg: "{{ results }}"

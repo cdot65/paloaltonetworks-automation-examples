@@ -1,0 +1,31 @@
+# config/objects/application_groups.yaml
+panos_config:
+  device_groups:
+    Magnolia:
+
+      objects:
+        application_groups:
+          - name: "Web_Applications"
+            value:
+              - "Custom-HTTP"
+              - "Custom-HTTPS"
+              - "Custom-DNS"
+            tag: [ "web", "essential" ]
+
+          - name: "Database_Applications"
+            value:
+              - "Custom-MySQL"
+              - "Custom-PostgreSQL"
+              - "Custom-MongoDB"
+              - "Custom-Redis"
+              - "Custom-Elasticsearch"
+            tag: [ "database", "backend" ]
+
+          - name: "Admin_Applications"
+            value:
+              - "Custom-SSH"
+              - "Custom-RDP"
+              - "Custom-LDAP"
+              - "Custom-Jenkins"
+              - "Custom-Grafana"
+            tag: [ "admin", "management" ]

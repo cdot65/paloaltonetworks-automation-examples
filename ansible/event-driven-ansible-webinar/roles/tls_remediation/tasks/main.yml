@@ -1,0 +1,30 @@
+- name: Debug all vars
+  ansible.builtin.debug:
+    var: vars.ansible_eda
+  become: false
+
+- name: Execute Job Template on Ansible Automation Platform
+  ansible.builtin.uri:
+    url: "https://ansible.awx.example.com/api/v2/job_templates/20/launch/"
+    method: POST
+    headers:
+      Authorization: "Bearer {{ aap_token }}"
+    body:
+      extra_vars:
+        device_name: "{{ ansible_eda.event.payload.details.device_name }}"
+        dst: "{{ ansible_eda.event.payload.details.dst }}"
+        error: "{{ ansible_eda.event.payload.details.error }}"
+        policy_name: "{{ ansible_eda.event.payload.details.policy_name }}"
+        sni: "{{ ansible_eda.event.payload.details.sni }}"
+        src: "{{ ansible_eda.event.payload.details.src }}"
+        srcuser: "{{ ansible_eda.event.payload.details.srcuser }}"
+    body_format: json
+    status_code: 201
+    validate_certs: no # Set to yes in production for SSL verification
+  register: job_result
+  become: false
+
+- name: Output job result
+  ansible.builtin.debug:
+    var: job_result
+  become: false

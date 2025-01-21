@@ -1,0 +1,23 @@
+[ req ]
+default_bits        = 2048
+default_keyfile     = root_ca_key.pem
+distinguished_name  = req_distinguished_name
+req_extensions      = req_ext
+prompt              = no
+
+[ req_distinguished_name ]
+C  = US
+ST = California
+L  = San Francisco
+O  = Example Company
+OU = IT
+CN = Root CA
+emailAddress = admin@example.com
+
+[ req_ext ]
+subjectKeyIdentifier = hash
+basicConstraints = CA:TRUE
+keyUsage = keyCertSign, cRLSign
+
+[ v3_ca ]
+subjectKeyIdentifier = hash

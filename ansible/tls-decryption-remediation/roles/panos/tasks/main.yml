@@ -1,0 +1,44 @@
+- name: Export GlobalSign-Root-CA
+  paloaltonetworks.panos.panos_export:
+    provider:
+      ip_address: "{{ panos_firewall }}"
+      username: "{{ panos_username }}"
+      password: "{{ panos_password }}"
+    category: certificate
+    certificate_format: pem
+    certificate_name: GlobalSign-Root-CA
+    filename: /var/tmp/GlobalSign-Root-CA.pem
+
+- name: Read file contents of /var/tmp/GlobalSign-Root-CA.pem
+  ansible.builtin.slurp:
+    src: /var/tmp/GlobalSign-Root-CA.pem
+
+- name: Export Root CA
+  paloaltonetworks.panos.panos_export:
+    provider:
+      ip_address: "{{ panos_firewall }}"
+      username: "{{ panos_username }}"
+      password: "{{ panos_password }}"
+    category: certificate
+    certificate_format: pem
+    certificate_name: Root CA
+    filename: /var/tmp/Root-CA.pem
+
+- name: Read file contents of /var/tmp/Root-CA.pem
+  ansible.builtin.slurp:
+    src: /var/tmp/Root-CA.pem
+
+- name: Export Forward-Trust-CA-ECDSA certificate
+  paloaltonetworks.panos.panos_export:
+    provider:
+      ip_address: "{{ panos_firewall }}"
+      username: "{{ panos_username }}"
+      password: "{{ panos_password }}"
+    category: certificate
+    certificate_format: pem
+    certificate_name: Forward-Trust-CA-ECDSA
+    filename: /var/tmp/Forward-Trust-CA-ECDSA.pem
+
+- name: Read file contents of /var/tmp/Forward-Trust-CA-ECDSA.pem
+  ansible.builtin.slurp:
+    src: /var/tmp/Forward-Trust-CA-ECDSA.pem

@@ -1,0 +1,55 @@
+# config/objects/regions.yaml
+panos_config:
+  device_groups:
+    Magnolia:
+      objects:
+        regions:
+          - name: "North_America_East"
+            address: [ "10.1.0.0/16", "10.2.0.0/16" ]
+            latitude: 40.7128
+            longitude: -74.0060
+
+          - name: "North_America_West"
+            address: [ "10.3.0.0/16", "10.4.0.0/16" ]
+            latitude: 37.7749
+            longitude: -122.4194
+
+          - name: "Europe_Central"
+            address: [ "172.16.0.0/16", "172.17.0.0/16" ]
+            latitude: 50.1109
+            longitude: 8.6821
+
+          - name: "Europe_North"
+            address: [ "172.18.0.0/16", "172.19.0.0/16" ]
+            latitude: 59.3293
+            longitude: 18.0686
+
+          - name: "Asia_East"
+            address: [ "192.168.1.0/24", "192.168.2.0/24" ]
+            latitude: 35.6762
+            longitude: 139.6503
+
+          - name: "Asia_Southeast"
+            address: [ "192.168.3.0/24", "192.168.4.0/24" ]
+            latitude: 1.3521
+            longitude: 103.8198
+
+          - name: "Australia"
+            address: [ "203.0.113.0/24", "203.0.114.0/24" ]
+            latitude: -33.8688
+            longitude: 151.2093
+
+          - name: "South_America"
+            address: [ "198.51.100.0/24", "198.51.101.0/24" ]
+            latitude: -23.5505
+            longitude: -46.6333
+
+          - name: "Africa"
+            address: [ "41.0.0.0/8" ]
+            latitude: -26.2041
+            longitude: 28.0473
+
+          - name: "Middle_East"
+            address: [ "185.0.0.0/8" ]
+            latitude: 25.2048
+            longitude: 55.2708

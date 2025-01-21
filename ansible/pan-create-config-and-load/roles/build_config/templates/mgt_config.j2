@@ -1,0 +1,25 @@
+#jinja2: lstrip_blocks: "True (or False)", trim_blocks: "True (or False)"
+{#- mgt_config configuration -#}
+<config version="10.2.0" urldb="paloaltonetworks" detail-version="10.2.2">
+    {% if configuration.mgt_config is defined %}
+    <mgt-config>
+        <users>
+            {% for each in users %}
+            <entry name="{{ each.name }}">
+                <phash>{{ each.phash }}</phash>
+                {% if each.superuser == 'yes' %}
+                <permissions>
+                    <role-based>
+                        <superuser>yes</superuser>
+                    </role-based>
+                </permissions>
+                {% endif %}
+            </entry>
+            {% endfor %}
+        </users>
+        <password-complexity>
+            <enabled>yes</enabled>
+            <minimum-length>8</minimum-length>
+        </password-complexity>
+    </mgt-config>
+    {% endif %}

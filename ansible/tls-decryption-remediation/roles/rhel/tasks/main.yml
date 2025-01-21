@@ -1,0 +1,13 @@
+- name: Copy Forward-Trust-CA-ECDSA Certificate to Remote Server
+  ansible.builtin.copy:
+    src: /var/tmp/Forward-Trust-CA-ECDSA.pem
+    dest: /etc/pki/ca-trust/source/anchors/Forward-Trust-CA-ECDSA.pem
+    mode: "0644"
+    owner: root
+    group: root
+  become: true
+
+- name: Update Certificate Trust
+  ansible.builtin.command:
+    cmd: update-ca-trust
+  become: true

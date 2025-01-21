@@ -1,0 +1,212 @@
+[
+  {
+    "model": "saute.firewallplatform",
+    "fields": {
+      "name": "PA-220R",
+      "vendor": "Palo Alto Networks"
+    }
+  },
+  {
+    "model": "saute.firewallplatform",
+    "fields": {
+      "name": "PA-410",
+      "vendor": "Palo Alto Networks"
+    }
+  },
+  {
+    "model": "saute.firewallplatform",
+    "fields": {
+      "name": "PA-415",
+      "vendor": "Palo Alto Networks"
+    }
+  },
+  {
+    "model": "saute.firewallplatform",
+    "fields": {
+      "name": "PA-440",
+      "vendor": "Palo Alto Networks"
+    }
+  },
+  {
+    "model": "saute.firewallplatform",
+    "fields": {
+      "name": "PA-445",
+      "vendor": "Palo Alto Networks"
+    }
+  },
+  {
+    "model": "saute.firewallplatform",
+    "fields": {
+      "name": "PA-450",
+      "vendor": "Palo Alto Networks"
+    }
+  },
+  {
+    "model": "saute.firewallplatform",
+    "fields": {
+      "name": "PA-460",
+      "vendor": "Palo Alto Networks"
+    }
+  },
+  {
+    "model": "saute.firewallplatform",
+    "fields": {
+      "name": "PA-820",
+      "vendor": "Palo Alto Networks"
+    }
+  },
+  {
+    "model": "saute.firewallplatform",
+    "fields": {
+      "name": "PA-850",
+      "vendor": "Palo Alto Networks"
+    }
+  },
+  {
+    "model": "saute.firewallplatform",
+    "fields": {
+      "name": "PA-1410",
+      "vendor": "Palo Alto Networks"
+    }
+  },
+  {
+    "model": "saute.firewallplatform",
+    "fields": {
+      "name": "PA-1420",
+      "vendor": "Palo Alto Networks"
+    }
+  },
+  {
+    "model": "saute.firewallplatform",
+    "fields": {
+      "name": "PA-3220",
+      "vendor": "Palo Alto Networks"
+    }
+  },
+  {
+    "model": "saute.firewallplatform",
+    "fields": {
+      "name": "PA-3250",
+      "vendor": "Palo Alto Networks"
+    }
+  },
+  {
+    "model": "saute.firewallplatform",
+    "fields": {
+      "name": "PA-3260",
+      "vendor": "Palo Alto Networks"
+    }
+  },
+  {
+    "model": "saute.firewallplatform",
+    "fields": {
+      "name": "PA-3410",
+      "vendor": "Palo Alto Networks"
+    }
+  },
+  {
+    "model": "saute.firewallplatform",
+    "fields": {
+      "name": "PA-3420",
+      "vendor": "Palo Alto Networks"
+    }
+  },
+  {
+    "model": "saute.firewallplatform",
+    "fields": {
+      "name": "PA-3430",
+      "vendor": "Palo Alto Networks"
+    }
+  },
+  {
+    "model": "saute.firewallplatform",
+    "fields": {
+      "name": "PA-3440",
+      "vendor": "Palo Alto Networks"
+    }
+  },
+  {
+    "model": "saute.firewallplatform",
+    "fields": {
+      "name": "PA-5220",
+      "vendor": "Palo Alto Networks"
+    }
+  },
+  {
+    "model": "saute.firewallplatform",
+    "fields": {
+      "name": "PA-5250",
+      "vendor": "Palo Alto Networks"
+    }
+  },
+  {
+    "model": "saute.firewallplatform",
+    "fields": {
+      "name": "PA-5260",
+      "vendor": "Palo Alto Networks"
+    }
+  },
+  {
+    "model": "saute.firewallplatform",
+    "fields": {
+      "name": "PA-5280",
+      "vendor": "Palo Alto Networks"
+    }
+  },
+  {
+    "model": "saute.firewallplatform",
+    "fields": {
+      "name": "PA-5410",
+      "vendor": "Palo Alto Networks"
+    }
+  },
+  {
+    "model": "saute.firewallplatform",
+    "fields": {
+      "name": "PA-5420",
+      "vendor": "Palo Alto Networks"
+    }
+  },
+  {
+    "model": "saute.firewallplatform",
+    "fields": {
+      "name": "PA-5430",
+      "vendor": "Palo Alto Networks"
+    }
+  },
+  {
+    "model": "saute.firewallplatform",
+    "fields": {
+      "name": "PA-5440",
+      "vendor": "Palo Alto Networks"
+    }
+  },
+  {
+    "model": "saute.firewallplatform",
+    "fields": {
+      "name": "PA-5450",
+      "vendor": "Palo Alto Networks"
+    }
+  },
+  {
+    "model": "saute.firewallplatform",
+    "fields": {
+      "name": "PA-7050",
+      "vendor": "Palo Alto Networks"
+    }
+  },
+  {
+    "model": "saute.firewallplatform",
+    "fields": {
+      "name": "PA-7080",
+      "vendor": "Palo Alto Networks"
+    }
+  },
+  {
+    "model": "saute.firewallplatform",
+    "fields": {
+      "name": "VM-Series",
+      "vendor": "Palo Alto Networks"
+    }
+  }
+]

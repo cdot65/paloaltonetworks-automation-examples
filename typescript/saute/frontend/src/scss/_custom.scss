@@ -1,0 +1,180 @@
+.sidebar {
+    --#{$prefix}sidebar-bg: rgba(255, 255, 255, 0.07);
+}
+
+.bg-dark {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.nav-pills-container {
+    display: flex;
+    padding-top: 2%;
+    padding-bottom: 2%;
+    justify-content: center;
+}
+
+.nav-pills {
+    .nav-item {
+        margin-left: 10px;
+        margin-right: 10px;
+    }
+
+    .nav-link {
+        line-height: 24px;
+        text-transform: uppercase;
+        font-size: 14px;
+        font-weight: 500;
+        min-width: 120px;
+        text-align: center;
+        color: #333;
+        transition: all .3s;
+        border-radius: 30px;
+        padding: 12px 28px;
+        background: #fff;
+        border: 0;
+        height: 100%;
+
+        &:disabled {
+            color: var(--#{$prefix}nav-link-disabled-color);
+            background-color: transparent;
+            border-color: transparent;
+        }
+
+        &:hover {
+            background-color: #c8c8c8bf;
+        }
+    }
+
+    .nav-link.active,
+    .show>.nav-link {
+        color: #ffffff;
+        background-color: $primary;
+        box-shadow: 0 4px 10px #93939324, 0 7px 10px -5px #93939324;
+    }
+}
+
+.nav-pills.nav-pills-info .nav-item .nav-link.active,
+.nav-pills.nav-pills-info .nav-item .nav-link.active:focus,
+.nav-pills.nav-pills-info .nav-item .nav-link.active:hover {
+    background-color: #262626;
+    box-shadow: 0 4px 10px #93939324, 0 7px 10px -5px #F2745766;
+    color: #fff;
+}
+
+.nav-pills.nav-pills-rose .nav-item .nav-link.active,
+.nav-pills.nav-pills-rose .nav-item .nav-link.active:focus,
+.nav-pills.nav-pills-rose .nav-item .nav-link.active:hover {
+    background-color: #e91e63;
+    box-shadow: 0 4px 10px #93939324, 0 7px 10px -5px #F2745766;
+    color: #fff;
+}
+
+.nav-pills.nav-pills-success .nav-item .nav-link.active,
+.nav-pills.nav-pills-success .nav-item .nav-link.active:focus,
+.nav-pills.nav-pills-success .nav-item .nav-link.active:hover {
+    background-color: #4caf50;
+    box-shadow: 0 4px 10px #93939324, 0 7px 10px -5px #4caf5066;
+    color: #fff;
+}
+
+.nav-pills.nav-pills-warning .nav-item .nav-link.active,
+.nav-pills.nav-pills-warning .nav-item .nav-link.active:focus,
+.nav-pills.nav-pills-warning .nav-item .nav-link.active:hover {
+    background-color: #36547A;
+    box-shadow: 0 4px 10px #93939324, 0 7px 10px -5px #36547A66;
+    color: #fff;
+}
+
+.nav-pills.nav-pills-danger .nav-item .nav-link.active,
+.nav-pills.nav-pills-danger .nav-item .nav-link.active:focus,
+.nav-pills.nav-pills-danger .nav-item .nav-link.active:hover {
+    background-color: #f44336;
+    box-shadow: 0 4px 10px #93939324, 0 7px 10px -5px #f4433666;
+    color: #fff;
+}
+
+.nav-pills.nav-pills-icons .nav-item .nav-link {
+    border-radius: 4px;
+}
+
+// Tabbable tabs
+//
+// Hide tabbable panes to start, show them when .active
+
+.tab-content {
+    >.tab-pane {
+        display: none;
+    }
+
+    >.active {
+        display: block;
+    }
+}
+
+.login {
+    background-color: #19222E;
+}
+
+.btn-execute {
+    margin-top: 10px;
+}
+
+.btn:disabled, .btn.disabled, fieldset:disabled .btn {
+    opacity: 1;
+    background-color: #{$gray-600};
+    border-color: #{$gray-700};
+}
+
+.btn-primary {
+    opacity: 1;
+    background-color: #{$primary};
+}
+
+.align-right {
+    text-align: right;
+}
+
+.align-center {
+    text-align: center;
+}
+
+.automationEntry-link {
+    text-decoration: none;
+}
+
+.white-text {
+    color: #fff;
+}
+
+.card-margin-bottom {
+    margin-bottom: 1.5em;
+}
+
+.accordion-button {
+    color: $white;
+}
+
+.accordion-item {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+    color: $white;
+    border-color: #{$primary-50};
+}
+
+
+.accordion-button:not(.collapsed) {
+    background-color: rgb(40, 41, 51);
+    color: $white;
+    box-shadow: inset 0 calc(-1 * var(--#{$prefix}accordion-border-width)) 0 var(--#{$prefix}accordion-border-color); // stylelint-disable-line function-disallowed-list
+
+    &::after {
+      background-image: var(--#{$prefix}accordion-btn-active-icon);
+      transform: var(--#{$prefix}accordion-btn-icon-transform);
+      color: $white;
+    }
+  }
+
+.modal-content {
+    color: $white;
+    background-color: rgb(24, 25, 36);
+    border: var(--#{$prefix}modal-border-width) solid var(--#{$prefix}modal-border-color);
+}

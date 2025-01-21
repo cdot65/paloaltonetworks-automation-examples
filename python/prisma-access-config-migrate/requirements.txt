@@ -1,0 +1,2 @@
+dynaconfig==0.4
+panapi==0.0.1

@@ -1,0 +1,157 @@
+# config/objects/application_objects.yaml
+panos_config:
+  device_groups:
+    Magnolia:
+
+      objects:
+        application_objects:
+          - name: "Custom-HTTP"
+            category: "networking"
+            subcategory: "web"
+            technology: "browser-based"
+            risk: 3
+            default_type: "port"
+            default_port: [ "80" ]
+            description: "Custom HTTP application"
+            tag: [ "web" ]
+
+          - name: "Custom-HTTPS"
+            category: "networking"
+            subcategory: "web"
+            technology: "browser-based"
+            risk: 3
+            default_type: "port"
+            default_port: [ "443" ]
+            description: "Custom HTTPS application"
+            tag: [ "web", "secure" ]
+
+          - name: "Custom-FTP"
+            category: "networking"
+            subcategory: "file-sharing"
+            technology: "client-server"
+            risk: 4
+            default_type: "port"
+            default_port: [ "21" ]
+            description: "Custom FTP application"
+            tag: [ "file-transfer" ]
+
+          - name: "Custom-SSH"
+            category: "networking"
+            subcategory: "encrypted-tunnel"
+            technology: "client-server"
+            risk: 2
+            default_type: "port"
+            default_port: [ "22" ]
+            description: "Custom SSH application"
+            tag: [ "admin" ]
+
+          - name: "Custom-SMTP"
+            category: "collaboration"
+            subcategory: "email"
+            technology: "client-server"
+            risk: 3
+            default_type: "port"
+            default_port: [ "25" ]
+            description: "Custom SMTP application"
+            tag: [ "mail" ]
+
+          - name: "Custom-DNS"
+            category: "networking"
+            subcategory: "network-protocol"
+            technology: "client-server"
+            risk: 2
+            default_type: "port"
+            default_port: [ "53" ]
+            description: "Custom DNS application"
+            tag: [ "dns" ]
+
+          - name: "Custom-LDAP"
+            category: "networking"
+            subcategory: "authentication-service"
+            technology: "client-server"
+            risk: 2
+            default_type: "port"
+            default_port: [ "389" ]
+            description: "Custom LDAP application"
+            tag: [ "directory" ]
+
+          - name: "Custom-RDP"
+            category: "networking"
+            subcategory: "remote-access"
+            technology: "client-server"
+            risk: 3
+            default_type: "port"
+            default_port: [ "3389" ]
+            description: "Custom RDP application"
+            tag: [ "remote-access" ]
+
+          - name: "Custom-MySQL"
+            category: "networking"
+            subcategory: "database"
+            technology: "client-server"
+            risk: 3
+            default_type: "port"
+            default_port: [ "3306" ]
+            description: "Custom MySQL application"
+            tag: [ "database" ]
+
+          - name: "Custom-PostgreSQL"
+            category: "networking"
+            subcategory: "database"
+            technology: "client-server"
+            risk: 3
+            default_type: "port"
+            default_port: [ "5432" ]
+            description: "Custom PostgreSQL application"
+            tag: [ "database" ]
+
+          - name: "Custom-MongoDB"
+            category: "networking"
+            subcategory: "database"
+            technology: "client-server"
+            risk: 3
+            default_type: "port"
+            default_port: [ "27017" ]
+            description: "Custom MongoDB application"
+            tag: [ "database" ]
+
+          - name: "Custom-Redis"
+            category: "networking"
+            subcategory: "database"
+            technology: "client-server"
+            risk: 3
+            default_type: "port"
+            default_port: [ "6379" ]
+            description: "Custom Redis application"
+            tag: [ "database", "cache" ]
+
+          - name: "Custom-Elasticsearch"
+            category: "networking"
+            subcategory: "database"
+            technology: "client-server"
+            risk: 3
+            default_type: "port"
+            default_port: [ "9200" ]
+            description: "Custom Elasticsearch application"
+            tag: [ "database", "search" ]
+
+          - name: "Custom-Jenkins"
+            category: "business-systems"
+            subcategory: "development-tools"
+            technology: "client-server"
+            risk: 3
+            default_type: "port"
+            default_port: [ "8080" ]
+            description: "Custom Jenkins application"
+            tag: [ "cicd" ]
+
+          - name: "Custom-Grafana"
+            category: "business-systems"
+            subcategory: "management"
+            technology: "browser-based"
+            risk: 2
+            default_type: "port"
+            default_port: [ "3000" ]
+            description: "Custom Grafana application"
+            tag: [ "monitoring" ]
+

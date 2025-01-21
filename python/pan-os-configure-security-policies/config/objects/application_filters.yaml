@@ -1,0 +1,20 @@
+# config/objects/application_filters.yaml
+panos_config:
+  device_groups:
+    Magnolia:
+
+      objects:
+
+        application_filters:
+          - name: "High_Risk_Web_Apps"
+            category: [ "networking" ]
+            subcategory: [ "web" ]
+            risk: [ "4", "5" ]
+            is_saas: true
+            tag: [ "high-risk", "web" ]
+
+          - name: "Database_Apps"
+            category: [ "networking" ]
+            subcategory: [ "database" ]
+            technology: [ "client-server" ]
+            tag: [ "database" ]

@@ -1,0 +1,86 @@
+<c-row>
+    <c-col xs="12">
+        <c-card class="mb-4">
+            <c-card-header>
+                <strong>Edit Prisma Entry</strong>
+            </c-card-header>
+            <c-card-body>
+                <form
+                    [formGroup]="entryForm"
+                    (ngSubmit)="updateEntry(entryForm.value)"
+                    class="row g-3 needs-validation"
+                >
+                    <c-col md="6">
+                        <label cLabel for="tenant_name">Tenant Name</label>
+                        <input
+                            cFormControl
+                            id="tenant_name"
+                            required
+                            type="text"
+                            formControlName="tenant_name"
+                        />
+                        <c-form-feedback [valid]="false"
+                            >Please provide a tenant name.</c-form-feedback
+                        >
+                    </c-col>
+                    <c-col md="6">
+                        <label cLabel for="client_id">Client ID</label>
+                        <input
+                            cFormControl
+                            id="client_id"
+                            required
+                            type="text"
+                            formControlName="client_id"
+                        />
+                        <c-form-feedback [valid]="false"
+                            >Please provide a client ID.</c-form-feedback
+                        >
+                    </c-col>
+                    <c-col md="6">
+                        <label cLabel for="tsg_id">TSG ID</label>
+                        <input
+                            cFormControl
+                            id="tsg_id"
+                            type="text"
+                            formControlName="tsg_id"
+                        />
+                        <c-form-feedback [valid]="false"
+                            >Please provide a TSG ID.</c-form-feedback
+                        >
+                    </c-col>
+                    <c-col md="6">
+                        <label cLabel for="client_secret">Client Secret</label>
+                        <input
+                            cFormControl
+                            id="client_secret"
+                            required
+                            type="text"
+                            formControlName="client_secret"
+                        />
+                        <c-form-feedback [valid]="false"
+                            >Please provide a client secret.</c-form-feedback
+                        >
+                    </c-col>
+                    <c-col xs="12">
+                        <button
+                            cButton
+                            class="me-1"
+                            color="primary"
+                            type="submit"
+                        >
+                            Save
+                        </button>
+                        <button
+                            (click)="onCancel()"
+                            cButton
+                            color="secondary"
+                            type="button"
+                        >
+                            Cancel
+                        </button>
+                    </c-col>
+                </form>
+            </c-card-body>
+        </c-card>
+    </c-col>
+</c-row>

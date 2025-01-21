@@ -1,0 +1,25 @@
+- name: Pull in Device Groups and Firewall relationships
+  hosts: panorama
+  connection: local
+  gather_facts: false
+  become: false
+  vars:
+    serial_number: "01234567890" # Example serial number
+
+  tasks:
+    - name: Pull in device group data from Panorama
+      paloaltonetworks.panos.panos_op:
+        provider:
+          ip_address: "{{ ansible_host }}"
+          username: "{{ panorama_credentials.username }}"
+          password: "{{ panorama_credentials.password }}"
+        cmd: "show devicegroups"
+      register: results
+
+    - name: Use Custom Filter to Find Device Group
+      set_fact:
+        device_group: "{{ results.stdout | from_json | find_device_group(serial_number) }}"
+
+    - name: Print device group to console
+      debug:
+        var: device_group

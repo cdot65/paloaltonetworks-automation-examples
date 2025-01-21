@@ -1,0 +1,14 @@
+# cluster-role-binding.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: jenkins-agent-binding
+subjects:
+  - kind: ServiceAccount
+    name: jenkins-agent-sa
+    namespace: jenkins
+roleRef:
+  kind: ClusterRole
+  name: jenkins-agent-role
+  apiGroup: rbac.authorization.k8s.io
+
