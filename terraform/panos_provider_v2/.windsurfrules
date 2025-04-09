@@ -1,0 +1,21 @@
+# Windsurf/Cursor IDE Rules for PAN-OS Terraform Project
+
+- **Provider Version Enforcement**: When defining the `required_providers` block in `provider.tf`, ensure the `PaloAltoNetworks/panos` provider version is specified as exactly `2.0.0`. Query or flag any other version specified.
+
+- **Mandatory `location` Attribute**: For all `panos_*` resources in `main.tf` that support it, ensure the `location` block is defined and correctly targets the intended Panorama scope (e.g., `device_group = { name = "..." }`, `template = { name = "..." }`, `panorama = {}`, `system = {}`). Verify the structure matches the provider documentation for the specific resource and query if missing or potentially incorrect.
+
+- **Variable-Driven Resources**: In `main.tf`, resource arguments should primarily reference variables defined in `variables.tf` (e.g., `var.device_groups.Branch.name`). Flag or query instances where complex configuration values (like lists of IPs, descriptions, object names) are hardcoded directly within resource blocks instead of referencing variables.
+
+- **Explicit Dependency Checks**: When defining resources that rely on others not implicitly linked (e.g., defining an Address Object within a Device Group, using an object in a Security Policy, assigning a parent to a Device Group), verify or suggest adding an explicit `depends_on` block referencing the prerequisite resource(s) (e.g., `depends_on = [panos_device_group.Branch, panos_administrative_tag.Automation]`). Check common patterns like Policies depending on Objects/Services/Tags/Zones, and Objects depending on Device Groups/Tags.
+
+- **Resource Naming Convention**: Enforce or suggest the convention `panos_resource_type.LogicalName` for naming resources in `main.tf` (e.g., `panos_template.Branch`, `panos_device_group.Dallas`, `panos_security_policy.branch_policy`). The `LogicalName` should ideally correspond to a relevant key in the `terraform.tfvars` file where applicable.
+
+- **`terraform.tfvars` Structure Validation**: When editing `terraform.tfvars`, cross-reference the structure (map keys, nested objects, attribute names) against the corresponding complex variable definitions in `variables.tf`. Highlight or query any structural discrepancies found (e.g., missing required attributes, using incorrect attribute names, incorrect nesting).
+
+- **Output Naming Consistency**: Ensure resource names used in `outputs.tf` (e.g., `panos_template.Branch.name`) correctly match the resource declarations in `main.tf`. Flag any references to non-existent resources.
+
+- **Post-Apply Commit Reminder**: When generating or reviewing `terraform apply` commands or related workflow steps (perhaps in comments or associated documentation generation), include a reminder that a manual Commit operation within the Panorama UI is required after a successful apply to push changes to managed firewalls.
+
+- **README Synchronization**: When significant changes are made to `main.tf` or `variables.tf` (e.g., adding/removing support for a resource type, significantly altering variable structures), prompt the user to review and potentially update the corresponding sections in `README.md` (like Configuration Structure, Variable Structure, Usage examples) to maintain documentation accuracy.
+
+- **Location Target Validation**: Within a `location` block, ensure that only one specific target type (e.g., `device_group`, `template`, `template_stack`, `panorama`, `system`) is defined, as per the provider's requirements for most resources. Query if multiple mutually exclusive targets are defined within the same location block.

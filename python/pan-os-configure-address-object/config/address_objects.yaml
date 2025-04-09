@@ -1,0 +1,30 @@
+---
+address_objects:
+  - device_group: "LAB_DG"
+    entries:
+      - name: "test101"
+        value: "192.168.1.1/32"
+        description: "Test address object"
+        tags:
+          - "automation"
+  - device_group: "WOODLANDS_DG"
+    entries:
+      - name: "test102"
+        value: "192.168.1.1/32"
+        description: "Test address object"
+        tags:
+          - "automation"
+  - device_group: "DALLAS_DG"
+    entries:
+      - name: "test103"
+        value: "192.168.1.1/32"
+        description: "Test address object"
+        tags:
+          - "automation"
+  - device_group: "MAGNOLIA2_DG"
+    entries:
+      - name: "test104"
+        value: "192.168.1.1/32"
+        description: "Test address object"
+        tags:
+          - "automation"

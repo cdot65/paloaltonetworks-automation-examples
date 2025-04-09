@@ -1,0 +1,12 @@
+- **Use Python 3.10 to 3.12 syntax and features**: Ensure all generated Python code is compatible with versions 3.10, 3.11, and 3.12.
+- **Utilize `pan-os-python` version 1.12.1**: Implement all Panorama interactions (connection, object creation, commit) strictly using methods and classes available in `pan-os-python==1.12.1`.
+- **Employ Pydantic version 2.11 for data modeling**: Define and use Pydantic V2 `BaseModel`s for parsing, validating, and structuring input data according to the specified `AddressObjectInput` model. Use Pydantic's validation capabilities (e.g., `IPvAnyNetwork`).
+- **Implement 'ip-netmask' Address Object creation only**: Focus code logic solely on creating `AddressObject` instances of type `ip-netmask`. Do not implement logic for FQDN, Range, Wildcard, Groups, or Tags.
+- **Prioritize environment variables for configuration**: Retrieve `PANORAMA_HOSTNAME`, `PANORAMA_API_KEY`, and `PANORAMA_DEVICE_GROUP` from environment variables first. Avoid hardcoding credentials in the script.
+- **Check for object existence before creating**: Before calling `create()` on an `AddressObject`, query Panorama using `pan-os-python` to verify if an object with the same name already exists in the target device group. Log a warning and skip if found.
+- **Implement commit logic controllable via a flag**: Use `panorama.commit()` to apply changes, but gate this action behind a command-line flag (e.g., `--no-commit`) as specified in the requirements.
+- **Use Python's standard `logging` module**: Implement logging for connection status, object creation/skip actions, errors, and commit status. Use standard levels (INFO, WARNING, ERROR, DEBUG).
+- **Apply strict type hinting for MyPy**: Add type hints to all function signatures, parameters, and variables. Ensure the code passes `mypy` checks.
+- **Format code with `ruff` and lint with `ruff` / `flake8`**: Ensure all code adheres to PEP 8 standards, is formatted using `ruff format`, and passes lint checks configured for the project (`ruff check` and potentially `flake8`).
+- **Write Google-style docstrings**: Add clear docstrings for all public functions, methods, and classes, explaining their purpose, arguments, and return values.
+- **Handle specific `pan-os-python` exceptions**: Implement `try...except` blocks to catch potential exceptions from `pan-os-python` (e.g., `PanDeviceError`, `PanCommitNotNeeded`, `PanCommitFailed`) and provide informative error messages.

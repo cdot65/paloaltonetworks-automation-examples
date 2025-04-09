@@ -1,201 +1,140 @@
-# standard library imports
+"""Main application module for configuring Palo Alto Networks address objects."""
+
 import argparse
+import ipaddress
+import os
 import sys
+from typing import List
 
-# pan-os-python SDK imports
-from panos.errors import PanDeviceError
-from panos.panorama import Panorama, PanoramaCommitAll
+import yaml
+from dotenv import load_dotenv
 
-# local imports
-from paloconfig import PaloConfig
-from utils import set_log_level, logger
+from models import AddressObject, Config
+from panos_client import PanosClient
+from utils import logger, set_log_level, validate_ip_address
 
 
-def parse_arguments():
+def parse_tags(tags: List[str]) -> List[str]:
+    """Parse tags into a list."""
+    return tags
+
+
+def load_yaml_config(file_path: str) -> Config:
     """
-    Parse command-line arguments for configuring Palo Alto Networks Panorama.
+    Load address object configurations from a YAML file.
 
-    Sets up an argument parser with options for log level and returns parsed arguments.
+    Args:
+        file_path: Path to the YAML configuration file
 
-    Attributes:
-        -l, --log-level (str): Set the logging level (choices: debug, info, warning, error, critical; default: info)
+    Returns:
+        A dictionary containing device groups and their address objects
 
-    Return:
-        argparse.Namespace: Parsed command-line arguments
-    """
-    parser = argparse.ArgumentParser(
-        description="Configure Palo Alto Networks Panorama"
-    )
-    parser.add_argument(
-        "-l",
-        "--log-level",
-        choices=["debug", "info", "warning", "error", "critical"],
-        default="info",
-        help="Set the logging level",
-        type=lambda x: x.lower(),
-    )
-    parser.add_argument(
-        "--hostname",
-        required=True,
-        help="Panorama hostname or IP address",
-    )
-    parser.add_argument(
-        "--username",
-        required=True,
-        help="Panorama username",
-    )
-    parser.add_argument(
-        "--password",
-        required=True,
-        help="Panorama password",
-    )
-    parser.add_argument(
-        "--device-group",
-        required=True,
-        help="Device group name",
-    )
-    parser.add_argument(
-        "--address-name",
-        required=True,
-        help="Address object name",
-    )
-    parser.add_argument(
-        "--address-type",
-        required=True,
-        help="Address object type",
-    )
-    parser.add_argument(
-        "--address-value",
-        required=True,
-        help="Address object value",
-    )
-    parser.add_argument(
-        "--address-description",
-        default="",
-        help="Address object description",
-    )
-    parser.add_argument(
-        "--address-tags",
-        nargs="*",
-        default=[],
-        help="Address object tags",
-    )
-    return parser.parse_args()
-
-
-def connect_to_panorama(
-    hostname: str,
-    username: str,
-    password: str,
-) -> Panorama:
-    """
-    Establishes a connection to a Panorama device.
-
-    Attempts to connect to a Panorama device using the provided hostname and API key.
-    Refreshes system info upon successful connection.
-
-    Attributes:
-        hostname (str): The hostname or IP address of the Panorama device.
-        username (str): The username for authentication.
-        password (str): The username for authentication.
-
-    Error:
-        PanDeviceError: Raised if connection to Panorama fails.
-
-    Return:
-        Panorama: A connected Panorama object.
+    Raises:
+        ValueError: If the YAML file is not properly formatted
+        OSError: If there are file I/O issues
+        yaml.YAMLError: If there are YAML parsing issues
     """
     try:
-        pan = Panorama(
-            hostname=hostname,
-            api_username=username,
-            api_password=password,
-        )
-        pan.refresh_system_info()
-        logger.info("Successfully connected to Panorama with credentials")
-        return pan
-    except PanDeviceError as e:
-        logger.error(f"Failed to connect to Panorama: {e}")
+        with open(file_path, "r", encoding="utf-8") as f:
+            data = yaml.safe_load(f)
+            if not isinstance(data, dict):
+                raise ValueError("Invalid YAML format: root must be a dictionary")
+            return Config.model_validate(data)
+    except (yaml.YAMLError, OSError) as e:
+        logger.error("Failed to load YAML config: %s", e)
         raise
 
 
-def main():
-    """
-    This method is the entry point for the program. It performs the following steps:
+def parse_arguments() -> argparse.Namespace:
+    """Parse command line arguments."""
+    parser = argparse.ArgumentParser(description="Configure address objects in Palo Alto Networks Panorama")
+    parser.add_argument(
+        "--config",
+        type=str,
+        help="Path to YAML configuration file containing address objects",
+    )
+    args = parser.parse_args()
+    logger.info("Parsed arguments: config=%s", args.config)
+    return args
 
-    1. Parses the command line arguments.
-    2. Sets the logging level based on the arguments.
-    3. Connects to the Panorama device.
-    4. Creates a PaloConfig instance for managing the Panorama configuration.
-    5. Processes each device group in the Panorama configuration.
-    6. Commits the changes to the Panorama device.
-    7. Pushes the changes to each device group.
 
-    If any errors occur during the process, a message will be logged and the method will return a non-zero value.
+def main() -> int:
+    """Execute the main application logic.
 
     Returns:
-        int: The exit code of the method. 0 indicates success, while non-zero values indicate failure.
+        int: Exit code (0 for success, 1 for failure)
     """
+    # Load environment variables
+    load_dotenv()
+
+    # Set up logging
+    log_level = os.getenv("PANORAMA_LOG_LEVEL", "INFO")
+    set_log_level(log_level)
+
+    # Parse command line arguments
     args = parse_arguments()
-    set_log_level(args.log_level)
 
     try:
-        # Create a panorama object
-        pan = connect_to_panorama(
-            hostname=args.hostname,
-            username=args.username,
-            password=args.password,
-        )
+        # Get configuration
+        hostname = os.getenv("PANORAMA_HOSTNAME")
+        api_key = os.getenv("PANORAMA_API_KEY")
 
-        # Create PaloConfig instance
-        panorama_config = PaloConfig(pan)
+        if not hostname or not api_key:
+            logger.error("PANORAMA_HOSTNAME and PANORAMA_API_KEY must be set")
+            return 1
 
-        # Retrieve or create the device group
-        device_group = panorama_config.create_device_group(args.device_group)
+        # Initialize PanosClient
+        client = PanosClient.connect(hostname=hostname, api_key=api_key)
 
-        # Prepare address object configuration
-        addr_obj_config = {
-            "name": args.address_name,
-            "type": args.address_type,
-            "value": args.address_value,
-            "description": args.address_description,
-            "tag": args.address_tags,
-        }
+        if args.config:
+            # Load configuration from YAML
+            config = load_yaml_config(args.config)
+            logger.info("Loaded configuration from %s", args.config)
 
-        # Configure address object
-        panorama_config.address_objects(
-            address_object_configuration=[addr_obj_config],
-            device_group=device_group,
-        )
+            for dg_name, dg_config in config.device_groups.items():
+                # Get or create device group
+                device_group = client.get_or_create_device_group(str(dg_name))
+                if not device_group:
+                    logger.error("Failed to get/create device group: %s", dg_name)
+                    continue
 
-        # Commit changes to Panorama
-        panorama_config.commit_panorama(
-            description="Commit changes to Panorama",
-            admins=[args.username],
-            device_groups=[args.device_group],
-        )
+                # Create address objects
+                for addr_obj in dg_config.address_objects:
+                    if not validate_ip_address(str(addr_obj.value)):
+                        logger.error("Invalid IP address or network: %s", addr_obj.value)
+                        continue
 
-        # Commit changes to each device group
-        panorama_config.commit_all(
-            style=PanoramaCommitAll.STYLE_DEVICE_GROUP,
-            name=args.device_group,
-            description=f"Commit changes to device group: {args.device_group}",
-            admins=[args.username],
-            include_template=True,
-        )
-        print('{"status": "completed"}')  # Print JSON to stdout
+                    try:
+                        ip_network = ipaddress.ip_network(str(addr_obj.value))
+                        address_obj = AddressObject(
+                            name=addr_obj.name,
+                            value=ip_network,
+                            description=addr_obj.description,
+                            tags=addr_obj.tags,
+                        )
+
+                        if not client.create_address_object(device_group, address_obj):
+                            logger.error("Failed to create address object: %s", addr_obj.name)
+                            continue
+
+                        logger.info("Created address object: %s", addr_obj.name)
+                    except ValueError as e:
+                        logger.error("Invalid IP address format: %s", e)
+                        continue
+
+            # Commit changes if any address objects were created
+            if not os.getenv("PANORAMA_NO_COMMIT"):
+                if not client.commit_to_panorama():
+                    logger.error("Failed to commit changes to Panorama")
+                    return 1
+                logger.info("Successfully committed changes to Panorama")
+
         return 0
 
-    except PanDeviceError as e:
-        logger.critical(f"Critical error in PAN-OS operations: {e}")
-        print('{"status": "errored"}')  # Print JSON to stdout
-        return 1
     except Exception as e:
-        logger.critical(f"Unexpected error occurred: {e}")
-        print('{"status": "errored"}')  # Print JSON to stdout
+        logger.error("An error occurred: %s", e)
         return 1
 
 
 if __name__ == "__main__":
-    # The script exits with the status code returned by main()
     sys.exit(main())

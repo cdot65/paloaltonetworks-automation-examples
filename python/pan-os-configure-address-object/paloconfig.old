@@ -1,18 +1,17 @@
-from typing import Dict, Any, List, Optional
+from typing import Any, Dict, List, Optional
 
-from panos.errors import PanDeviceError, PanObjectMissing, PanDeviceXapiError
+from panos.errors import PanDeviceError, PanDeviceXapiError, PanObjectMissing
 from panos.objects import (
-    Tag,
-    AddressObject,
     AddressGroup,
+    AddressObject,
     ApplicationContainer,
     ApplicationObject,
     ApplicationTag,
-    ServiceObject,
     ServiceGroup,
+    ServiceObject,
+    Tag,
 )
-from panos.panorama import Panorama, DeviceGroup, PanoramaCommitAll, PanoramaCommit
-
+from panos.panorama import DeviceGroup, Panorama, PanoramaCommit, PanoramaCommitAll
 from utils import logger
 
 
@@ -62,9 +61,7 @@ class PaloConfig:
             objects[0].create_similar()
             logger.info(f"Bulk created {len(objects)} {object_name}")
         else:
-            logger.warning(
-                f"No {object_name} found to create in {device_group.name} device group"
-            )
+            logger.warning(f"No {object_name} found to create in {device_group.name} device group")
 
     def commit_panorama(
         self,
@@ -158,9 +155,7 @@ class PaloConfig:
         try:
             device_group = DeviceGroup(name)
             self.panorama.add(device_group)
-            logger.info(
-                f"Successfully attached {name} device group object to Panorama object"
-            )
+            logger.info(f"Successfully attached {name} device group object to Panorama object")
             return device_group
         except PanDeviceError as e:
             logger.error(f"Failed to create device group {name}: {e}")
@@ -196,20 +191,14 @@ class PaloConfig:
                     timeout=app_obj_config.get("timeout"),
                     tcp_timeout=app_obj_config.get("tcp_timeout"),
                     udp_timeout=app_obj_config.get("udp_timeout"),
-                    tcp_half_closed_timeout=app_obj_config.get(
-                        "tcp_half_closed_timeout"
-                    ),
+                    tcp_half_closed_timeout=app_obj_config.get("tcp_half_closed_timeout"),
                     tcp_time_wait_timeout=app_obj_config.get("tcp_time_wait_timeout"),
                     evasive_behavior=app_obj_config.get("evasive_behavior"),
                     consume_big_bandwidth=app_obj_config.get("consume_big_bandwidth"),
                     used_by_malware=app_obj_config.get("used_by_malware"),
                     able_to_transfer_file=app_obj_config.get("able_to_transfer_file"),
-                    has_known_vulnerability=app_obj_config.get(
-                        "has_known_vulnerability"
-                    ),
-                    tunnel_other_application=app_obj_config.get(
-                        "tunnel_other_application"
-                    ),
+                    has_known_vulnerability=app_obj_config.get("has_known_vulnerability"),
+                    tunnel_other_application=app_obj_config.get("tunnel_other_application"),
                     tunnel_applications=app_obj_config.get("tunnel_applications"),
                     prone_to_misuse=app_obj_config.get("prone_to_misuse"),
                     pervasive_use=app_obj_config.get("pervasive_use"),
@@ -231,9 +220,7 @@ class PaloConfig:
                     f"No application objects found to create in {device_group.name} device group"
                 )
         except PanObjectMissing as e:
-            logger.error(
-                f"Error creating application objects in {device_group.name}: {e}"
-            )
+            logger.error(f"Error creating application objects in {device_group.name}: {e}")
         except PanDeviceXapiError as e:
             logger.error(
                 f"API error while creating application objects in {device_group.name}: {e}"
@@ -276,13 +263,9 @@ class PaloConfig:
         except PanObjectMissing as e:
             logger.error(f"Error creating application tags in {device_group.name}: {e}")
         except PanDeviceXapiError as e:
-            logger.error(
-                f"API error while creating application tags in {device_group.name}: {e}"
-            )
+            logger.error(f"API error while creating application tags in {device_group.name}: {e}")
         except Exception as e:
-            logger.error(
-                f"Unexpected error creating application tags in {device_group.name}: {e}"
-            )
+            logger.error(f"Unexpected error creating application tags in {device_group.name}: {e}")
 
     @staticmethod
     def address_objects(
@@ -339,13 +322,9 @@ class PaloConfig:
         except PanObjectMissing as e:
             logger.error(f"Error creating address objects in {device_group.name}: {e}")
         except PanDeviceXapiError as e:
-            logger.error(
-                f"API error while creating address objects in {device_group.name}: {e}"
-            )
+            logger.error(f"API error while creating address objects in {device_group.name}: {e}")
         except Exception as e:
-            logger.error(
-                f"Unexpected error creating address objects in {device_group.name}: {e}"
-            )
+            logger.error(f"Unexpected error creating address objects in {device_group.name}: {e}")
 
     @staticmethod
     def address_groups(
@@ -400,13 +379,9 @@ class PaloConfig:
         except PanObjectMissing as e:
             logger.error(f"Error creating address groups in {device_group.name}: {e}")
         except PanDeviceXapiError as e:
-            logger.error(
-                f"API error while creating address groups in {device_group.name}: {e}"
-            )
+            logger.error(f"API error while creating address groups in {device_group.name}: {e}")
         except Exception as e:
-            logger.error(
-                f"Unexpected error creating address groups in {device_group.name}: {e}"
-            )
+            logger.error(f"Unexpected error creating address groups in {device_group.name}: {e}")
 
     @staticmethod
     def application_containers(
@@ -457,9 +432,7 @@ class PaloConfig:
                     f"No application containers found to create in {device_group.name} device group"
                 )
         except PanObjectMissing as e:
-            logger.error(
-                f"Error creating application containers in {device_group.name}: {e}"
-            )
+            logger.error(f"Error creating application containers in {device_group.name}: {e}")
         except PanDeviceXapiError as e:
             logger.error(
                 f"API error while creating application containers in {device_group.name}: {e}"
@@ -506,16 +479,12 @@ class PaloConfig:
                     description=service_obj_config.get("description", ""),
                     tag=service_obj_config.get("tag", []),
                     source_port=service_obj_config.get("source_port"),
-                    enable_override_timeout=service_obj_config.get(
-                        "enable_override_timeout", "no"
-                    ),
+                    enable_override_timeout=service_obj_config.get("enable_override_timeout", "no"),
                     override_timeout=service_obj_config.get("override_timeout"),
                     override_half_close_timeout=service_obj_config.get(
                         "override_half_close_timeout"
                     ),
-                    override_time_wait_timeout=service_obj_config.get(
-                        "override_time_wait_timeout"
-                    ),
+                    override_time_wait_timeout=service_obj_config.get("override_time_wait_timeout"),
                 )
                 device_group.add(service_obj)
 
@@ -533,13 +502,9 @@ class PaloConfig:
         except PanObjectMissing as e:
             logger.error(f"Error creating service objects in {device_group.name}: {e}")
         except PanDeviceXapiError as e:
-            logger.error(
-                f"API error while creating service objects in {device_group.name}: {e}"
-            )
+            logger.error(f"API error while creating service objects in {device_group.name}: {e}")
         except Exception as e:
-            logger.error(
-                f"Unexpected error creating service objects in {device_group.name}: {e}"
-            )
+            logger.error(f"Unexpected error creating service objects in {device_group.name}: {e}")
 
     @staticmethod
     def service_groups(
@@ -575,13 +540,9 @@ class PaloConfig:
         except PanObjectMissing as e:
             logger.error(f"Error creating service groups in {device_group.name}: {e}")
         except PanDeviceXapiError as e:
-            logger.error(
-                f"API error while creating service groups in {device_group.name}: {e}"
-            )
+            logger.error(f"API error while creating service groups in {device_group.name}: {e}")
         except Exception as e:
-            logger.error(
-                f"Unexpected error creating service groups in {device_group.name}: {e}"
-            )
+            logger.error(f"Unexpected error creating service groups in {device_group.name}: {e}")
 
     def bulk_create_resources(
         self,
@@ -604,9 +565,7 @@ class PaloConfig:
             None
         """
 
-        logger.info(
-            f"Starting bulk creation of objects for {device_group.name} device group"
-        )
+        logger.info(f"Starting bulk creation of objects for {device_group.name} device group")
         try:
             # # Bulk create tags
             # self._create_and_log_objects(
@@ -662,13 +621,9 @@ class PaloConfig:
             #     "application objects",
             # )
 
-            logger.info(
-                f"Completed bulk creation of objects for {device_group.name} device group"
-            )
+            logger.info(f"Completed bulk creation of objects for {device_group.name} device group")
         except PanDeviceError as e:
-            logger.error(
-                f"Error during bulk creation of objects in {device_group.name}: {e}"
-            )
+            logger.error(f"Error during bulk creation of objects in {device_group.name}: {e}")
         except Exception as e:
             logger.error(
                 f"Unexpected error during bulk creation of objects in {device_group.name}: {e}"
@@ -699,9 +654,7 @@ class PaloConfig:
         """
 
         if not tag_configuration:
-            logger.warning(
-                f"No tag configuration found for {device_group.name} device group"
-            )
+            logger.warning(f"No tag configuration found for {device_group.name} device group")
             return
 
         try:
@@ -720,9 +673,7 @@ class PaloConfig:
                     f"Created and added {len(tags)} tags to the {device_group.name} device group using bulk operation"
                 )
             else:
-                logger.warning(
-                    f"No tags found to create in {device_group.name} device group"
-                )
+                logger.warning(f"No tags found to create in {device_group.name} device group")
         except PanObjectMissing as e:
             logger.error(f"Error creating tags in {device_group.name}: {e}")
         except PanDeviceXapiError as e:
