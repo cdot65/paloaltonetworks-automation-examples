@@ -26,5 +26,5 @@ address_objects:
       - name: "test104"
         value: "192.168.1.1/32"
         description: "Test address object"
-        tags:
-          - "automation"
+        # tags:
+        #   - "automation"

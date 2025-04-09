@@ -9,7 +9,7 @@ managing address objects, and handling commits.
 from typing import Any, Dict, List, Optional
 
 from models import AddressObject
-from panos.errors import PanDeviceError
+from panos.errors import PanDeviceError, PanXapiError
 from panos.objects import AddressObject as PanAddressObject
 from panos.panorama import DeviceGroup, Panorama, PanoramaCommit, PanoramaCommitAll
 from utils import logger
@@ -37,27 +37,26 @@ class PanosClient:
     @classmethod
     def connect(cls, hostname: str, api_key: str) -> "PanosClient":
         """
-        Create a new PanosClient instance and connect to Panorama.
+        Connect to Panorama and return a PanosClient instance.
 
         Args:
-            hostname (str): Hostname or IP address of the Panorama appliance.
-            api_key (str): API key for authentication.
+            hostname: The hostname or IP address of the Panorama instance
+            api_key: The API key for authentication
 
         Returns:
-            PanosClient: A new client instance connected to Panorama.
+            PanosClient: A connected PanosClient instance
 
         Raises:
-            PanDeviceError: If connection fails.
+            PanDeviceError: If connection fails
         """
-        try:
-            # Create and connect to Panorama
-            panorama = Panorama(hostname=hostname, api_key=api_key)
-            panorama.refresh_system_info()
-            logger.info("Successfully connected to Panorama: %s", hostname)
-            return cls(panorama)
-        except PanDeviceError as e:
-            logger.error("Failed to connect to Panorama: %s", e)
-            raise
+        panorama = Panorama(hostname=hostname, api_key=api_key)
+        panorama.refresh_system_info()
+
+        # Refresh device groups to ensure we have the current state
+        device_groups = DeviceGroup.refreshall(panorama)
+        logger.info("Found %d device groups on Panorama", len(device_groups))
+
+        return cls(panorama)
 
     def get_or_create_device_group(self, name: str) -> Optional[DeviceGroup]:
         """
@@ -74,18 +73,22 @@ class PanosClient:
         """
         try:
             # Check if device group exists
-            device_group = DeviceGroup(name=name)
-            device_group.create_refresh()
+            existing = self.panorama.find(name, DeviceGroup)
+            if existing:
+                logger.info("Found existing device group: %s", name)
+                return existing
 
-            # Add to Panorama if it doesn't exist
-            if device_group.id is None:
-                logger.info("Creating device group: %s", name)
+            # Create new device group
+            logger.info("Creating device group: %s", name)
+            device_group = DeviceGroup(name=name)
+            try:
                 self.panorama.add(device_group)
                 device_group.create()
-            else:
-                logger.info("Found existing device group: %s", name)
+                return device_group
+            except PanXapiError as e:
+                logger.error("Failed to create device group: %s", e)
+                return None
 
-            return device_group
         except PanDeviceError as e:
             logger.error("Failed to get/create device group: %s", e)
             return None
@@ -101,11 +104,11 @@ class PanosClient:
             address_object (AddressObject): The address object configuration.
 
         Returns:
-            bool: True if creation was successful, False otherwise.
+            bool: True if successful, False otherwise.
         """
         try:
-            # Create PAN-OS address object
-            pan_addr = PanAddressObject(
+            # Convert to PAN-OS address object
+            pan_addr_obj = PanAddressObject(
                 name=address_object.name,
                 value=str(address_object.value),
                 type="ip-netmask",
@@ -114,73 +117,122 @@ class PanosClient:
             )
 
             # Add to device group and create
-            device_group.add(pan_addr)
-            pan_addr.create()
+            device_group.add(pan_addr_obj)
+            pan_addr_obj.create()
             logger.info("Created address object: %s", address_object.name)
             return True
-        except PanDeviceError as e:
+
+        except (PanDeviceError, PanXapiError) as e:
             logger.error("Failed to create address object: %s", e)
             return False
 
-    def commit_to_panorama(
-        self,
-        description: Optional[str] = None,
-        admins: Optional[List[str]] = None,
-        device_groups: Optional[List[str]] = None,
-    ) -> bool:
+    def commit_to_panorama(self) -> bool:
         """
         Commit changes to Panorama.
 
-        Args:
-            description (Optional[str]): Commit description.
-            admins (Optional[List[str]]): List of admin names to commit changes for.
-            device_groups (Optional[List[str]]): List of device groups to commit changes for.
-
         Returns:
-            bool: True if commit was successful, False otherwise.
+            bool: True if successful, False otherwise.
         """
         try:
-            cmd = PanoramaCommit(
-                description=description,
-                admins=admins,
-                device_groups=device_groups,
+            logger.info("Initiating commit to Panorama...")
+            commit_panorama = PanoramaCommit(
+                description="Commit address object changes",
+                exclude_device_and_network=False,
+                exclude_shared_objects=False,
             )
-            result: Dict[str, Any] = self.panorama.commit(cmd=cmd)
-            logger.info("Commit to Panorama successful")
-            return result.get("result") == "OK"
-        except PanDeviceError as e:
+            self.panorama.commit(cmd=commit_panorama)
+            logger.info("Successfully committed changes to Panorama")
+            return True
+        except (PanDeviceError, PanXapiError) as e:
             logger.error("Failed to commit to Panorama: %s", e)
             return False
 
-    def commit_all(
-        self,
-        device_group_name: str,
-        description: Optional[str] = None,
-        admins: Optional[List[str]] = None,
-        include_template: bool = True,
-    ) -> bool:
+    def commit_all(self, device_groups: Optional[List[str]] = None) -> bool:
         """
-        Perform a commit-all operation to push changes to firewalls.
+        Push changes to all or specified device groups.
 
         Args:
-            device_group_name (str): Name of the device group to commit.
-            description (Optional[str]): Commit description.
-            admins (Optional[List[str]]): List of admin names to commit changes for.
-            include_template (bool): Whether to include template changes.
+            device_groups (Optional[List[str]]): List of device group names.
+                If None, commits to all device groups.
 
         Returns:
-            bool: True if commit was successful, False otherwise.
+            bool: True if successful, False otherwise.
         """
+        if not device_groups:
+            logger.warning("No device groups specified for commit-all")
+            return False
+
         try:
-            cmd = PanoramaCommitAll(
-                description=description,
-                admins=admins,
-                device_groups=[device_group_name],
-                include_template=include_template,
-            )
-            result: Dict[str, Any] = self.panorama.commit_all(cmd=cmd)
-            logger.info("Commit-all successful for device group: %s", device_group_name)
-            return result.get("result") == "OK"
-        except PanDeviceError as e:
+            for dg in device_groups:
+                logger.info("Initiating commit-all to device group: %s", dg)
+                commit_all = PanoramaCommitAll(
+                    style="device group",
+                    name=dg,
+                    description="Push address object changes",
+                    include_template=True,
+                )
+                self.panorama.commit(cmd=commit_all)
+                logger.info("Successfully initiated commit-all to device group: %s", dg)
+            return True
+        except (PanDeviceError, PanXapiError) as e:
             logger.error("Failed to commit-all: %s", e)
             return False
+
+    def _check_commit_result(self, result: Dict[str, Any]) -> bool:
+        """
+        Check if a commit was successful.
+
+        Args:
+            result (Dict[str, Any]): Commit result from PAN-OS.
+
+        Returns:
+            bool: True if successful, False otherwise.
+        """
+        if isinstance(result, str):
+            return result.lower() == "ok"
+
+        if isinstance(result, int):
+            logger.info("Commit job ID: %d", result)
+            try:
+                # Wait for the job to complete and get the final result
+                logger.debug("Checking job status...")
+                job_result = self.panorama.syncjob(result, sync=True)
+                logger.debug("Raw job result: %s", job_result)
+
+                # Handle different job result formats
+                if isinstance(job_result, dict):
+                    status = job_result.get("status")
+                    logger.debug("Job status: %s", status)
+                    if status == "FIN":
+                        # Check the details for success
+                        details = job_result.get("details", {})
+                        logger.debug("Job details: %s", details)
+                        if details.get("status") == "PASS":
+                            logger.info("Commit completed successfully")
+                            return True
+                        else:
+                            logger.error("Commit failed: %s", details.get("status"))
+                            return False
+                    else:
+                        logger.error("Job did not finish successfully: %s", status)
+                        return False
+                else:
+                    logger.error("Job result is not a dictionary: %s", type(job_result))
+                return False
+            except (PanDeviceError, PanXapiError) as e:
+                logger.error("Failed to check job status: %s", e)
+                return False
+
+        if not isinstance(result, dict):
+            logger.error("Invalid commit result type: %s", type(result))
+            return False
+
+        job_result = result.get("result")
+        if not job_result:
+            logger.error("No result in commit response")
+            return False
+
+        if isinstance(job_result, str):
+            return job_result.lower() == "ok"
+
+        return False

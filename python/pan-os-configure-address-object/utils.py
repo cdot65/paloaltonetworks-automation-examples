@@ -30,43 +30,35 @@ class Logger:
 
     def _setup_logger(self) -> None:
         """Set up the logger with handlers and formatters."""
+        # Reset handlers if they exist
+        if self._logger:
+            for handler in self._logger.handlers[:]:
+                self._logger.removeHandler(handler)
+
         self._logger = logging.getLogger("panorama")
         self._logger.setLevel(logging.INFO)
 
-        if not self._logger.handlers:
-            # Create console handler
-            handler = logging.StreamHandler()
-            formatter = logging.Formatter(
-                "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-            )
-            handler.setFormatter(formatter)
-            self._logger.addHandler(handler)
+        # Create formatter
+        formatter = logging.Formatter(
+            "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+        )
 
-            # Add file handler if PANORAMA_LOG_FILE is set
-            log_file = os.getenv("PANORAMA_LOG_FILE")
-            if log_file:
+        # Create console handler
+        handler = logging.StreamHandler()
+        handler.setFormatter(formatter)
+        self._logger.addHandler(handler)
+
+        # Add file handler if PANORAMA_LOG_FILE is set
+        log_file = os.getenv("PANORAMA_LOG_FILE")
+        if log_file:
+            try:
                 file_handler = logging.FileHandler(log_file)
                 file_handler.setFormatter(formatter)
                 self._logger.addHandler(file_handler)
-
-    def set_level(self, level: str) -> None:
-        """
-        Set the logging level.
-
-        Args:
-            level: The logging level to set (e.g., 'DEBUG', 'INFO', etc.)
-        """
-        if not self._logger:
-            return
-
-        level_map = {
-            "DEBUG": logging.DEBUG,
-            "INFO": logging.INFO,
-            "WARNING": logging.WARNING,
-            "ERROR": logging.ERROR,
-            "CRITICAL": logging.CRITICAL,
-        }
-        self._logger.setLevel(level_map.get(level.upper(), logging.INFO))
+            except (IOError, PermissionError) as e:
+                # Log to console if file handler creation fails
+                handler.setLevel(logging.ERROR)
+                self._logger.error("Failed to create file handler: %s", e)
 
     def debug(self, msg: str, *args: Any, **kwargs: Any) -> None:
         """Log a debug message."""
@@ -78,20 +70,29 @@ class Logger:
         if self._logger:
             self._logger.info(msg, *args, **kwargs)
 
-    def warning(self, msg: str, *args: Any, **kwargs: Any) -> None:
-        """Log a warning message."""
-        if self._logger:
-            self._logger.warning(msg, *args, **kwargs)
-
     def error(self, msg: str, *args: Any, **kwargs: Any) -> None:
         """Log an error message."""
         if self._logger:
             self._logger.error(msg, *args, **kwargs)
 
+    def warning(self, msg: str, *args: Any, **kwargs: Any) -> None:
+        """Log a warning message."""
+        if self._logger:
+            self._logger.warning(msg, *args, **kwargs)
+
     def critical(self, msg: str, *args: Any, **kwargs: Any) -> None:
         """Log a critical message."""
         if self._logger:
             self._logger.critical(msg, *args, **kwargs)
+
+    def set_level(self, level: str) -> None:
+        """Set the logging level."""
+        if self._logger:
+            try:
+                self._logger.setLevel(getattr(logging, level.upper()))
+            except AttributeError:
+                # Default to INFO if invalid level
+                self._logger.setLevel(logging.INFO)
 
 
 # Create a global logger instance
@@ -135,6 +136,6 @@ def get_env_var(key: str, default: Optional[str] = None) -> Optional[str]:
         default: Optional default value if key is not found
 
     Returns:
-        str: The environment variable value or default
+        Optional[str]: The environment variable value or default
     """
     return os.getenv(key, default)

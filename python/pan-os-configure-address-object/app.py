@@ -47,10 +47,13 @@ def load_yaml_config(file_path: str) -> Config:
 
 def parse_arguments() -> argparse.Namespace:
     """Parse command line arguments."""
-    parser = argparse.ArgumentParser(description="Configure address objects in Palo Alto Networks Panorama")
+    parser = argparse.ArgumentParser(
+        description="Configure address objects in Palo Alto Networks Panorama"
+    )
     parser.add_argument(
         "--config",
         type=str,
+        required=True,
         help="Path to YAML configuration file containing address objects",
     )
     args = parser.parse_args()
@@ -91,17 +94,21 @@ def main() -> int:
             config = load_yaml_config(args.config)
             logger.info("Loaded configuration from %s", args.config)
 
-            for dg_name, dg_config in config.device_groups.items():
+            for dg_entry in config.address_objects:
                 # Get or create device group
-                device_group = client.get_or_create_device_group(str(dg_name))
+                device_group = client.get_or_create_device_group(dg_entry.device_group)
                 if not device_group:
-                    logger.error("Failed to get/create device group: %s", dg_name)
+                    logger.error(
+                        "Failed to get/create device group: %s", dg_entry.device_group
+                    )
                     continue
 
                 # Create address objects
-                for addr_obj in dg_config.address_objects:
+                for addr_obj in dg_entry.entries:
                     if not validate_ip_address(str(addr_obj.value)):
-                        logger.error("Invalid IP address or network: %s", addr_obj.value)
+                        logger.error(
+                            "Invalid IP address or network: %s", addr_obj.value
+                        )
                         continue
 
                     try:
@@ -114,7 +121,9 @@ def main() -> int:
                         )
 
                         if not client.create_address_object(device_group, address_obj):
-                            logger.error("Failed to create address object: %s", addr_obj.name)
+                            logger.error(
+                                "Failed to create address object: %s", addr_obj.name
+                            )
                             continue
 
                         logger.info("Created address object: %s", addr_obj.name)
@@ -123,11 +132,21 @@ def main() -> int:
                         continue
 
             # Commit changes if any address objects were created
-            if not os.getenv("PANORAMA_NO_COMMIT"):
+            if os.getenv("PANORAMA_COMMIT", "false").lower() == "true":
+                # First commit to Panorama
                 if not client.commit_to_panorama():
                     logger.error("Failed to commit changes to Panorama")
                     return 1
                 logger.info("Successfully committed changes to Panorama")
+
+                # Then push changes to device groups
+                device_groups = [
+                    dg_entry.device_group for dg_entry in config.address_objects
+                ]
+                if not client.commit_all(device_groups):
+                    logger.error("Failed to push changes to device groups")
+                    return 1
+                logger.info("Successfully pushed changes to device groups")
 
         return 0
 

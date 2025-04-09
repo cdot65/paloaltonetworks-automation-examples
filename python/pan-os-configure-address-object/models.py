@@ -21,13 +21,14 @@ class AddressObject(BaseModel):
     tags: List[str] = Field(default_factory=list)
 
 
-class DeviceGroup(BaseModel):
-    """Model for a device group configuration."""
+class DeviceGroupEntry(BaseModel):
+    """Model for a device group entry."""
 
-    address_objects: List[AddressObject] = Field(default_factory=list)
+    device_group: str
+    entries: List[AddressObject]
 
 
 class Config(BaseModel):
     """Model for the YAML configuration."""
 
-    device_groups: dict[str, DeviceGroup] = Field(default_factory=dict)
+    address_objects: List[DeviceGroupEntry]

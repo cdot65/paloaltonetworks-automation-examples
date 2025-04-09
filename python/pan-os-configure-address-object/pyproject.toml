@@ -1,12 +1,10 @@
 [tool.poetry]
-name = "pan-os-configure-panorama"
+name = "pan-os-configure-address-object"
 version = "0.1.0"
 description = ""
 authors = ["Calvin Remsburg <cremsburg.dev@gmail.com>"]
 readme = "README.md"
-packages = [
-    { include = "*.py" },
-]
+packages = [{ include = "*.py" }]
 
 [tool.poetry.dependencies]
 python = "^3.10"
