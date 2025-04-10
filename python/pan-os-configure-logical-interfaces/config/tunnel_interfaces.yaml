@@ -1,0 +1,17 @@
+---
+tunnel_interfaces:
+  - template: "LAB_TEMPLATE"
+    entries:
+      - name: "tunnel"
+        subinterface: "1"
+        ip: 
+          - "$TUNNEL_IP"
+        comment: "IPsec tunnel interface for lab environment"
+        security_zone: "UNTRUST"
+
+      - name: "tunnel"
+        subinterface: "2"
+        ip: 
+          - "10.1.1.1/24"
+        comment: "Second tunnel interface"
+        security_zone: "UNTRUST"

@@ -1,0 +1,79 @@
+[tool.poetry]
+name = "pan-os-configure-tunnel-interface"
+version = "0.1.0"
+description = ""
+authors = ["Calvin Remsburg <cremsburg.dev@gmail.com>"]
+readme = "README.md"
+packages = [{ include = "*.py" }]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+python-dotenv = "^1.0.1"
+lxml = "^4.9.3"
+pan-os-python = "^1.12.1"
+pydantic = "^2.11"
+pyyaml = "^6.0.2"
+setuptools = "^78.1.0"
+
+[tool.poetry.group.dev.dependencies]
+black = "^23.11.0"
+flake8 = "^7.0.0"
+isort = "^5.13.2"
+mypy = "^1.8.0"
+ruff = "^0.2.2"
+ipdb = "^0.13.13"
+ipython = "^8.18.1"
+pytest = "^8.0.0"
+pytest-cov = "^4.1.0"
+pytest-mock = "^3.12.0"
+types-PyYAML = "^6.0.12.12"
+
+[tool.black]
+line-length = 128
+include = '\.pyi?$'
+
+[tool.isort]
+profile = "black"
+line_length = 128
+multi_line_output = 3
+
+[tool.ruff]
+line-length = 128
+target-version = "py310"
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+line-ending = "auto"
+
+[tool.ruff.lint]
+select = ["E", "F", "I"]
+ignore = []
+fixable = ["A", "B", "C", "D", "E", "F", "I"]
+unfixable = []
+
+[tool.ruff.lint.isort]
+known-first-party = ["panos"]
+
+[tool.flake8]
+max-line-length = 128
+
+[tool.mypy]
+python_version = "3.10"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+minversion = "8.0"
+addopts = "-ra -q --cov=. --cov-report=term-missing"
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

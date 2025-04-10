@@ -1,0 +1,15 @@
+---
+loopback_interfaces:
+  - template_stack: "DALLAS_STACK"
+    entries:
+      - name: "loopback.1"
+        ip:
+          - "192.168.5.1/32"
+        comment: "Inside loopback interface"
+
+  - template_stack: "WOODLANDS_STACK"
+    entries:
+      - name: "loopback.1"
+        ip:
+          - "192.168.5.2/32"
+        comment: "Inside loopback interface"
