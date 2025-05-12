@@ -4,6 +4,27 @@
 # Note: SCM might not support folder creation via Terraform
 # You may need to create this folder manually in the SCM interface
 
+# Texas Address Group - Container for all Texas address objects
+# Terraform will automatically ensure address objects are created before the group
+resource "scm_address_group" "texas" {
+  folder      = var.folder_name
+  name        = "texas-all"
+  description = "All Texas office and infrastructure addresses"
+  static_list = [
+    scm_address_object.dallas_office.name,
+    scm_address_object.austin_office.name,
+    scm_address_object.houston_office.name,
+    scm_address_object.san_antonio_office.name,
+    scm_address_object.fort_worth_office.name,
+    scm_address_object.texas_datacenter.name,
+    scm_address_object.texas_dev_server.name,
+    scm_address_object.texas_web_server.name,
+    scm_address_object.texas_db_server.name,
+    scm_address_object.texas_public_ips.name
+  ]
+  tags = ["Automation", "Terraform"]
+}
+
 # Dallas Office
 resource "scm_address_object" "dallas_office" {
   folder      = var.folder_name

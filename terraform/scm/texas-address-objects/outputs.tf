@@ -43,3 +43,13 @@ output "all_address_object_ids" {
     texas_public_ips  = scm_address_object.texas_public_ips.id
   }
 }
+
+output "texas_address_group_id" {
+  description = "ID of the Texas address group"
+  value       = scm_address_group.texas.id
+}
+
+output "texas_address_group_members" {
+  description = "List of address objects in the Texas address group"
+  value       = scm_address_group.texas.static_list
+}

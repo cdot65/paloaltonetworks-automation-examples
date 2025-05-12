@@ -49,9 +49,13 @@ This Terraform configuration creates address objects in the Palo Alto Networks S
    terraform destroy
    ```
 
-## Address Objects Created
+## Resources Created
 
-This configuration creates the following address objects:
+### Address Group
+
+- **Texas All** (`texas-all`) - A static address group containing all Texas address objects
+
+### Address Objects
 
 - **Office Locations**
   - Dallas Office (`dallas-office`)
