@@ -21,12 +21,7 @@ A Python-based automation tool for rotating administrator passwords on Palo Alto
 
 ## Installation
 
-1. Clone this repository:
-
-```bash
-git clone <repository-url>
-cd panos-password-rotator
-```
+1. Download `rotate_admin_password.py`, `requirements.txt`, and `.env.example` from the SCM download page and place them in a directory of your choice.
 
 2. Create a virtual environment (recommended):
 

@@ -152,14 +152,19 @@ def rotate_password() -> None:
         admin_user.change_password(new_password)
 
         logger.info("Password rotation succeeded.")
+        sys.exit(0)
 
     except PanDeviceError as err:
         logger.error("Password rotation failed: %s", err)
         if "Invalid Credential" in str(err):
-            logger.error("The supplied current credentials are invalid. Check PANOS_PASSWORD in your .env.")
+            logger.error(
+                "The supplied current credentials are invalid. Check PANOS_PASSWORD in your .env."
+            )
         else:
             logger.error("The password may have been partially changed.")
-            logger.error("Try updating your .env file with the new password shown above.")
+            logger.error(
+                "Try updating your .env file with the new password shown above."
+            )
         if show_trace:
             logger.exception("Exception details")
         sys.exit(2)
