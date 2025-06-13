@@ -81,16 +81,64 @@ Options:
 python rotate_admin_password.py
 ```
 
+#### Example output (auto-generated password)
+
+```console
+$ python rotate_admin_password.py
+2025-06-13 04:27:32,493 - rotate_password - INFO - Starting PAN-OS Admin Password Rotation Tool
+2025-06-13 04:27:32,493 - rotate_password - INFO - Establishing connection to PAN-OS firewall…
+2025-06-13 04:27:32,494 - rotate_password - INFO - Successfully connected to firewall
+2025-06-13 04:27:32,494 - rotate_password - INFO - Generated new password (length: 16)
+2025-06-13 04:27:32,494 - rotate_password - WARNING - SAVE THIS PASSWORD BEFORE PROCEEDING!
+
+==================================================
+NEW PASSWORD GENERATED
+==================================================
+Password: ]gcQ8m|sCIDOkiVo
+==================================================
+Please save this password securely!
+==================================================
+Have you saved the password? Type 'yes' to continue: yes
+2025-06-13 04:27:46,166 - rotate_password - INFO - Rotating password for admin 'admin'…
+2025-06-13 04:27:48,384 - rotate_password - INFO - Changing administrator password…
+2025-06-13 04:27:49,517 - rotate_password - INFO - Password rotation succeeded.
+```
+
 2. Rotate password with a specific value:
 
 ```bash
 python rotate_admin_password.py --new-password "MyStrongPass123!"
 ```
 
+#### Example output (explicit password)
+
+```console
+$ python rotate_admin_password.py --new-password 'Final_Password_123'
+2025-06-13 04:29:33,238 - rotate_password - INFO - Starting PAN-OS Admin Password Rotation Tool
+2025-06-13 04:29:33,238 - rotate_password - INFO - Establishing connection to PAN-OS firewall…
+2025-06-13 04:29:33,239 - rotate_password - INFO - Successfully connected to firewall
+2025-06-13 04:29:33,239 - rotate_password - INFO - Rotating password for admin 'admin'…
+2025-06-13 04:29:35,352 - rotate_password - INFO - Changing administrator password…
+2025-06-13 04:29:36,519 - rotate_password - INFO - Password rotation succeeded.
+```
+
 3. Show full stack traces on error:
 
 ```bash
 python rotate_admin_password.py --debug
+```
+
+#### Example output (invalid credentials)
+
+```console
+$ python rotate_admin_password.py --new-password 'Final_Password_123'
+2025-06-13 04:29:19,829 - rotate_password - INFO - Starting PAN-OS Admin Password Rotation Tool
+2025-06-13 04:29:19,830 - rotate_password - INFO - Establishing connection to PAN-OS firewall…
+2025-06-13 04:29:19,831 - rotate_password - INFO - Successfully connected to firewall
+2025-06-13 04:29:19,831 - rotate_password - INFO - Rotating password for admin 'admin'…
+2025-06-13 04:29:20,340 - rotate_password - INFO - Changing administrator password…
+2025-06-13 04:29:20,662 - rotate_password - ERROR - Password rotation failed: URLError: code: 403 reason: Invalid Credential
+2025-06-13 04:29:20,662 - rotate_password - ERROR - The supplied current credentials are invalid. Check PANOS_PASSWORD in your .env.
 ```
 
 ## Configuration
