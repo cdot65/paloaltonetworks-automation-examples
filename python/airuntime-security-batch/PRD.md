@@ -78,7 +78,7 @@ The AI Runtime Security Batch Scanner is a command-line tool designed to enable 
 
 - **Description**: Efficiently batch prompts for API submission
 - **Acceptance Criteria**:
-  - Respect API batch size limits (5 items max)
+  - Configurable batch sizes for optimal performance
   - Implement concurrent batch submissions
   - Handle partial batch failures gracefully
   - Provide batch-level progress tracking
@@ -180,7 +180,7 @@ The AI Runtime Security Batch Scanner is a command-line tool designed to enable 
 - **Endpoint**: AIRS API (US/EU regions)
 - **Authentication**: API key-based
 - **Rate Limits**: Respect API rate limits
-- **Batch Size**: Maximum 5 items per request
+- **Batch Size**: Configurable (default 100 items per request)
 
 ---
 
@@ -228,10 +228,10 @@ The AI Runtime Security Batch Scanner is a command-line tool designed to enable 
 
 ### Constraints
 
-- API batch size limited to 5 items per request
 - Rate limits imposed by AIRS API subscription tier
 - Python 3.8+ requirement for asyncio features
 - Maximum file size limited by available memory
+- Network bandwidth for large batch submissions
 
 ### Assumptions
 

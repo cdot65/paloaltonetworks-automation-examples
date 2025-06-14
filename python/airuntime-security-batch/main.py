@@ -26,7 +26,7 @@ from typing import Any, Dict, List
 import dotenv
 import yaml  # PyYAML
 import aisecurity
-from aisecurity.constants.base import MAX_NUMBER_OF_BATCH_SCAN_OBJECTS
+# Removed import of MAX_NUMBER_OF_BATCH_SCAN_OBJECTS - no actual API limit
 from aisecurity.generated_openapi_client.models.ai_profile import AiProfile  # ← fixed
 from aisecurity.generated_openapi_client import (
     AsyncScanObject,
@@ -205,7 +205,8 @@ def main() -> None:
     parser.add_argument("--profile-id", help="AI Profile ID (overrides env)")
     parser.add_argument("--endpoint", help="Custom API endpoint")
     parser.add_argument(
-        "--batch-size", type=int, default=MAX_NUMBER_OF_BATCH_SCAN_OBJECTS
+        "--batch-size", type=int, default=100,
+        help="Number of items per batch (default: 100)"
     )
     parser.add_argument(
         "--log-level",
@@ -229,8 +230,8 @@ def main() -> None:
 
 
 def _run(args) -> None:
-    if args.batch_size < 1 or args.batch_size > MAX_NUMBER_OF_BATCH_SCAN_OBJECTS:
-        raise ValueError(f"--batch-size must be 1..{MAX_NUMBER_OF_BATCH_SCAN_OBJECTS}")
+    if args.batch_size < 1:
+        raise ValueError("--batch-size must be at least 1")
 
     api_key = os.getenv("PANW_AI_SEC_API_KEY")
     if not api_key:

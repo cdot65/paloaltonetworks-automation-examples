@@ -83,7 +83,7 @@ Options:
   --profile-name NAME   AI Profile name (overrides environment variable)
   --profile-id ID       AI Profile ID (overrides environment variable)
   --endpoint URL        Custom API endpoint
-  --batch-size SIZE     Number of items per batch (default: 5, max: 5)
+  --batch-size SIZE     Number of items per batch (default: 100)
   --log-level LEVEL     Logging level (DEBUG, INFO, WARNING, ERROR, CRITICAL)
   --debug               Enable debug logging (shortcut for --log-level DEBUG)
 ```
@@ -192,7 +192,7 @@ python main.py --file prompts.csv --profile-name "Production-Security-Profile"
 
 ### Process Multiple Batches
 
-For files with more than 5 items (the API batch limit), the tool automatically splits them:
+For large files, the tool automatically splits them into batches based on the configured batch size:
 
 ```bash
 python main.py --file large_dataset.csv
@@ -239,9 +239,9 @@ All errors are logged with detailed information to help with troubleshooting.
 
 ## Limitations
 
-- Maximum batch size is 5 items per API request (AIRS API limit)
 - Large files are automatically split into multiple batches
 - API rate limits apply based on your subscription tier
+- Memory usage scales with file size
 
 ## Contributing
 
