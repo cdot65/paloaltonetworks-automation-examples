@@ -14,6 +14,8 @@
 - [x] Comprehensive documentation (README, PRD, TODO)
 - [x] Fixed batch processing for Python 3.12+ compatibility
 - [x] Real execution examples in documentation
+- [x] Retrieve and display scan results in tabular format (malicious vs benign)
+- [x] Remove artificial 5-item batch limit
 
 ## Planned Improvements 🚀
 
@@ -165,5 +167,8 @@
 - Added datetime serialization for JSON output
 - Created .env.example file for easier setup
 - Updated documentation with real execution examples
+- Added --retrieve-results flag to fetch and display scan results in tabular format
+- Removed artificial 5-item batch limit (now configurable, default 100)
+- Implemented malicious vs benign content categorization display
 
 Last updated: 2025-06-14

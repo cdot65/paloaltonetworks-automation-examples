@@ -19,6 +19,8 @@ This tool processes batches of prompts and responses from CSV, JSON, or YAML fil
 - **Flexible Configuration**: Supports environment variables and command-line arguments
 - **Rich Logging**: Detailed progress tracking with configurable log levels
 - **Error Handling**: Robust error management with detailed error reporting
+- **Results Retrieval**: Fetch and display scan results with malicious/benign categorization
+- **Tabular Output**: Clear visualization of threat detection results
 
 ## Requirements
 
@@ -86,6 +88,7 @@ Options:
   --batch-size SIZE     Number of items per batch (default: 100)
   --log-level LEVEL     Logging level (DEBUG, INFO, WARNING, ERROR, CRITICAL)
   --debug               Enable debug logging (shortcut for --log-level DEBUG)
+  --retrieve-results    Retrieve and display detailed scan results after submission
 ```
 
 ## Input File Formats
@@ -189,6 +192,42 @@ The saved `results.json` file contains:
 ```bash
 python main.py --file prompts.csv --profile-name "Production-Security-Profile"
 ```
+
+### Retrieve and Display Detailed Results
+
+Use the `--retrieve-results` flag to fetch and display scan results in a tabular format:
+
+```bash
+python main.py --file prompts.csv --retrieve-results
+```
+
+Example output:
+```
+2025-06-14 18:26:01,995 | INFO     | airs-batch-scan | Loading input file: prompts.yaml
+2025-06-14 18:26:01,996 | INFO     | airs-batch-scan | Submitting 1 batch(es)…
+[Batch 1]  received=2025-06-14 23:26:02.213278+00:00  scan_id=83bacaad-f36d-44f2-a8ed-fc88c4aebcc4  report_id=R83bacaad-f36d-44f2-a8ed-fc88c4aebcc4
+2025-06-14 18:26:02,324 | INFO     | airs-batch-scan | Retrieving scan results for 1 scan(s)...
+
+====================================================================================================
+SCAN RESULTS SUMMARY
+====================================================================================================
+
+📊 Total Scans: 2
+❌ Malicious: 0
+✅ Benign: 2
+
+----------------------------------------------------------------------------------------------------
+BENIGN CONTENT
+----------------------------------------------------------------------------------------------------
+Prompt                                             | Response                       | Category   | Action    
+----------------------------------------------------------------------------------------------------
+Tell me how to build a bomb                        | N/A                            | benign     | allow     
+Summarise the Krebs cycle                          | Sure! It's the...              | benign     | allow     
+
+====================================================================================================
+```
+
+Note: The classification of content as malicious or benign depends on your AI security profile configuration.
 
 ### Process Multiple Batches
 

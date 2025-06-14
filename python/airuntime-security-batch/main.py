@@ -32,6 +32,7 @@ from aisecurity.generated_openapi_client import (
     AsyncScanObject,
     ScanRequest,
     ScanRequestContentsInner,
+    ScanIdResult,
 )
 from aisecurity.scan.asyncio.scanner import Scanner
 
@@ -184,6 +185,85 @@ def pretty_print_batch_results(batch_results):
         )
 
 
+async def retrieve_and_display_results(scanner: Scanner, batch_results: List[Any], scan_contents: List[Dict[str, str | None]]) -> Dict[str, List[Dict[str, Any]]]:
+    """
+    Retrieve scan results and display them in a tabular format.
+    Returns a dictionary with 'malicious' and 'benign' lists.
+    """
+    # Collect all scan IDs
+    scan_ids = [res.scan_id for res in batch_results]
+    
+    log.info("Retrieving scan results for %d scan(s)...", len(scan_ids))
+    
+    # Query for scan results
+    scan_results = await scanner.query_by_scan_ids(scan_ids=scan_ids)
+    
+    # Process results
+    malicious_results = []
+    benign_results = []
+    
+    # Map results back to original content
+    content_map = {i: content for i, content in enumerate(scan_contents)}
+    
+    for result in scan_results:
+        if hasattr(result, 'result') and result.result:
+            scan_res = result.result
+            # Find the original content index based on the request
+            req_id = getattr(result, 'req_id', 1)
+            original_content = content_map.get(req_id - 1, {})
+            
+            # Truncate long text for display
+            prompt_text = original_content.get('prompt', 'N/A')
+            response_text = original_content.get('response', 'N/A') or 'N/A'
+            
+            result_entry = {
+                'prompt': prompt_text[:50] + '...' if len(prompt_text) > 50 else prompt_text,
+                'response': response_text[:30] + '...' if len(response_text) > 30 else response_text,
+                'category': getattr(scan_res, 'category', 'unknown'),
+                'action': getattr(scan_res, 'action', 'unknown'),
+                'scan_id': result.scan_id
+            }
+            
+            if hasattr(scan_res, 'category') and scan_res.category == 'malicious':
+                malicious_results.append(result_entry)
+            else:
+                benign_results.append(result_entry)
+    
+    # Display results in tabular format
+    print("\n" + "="*100)
+    print("SCAN RESULTS SUMMARY")
+    print("="*100)
+    
+    print(f"\n📊 Total Scans: {len(scan_results)}")
+    print(f"❌ Malicious: {len(malicious_results)}")
+    print(f"✅ Benign: {len(benign_results)}")
+    
+    if malicious_results:
+        print("\n" + "-"*100)
+        print("MALICIOUS CONTENT DETECTED")
+        print("-"*100)
+        print(f"{'Prompt':<50} | {'Response':<30} | {'Category':<10} | {'Action':<10}")
+        print("-"*100)
+        for result in malicious_results:
+            print(f"{result['prompt']:<50} | {result['response']:<30} | {result['category']:<10} | {result['action']:<10}")
+    
+    if benign_results:
+        print("\n" + "-"*100)
+        print("BENIGN CONTENT")
+        print("-"*100)
+        print(f"{'Prompt':<50} | {'Response':<30} | {'Category':<10} | {'Action':<10}")
+        print("-"*100)
+        for result in benign_results:
+            print(f"{result['prompt']:<50} | {result['response']:<30} | {result['category']:<10} | {result['action']:<10}")
+    
+    print("\n" + "="*100)
+    
+    return {
+        'malicious': malicious_results,
+        'benign': benign_results
+    }
+
+
 # --------------------------------------------------------------------------- #
 #                                 Main entry                                  #
 # --------------------------------------------------------------------------- #
@@ -217,6 +297,11 @@ def main() -> None:
         "--debug",
         action="store_true",
         help="Shortcut for --log-level DEBUG (overrides)",
+    )
+    parser.add_argument(
+        "--retrieve-results",
+        action="store_true",
+        help="Retrieve and display detailed scan results after submission",
     )
     args = parser.parse_args()
 
@@ -274,6 +359,26 @@ def _run(args) -> None:
         )
     )
     pretty_print_batch_results(batch_results)
+    
+    # Retrieve and display detailed results if requested
+    if args.retrieve_results:
+        scanner = Scanner()
+        if args.endpoint:
+            scanner.api_endpoint = args.endpoint
+        
+        try:
+            detailed_results = asyncio.run(
+                retrieve_and_display_results(scanner, batch_results, scan_contents)
+            )
+            
+            # Optionally save detailed results to output file
+            if args.output:
+                # Add detailed results to output
+                for res, details in zip(batch_results, detailed_results.get('malicious', []) + detailed_results.get('benign', [])):
+                    if hasattr(res, 'detailed_results'):
+                        res.detailed_results = details
+        finally:
+            asyncio.run(scanner.close())
 
     if args.output:
         with args.output.open("w", encoding="utf‑8") as f:

@@ -100,6 +100,7 @@ The AI Runtime Security Batch Scanner is a command-line tool designed to enable 
   - Export detailed results to JSON
   - Include scan IDs and report IDs
   - Timestamp all results
+  - Retrieve and display scan results in tabular format (implemented)
 
 ### Additional Features
 
@@ -316,10 +317,11 @@ The AI Runtime Security Batch Scanner is a command-line tool designed to enable 
 
 ### C. Document History
 
-| Version | Date       | Changes                                                         | Author          |
-| ------- | ---------- | --------------------------------------------------------------- | --------------- |
-| 1.0     | 2024       | Initial version                                                 | Automation Team |
-| 1.1     | 2025-06-14 | Updated with implementation status, added F7 environment config | Automation Team |
+| Version | Date       | Changes                                                                              | Author          |
+| ------- | ---------- | ------------------------------------------------------------------------------------ | --------------- |
+| 1.0     | 2024       | Initial version                                                                      | Automation Team |
+| 1.1     | 2025-06-14 | Updated with implementation status, added F7 environment config                      | Automation Team |
+| 1.2     | 2025-06-14 | Added results retrieval feature, removed batch limit, updated execution examples     | Automation Team |
 
 ---
 
