@@ -2,6 +2,20 @@
 
 A Python command-line tool for bulk scanning AI prompts and responses using Palo Alto Networks AI Runtime Security (AIRS) API. This tool enables security teams and developers to efficiently scan large volumes of AI interactions for potential threats and compliance issues.
 
+## Recent Updates
+
+### Version 1.4 (2025-06-16)
+- Completed Phase 1 code refactoring for improved maintainability
+- Added full type hints throughout the codebase
+- Replaced confusing `_field()` helper with direct Pydantic attribute access
+- Extracted all magic numbers to named constants
+- Simplified the `batched()` function implementation
+- Eliminated code duplication in violation checking logic
+- Separated display logic into dedicated functions
+- Improved overall code structure and readability
+
+For detailed information about the refactoring, see [REFACTORING_ANALYSIS.md](REFACTORING_ANALYSIS.md).
+
 ## Overview
 
 This tool processes batches of prompts and responses from CSV, JSON, or YAML files and submits them to the AIRS API for security scanning. It's designed for scenarios where you need to:
@@ -21,6 +35,9 @@ This tool processes batches of prompts and responses from CSV, JSON, or YAML fil
 - **Error Handling**: Robust error management with detailed error reporting
 - **Results Retrieval**: Fetch and display scan results with malicious/benign categorization
 - **Tabular Output**: Clear visualization of threat detection results
+- **Type Safety**: Full type hints for better IDE support and code clarity
+- **Clean Architecture**: Well-structured code with clear separation of concerns
+- **Performance**: Optimized batch processing with configurable sizes (default 1000)
 
 ## Requirements
 
@@ -85,7 +102,7 @@ Options:
   --profile-name NAME   AI Profile name (overrides environment variable)
   --profile-id ID       AI Profile ID (overrides environment variable)
   --endpoint URL        Custom API endpoint
-  --batch-size SIZE     Number of items per batch (default: 100)
+  --batch-size SIZE     Number of items per batch (default: 1000)
   --log-level LEVEL     Logging level (DEBUG, INFO, WARNING, ERROR, CRITICAL)
   --debug               Enable debug logging (shortcut for --log-level DEBUG)
   --retrieve-results    Retrieve and display detailed scan results after submission
@@ -286,6 +303,17 @@ All errors are logged with detailed information to help with troubleshooting.
 
 Please see [TODO.md](TODO.md) for planned improvements and feature requests.
 
+For technical debt and code quality improvements, see [REFACTORING_ANALYSIS.md](REFACTORING_ANALYSIS.md) which outlines the completed Phase 1 refactoring and future improvement plans.
+
+### Code Quality Standards
+
+When contributing, please ensure:
+- All functions have type hints for parameters and return values
+- Magic numbers are extracted as named constants
+- Functions follow single responsibility principle (max 30 lines)
+- No code duplication - use helper functions for repeated logic
+- Clear, descriptive variable and function names
+
 ## License
 
 This project is part of the Palo Alto Networks automation examples repository. See the repository's main LICENSE file for details.
@@ -297,6 +325,18 @@ For issues related to:
 - This tool: Please open an issue in this repository
 - AIRS API: Contact Palo Alto Networks support
 - API Documentation: Visit [pan.dev/ai-runtime-security](https://pan.dev/ai-runtime-security/)
+
+## Additional Tools
+
+### Processing Hugging Face Datasets
+
+The repository includes a script for processing prompt injection datasets from Hugging Face:
+
+```bash
+python process_huggingface_dataset.py input.jsonl output.csv --limit 100
+```
+
+See [README_DATASET.md](README_DATASET.md) for detailed instructions on using this tool with prompt injection datasets.
 
 ## Related Resources
 

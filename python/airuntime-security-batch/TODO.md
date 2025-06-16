@@ -16,6 +16,11 @@
 - [x] Real execution examples in documentation
 - [x] Retrieve and display scan results in tabular format (malicious vs benign)
 - [x] Remove artificial 5-item batch limit
+- [x] **Full type hints throughout codebase** (2025-06-16)
+- [x] **Direct Pydantic attribute access** - Removed _field() helper (2025-06-16)
+- [x] **Constants for all magic numbers** (2025-06-16)
+- [x] **Simplified batched() function** (2025-06-16)
+- [x] **Separated display logic into dedicated function** (2025-06-16)
 
 ## Planned Improvements 🚀
 
@@ -126,11 +131,18 @@
 
 ## Technical Debt 🛠️
 
-- [ ] Add type hints throughout the codebase
+- [x] ~~Add type hints throughout the codebase~~ ✅ Completed (2025-06-16)
 - [ ] Improve error messages with actionable suggestions
 - [ ] Optimize memory usage for large files
 - [ ] Add performance benchmarks
 - [ ] Document internal APIs and architecture
+- [x] ~~**Remove _field() helper function**~~ ✅ Completed (2025-06-16)
+- [ ] **Refactor retrieve_and_display_results()** - Break into smaller, focused functions (partially done)
+- [x] ~~**Eliminate code duplication**~~ ✅ Completed with get_violations() helper (2025-06-16)
+- [x] ~~**Extract magic numbers to constants**~~ ✅ Completed (2025-06-16)
+- [x] ~~**Simplify batched() function**~~ ✅ Completed (2025-06-16)
+- [ ] **Implement consistent error handling** - Create custom exception classes
+- [ ] **Separate concerns into modules** - cli.py, file_io.py, scanner.py, processor.py, display.py
 
 ## Documentation 📚
 
@@ -170,5 +182,17 @@
 - Added --retrieve-results flag to fetch and display scan results in tabular format
 - Removed artificial 5-item batch limit (now configurable, default 100)
 - Implemented malicious vs benign content categorization display
+- Created process_huggingface_dataset.py for converting prompt injection datasets
+- Added support for testing Hugging Face prompt injection datasets
 
-Last updated: 2025-06-14
+## Recently Completed (2025-06-16) - Phase 1 Refactoring
+
+- **Added full type hints** throughout the codebase for better IDE support
+- **Removed _field() helper function** - Now using direct Pydantic attribute access
+- **Extracted all magic numbers to named constants** at module level
+- **Simplified batched() function** with cleaner implementation
+- **Eliminated code duplication** in violation checking with get_violations() helper
+- **Separated display logic** into dedicated display_scan_results() function
+- **Improved code readability** with consistent patterns and clear variable names
+
+Last updated: 2025-06-16
