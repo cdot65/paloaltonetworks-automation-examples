@@ -1,0 +1,18 @@
+[project]
+name = "pan-os-nat64-counters"
+version = "0.1.0"
+description = ""
+authors = [
+    {name = "Calvin Remsburg",email = "calvin@cdot.io"}
+]
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "httpx (>=0.28.1,<0.29.0)",
+    "lxml (>=6.0.0,<7.0.0)"
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
