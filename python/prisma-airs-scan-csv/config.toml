@@ -1,0 +1,19 @@
+# Palo Alto Networks AI Security Service Configuration
+
+# API Settings
+api_key = "your-api-key-here"
+profile_id = "your-profile-id-here"
+
+# File Settings
+input_csv = "test-prompts.csv"
+output_csv = "results.csv"
+
+# Optional Settings
+[api]
+endpoint = "https://service.api.aisecurity.paloaltonetworks.com/v1/scan/sync/request"
+max_retries = 3
+retry_delay = 1  # seconds
+
+[logging]
+level = "INFO"
+format = "%(asctime)s - %i(levelname)s - %(message)s"
