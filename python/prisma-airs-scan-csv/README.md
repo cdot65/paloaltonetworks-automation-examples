@@ -47,37 +47,71 @@ level = "INFO"
 
 ## Usage
 
-### Convert CSV to JSON format
+### Convert CSV to JSON format (Optional)
 ```bash
 python convert.py
 ```
 
-This will read `test-prompts.csv` and create `test-prompts.json` with properly formatted API payloads.
+This will read `test-prompts.csv` and create `test-prompts.json` with properly formatted API payloads. Note: This step is optional as the scan.py script can work directly with CSV files.
 
-### Run API tests
+### Run API Security Scans
+
+The main script is `scan.py` which reads prompts from a CSV file and tests them against the AI Security Service.
+
+#### Basic Usage
 ```bash
-# Use default config.toml
-python sync.py
-
-# Use custom configuration file
-python sync.py --config myconfig.toml
-
-# Override specific settings via command line
-python sync.py --csv custom-input.csv --output custom-output.csv
-
-# Override profile ID
-python sync.py --profile-id PROFILE123
+# Run with default settings from config.toml
+python scan.py
 ```
 
+#### Advanced Usage
+```bash
+# Use a different configuration file
+python scan.py --config myconfig.toml
+```
+
+**Note for beginners**: 
+- The `python` command runs Python scripts
+- `scan.py` is the name of our main script
+- `--config` is an optional parameter that lets you specify a different configuration file
+
 The script will:
-- Load configuration from the TOML file
-- Process prompts from the input CSV file
-- Send each prompt to the AI Security Service API
-- Save results to the output CSV file with columns: prompt, action, category, scan_id, report_id, profile_name, round_trip, status_code
+1. Load all settings from your `config.toml` file
+2. Read prompts from the input CSV file (one prompt per line)
+3. Send each prompt to the AI Security Service API for scanning
+4. Automatically retry failed requests (up to 3 times by default)
+5. Save results to the output CSV file with these columns:
+   - `prompt`: The original text that was tested
+   - `action`: What the AI Security Service decided (allow/block)
+   - `category`: The type of potential issue detected
+   - `scan_id`: Unique identifier for this scan
+   - `report_id`: Report identifier for reference
+   - `profile_name`: Name of the security profile used
+   - `round_trip`: How long the request took (in seconds)
+   - `status_code`: HTTP status code (200 = success)
 
 ## Files
 
-- `test-prompts.csv` - Source file containing test prompts
-- `test-prompts.json` - Converted JSON format for API submission
-- `test-prompts-results.json` - API response results
-- `testprompts_with_results.csv` - Combined prompts with their test results
+### Input Files
+- `prompts.csv` - Your test prompts (one per line)
+- `config.toml` - Configuration file with API settings
+
+### Output Files
+- `results.csv` - The scan results (created automatically)
+
+### Scripts
+- `scan.py` - Main script that processes prompts and runs security scans
+- `convert.py` - Optional utility to convert CSV to JSON format
+
+## Troubleshooting for Beginners
+
+1. **"Configuration file not found" error**: Make sure `config.toml` exists in the same folder as `scan.py`
+
+2. **"API key not configured" error**: Open `config.toml` and add your API key
+
+3. **"CSV file not found" error**: Create a file named `prompts.csv` with your test prompts (one per line)
+
+4. **Python not found**: Make sure Python is installed. You can check by running:
+   ```bash
+   python --version
+   ```
