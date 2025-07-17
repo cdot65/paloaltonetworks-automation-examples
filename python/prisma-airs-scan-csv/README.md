@@ -33,7 +33,7 @@ profile_id = "your-profile-id-here"
 
 # File Settings
 input_csv = "test-prompts.csv"
-output_csv = "prompts_and_results.csv"
+output_csv = "results.csv"
 
 # Optional Settings
 [api]
@@ -46,13 +46,6 @@ level = "INFO"
 ```
 
 ## Usage
-
-### Convert CSV to JSON format (Optional)
-```bash
-python convert.py
-```
-
-This will read `test-prompts.csv` and create `test-prompts.json` with properly formatted API payloads. Note: This step is optional as the scan.py script can work directly with CSV files.
 
 ### Run API Security Scans
 
@@ -93,7 +86,7 @@ The script will:
 ## Files
 
 ### Input Files
-- `prompts.csv` - Your test prompts (one per line)
+- `test-prompts.csv` - Your test prompts (one per line)
 - `config.toml` - Configuration file with API settings
 
 ### Output Files
@@ -101,7 +94,6 @@ The script will:
 
 ### Scripts
 - `scan.py` - Main script that processes prompts and runs security scans
-- `convert.py` - Optional utility to convert CSV to JSON format
 
 ## Troubleshooting for Beginners
 
@@ -109,7 +101,7 @@ The script will:
 
 2. **"API key not configured" error**: Open `config.toml` and add your API key
 
-3. **"CSV file not found" error**: Create a file named `prompts.csv` with your test prompts (one per line)
+3. **"CSV file not found" error**: Create a file named `test-prompts.csv` with your test prompts (one per line)
 
 4. **Python not found**: Make sure Python is installed. You can check by running:
    ```bash
