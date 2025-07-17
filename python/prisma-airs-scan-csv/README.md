@@ -10,8 +10,7 @@ This project tests AI model responses to potentially harmful prompts using the P
    ```
 
 2. Configure the application:
-   - Copy or rename `config.toml.example` to `config.toml` (if provided)
-   - Or edit the existing `config.toml` file
+   - Edit the `config.toml` file
    - Update the following required settings:
      - `api_key` - Your Palo Alto Networks AI Security Service API key
      - `profile_id` - Your AI profile ID for scanning
