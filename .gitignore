@@ -222,3 +222,5 @@ terraform_docs
 /terraform/panos_firewall/terraform.tfvars
 python/pan-os-admin-password/PRD.md
 python/pan-os-admin-password/TODO.md
+terraform-provider-scm
+**/terraform-provider-scm
