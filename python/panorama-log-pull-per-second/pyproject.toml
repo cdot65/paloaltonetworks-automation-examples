@@ -1,0 +1,13 @@
+[project]
+name = "panorama-log-pull"
+version = "0.1.0"
+description = "Panorama log retrieval script - queries Panorama XML API for traffic logs per second"
+requires-python = ">=3.9"
+dependencies = [
+    "requests>=2.31.0",
+    "urllib3>=2.0.0",
+    "python-dotenv>=1.0.0",
+]
+
+[tool.uv]
+dev-dependencies = []
