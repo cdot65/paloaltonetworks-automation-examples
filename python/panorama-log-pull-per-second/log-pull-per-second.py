@@ -3,6 +3,7 @@
 Panorama Log Retrieval Script
 Queries Panorama XML API for traffic logs second-by-second and saves results to local files.
 Tracks queries that hit the 5000 log limit for manual review.
+Enhanced with progress tracking to log when jobs have incomplete progress during polling.
 """
 
 import logging
@@ -54,8 +55,8 @@ DEBUG = os.getenv("DEBUG", "false").lower() in ("true", "1", "yes")
 # Configure logging
 logging.basicConfig(
     level=logging.DEBUG if DEBUG else logging.INFO,
-    format='%(asctime)s - %(levelname)s - %(message)s',
-    datefmt='%Y-%m-%d %H:%M:%S'
+    format="%(asctime)s - %(levelname)s - %(message)s",
+    datefmt="%Y-%m-%d %H:%M:%S",
 )
 logger = logging.getLogger(__name__)
 
@@ -139,11 +140,13 @@ def poll_job_status(job_id):
         job_id: The job ID to poll
 
     Returns:
-        str: XML response text or None on error
+        tuple: (xml_response_text, incomplete_progress_count) or (None, 0) on error
     """
     params = {"type": "log", "action": "get", "job-id": job_id}
 
     headers = {"X-PAN-KEY": API_KEY}
+
+    incomplete_count = 0  # Track how many times we see progress < 100
 
     for attempt in range(MAX_POLL_ATTEMPTS):
         try:
@@ -160,26 +163,49 @@ def poll_job_status(job_id):
                 # Check if job is complete
                 job_status = root.find(".//status")
                 if job_status is not None and job_status.text == "FIN":
-                    logger.info(f"Job {job_id} completed successfully")
-                    return response.text
+                    # Check progress attribute in logs element
+                    logs_element = root.find(".//logs")
+                    if logs_element is not None:
+                        progress = logs_element.get("progress")
+                        if progress and int(progress) == 100:
+                            logger.info(
+                                f"Job {job_id} completed successfully (100% progress)"
+                            )
+                            if incomplete_count > 0:
+                                logger.info(
+                                    f"Job {job_id} had {incomplete_count} poll(s) with progress < 100%"
+                                )
+                            return response.text, incomplete_count
+                        else:
+                            incomplete_count += 1
+                            logger.info(
+                                f"Job {job_id} at {progress}% progress (attempt {attempt + 1}/{MAX_POLL_ATTEMPTS}) - incomplete #{incomplete_count}"
+                            )
+                            time.sleep(POLL_INTERVAL)
+                    else:
+                        # No logs element yet, keep polling
+                        logger.info(
+                            f"Job {job_id} still processing (no logs yet)... (attempt {attempt + 1}/{MAX_POLL_ATTEMPTS})"
+                        )
+                        time.sleep(POLL_INTERVAL)
                 else:
-                    logger.debug(
+                    logger.info(
                         f"Job {job_id} still processing... (attempt {attempt + 1}/{MAX_POLL_ATTEMPTS})"
                     )
                     time.sleep(POLL_INTERVAL)
             else:
                 logger.error(f"Job {job_id} failed: {response.text}")
-                return None
+                return None, 0
 
         except requests.exceptions.RequestException as e:
             logger.error(f"Polling request failed: {e}")
             time.sleep(POLL_INTERVAL)
         except ET.ParseError as e:
             logger.error(f"XML parsing failed during polling: {e}")
-            return None
+            return None, 0
 
     logger.error(f"Job {job_id} timed out after {MAX_POLL_ATTEMPTS} attempts")
-    return None
+    return None, 0
 
 
 def check_log_count(xml_text):
@@ -295,6 +321,7 @@ def main():
     successful = 0
     failed = 0
     revisit_count = 0
+    total_incomplete_polls = 0  # Track total incomplete progress events
 
     # Iterate second by second
     current_dt = start_dt
@@ -310,8 +337,9 @@ def main():
         job_id, query = submit_log_query(current_dt, next_dt)
 
         if job_id:
-            # Poll for completion
-            xml_response = poll_job_status(job_id)
+            # Poll for completion (now returns incomplete_count too)
+            xml_response, incomplete_count = poll_job_status(job_id)
+            total_incomplete_polls += incomplete_count
 
             if xml_response:
                 # Save the response
@@ -342,6 +370,13 @@ def main():
     logger.info(f"Successful: {successful}")
     logger.info(f"Failed: {failed}")
     logger.info(f"Queries requiring manual review: {revisit_count}")
+    logger.info(f"Total incomplete progress polls: {total_incomplete_polls}")
+
+    if total_incomplete_polls > 0:
+        logger.warning("=" * 80)
+        logger.warning(f"✓ Retry logic was triggered {total_incomplete_polls} time(s)")
+        logger.warning("Jobs had progress < 100% during polling but completed successfully")
+        logger.warning("=" * 80)
 
     if revisit_count > 0:
         logger.warning(
