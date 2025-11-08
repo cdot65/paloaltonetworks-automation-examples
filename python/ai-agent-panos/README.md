@@ -14,13 +14,11 @@ This project demonstrates two approaches to AI-driven network automation:
 ### Key Features
 
 - 🤖 **Dual-mode operation**: Autonomous (ReAct) and Deterministic (workflow-based)
-- 🔧 **Comprehensive PAN-OS support**: 34 tools across addresses, services, policies, NAT
-- ⚡ **Parallel batch operations**: 4-10x speedup with automatic dependency resolution
+- 🔧 **Comprehensive PAN-OS support**: 33 tools across addresses, services, policies, NAT
 - 🎯 **LangGraph Studio integration**: Visual debugging and execution
 - 🔄 **Retry logic**: Exponential backoff for transient failures
-- 🏗️ **Composable subgraphs**: CRUD, batch, commit workflows
+- 🏗️ **Composable subgraphs**: CRUD and commit workflows
 - 📝 **Firewall commits**: Job polling with approval gates
-- 🔗 **Dependency resolver**: Topological sorting prevents reference errors
 
 ## Quickstart
 
@@ -178,20 +176,14 @@ graph TD
 - **Sequential execution**: Predictable, step-by-step workflow
 - **Error handling**: Stops on critical errors with detailed reporting
 
-**Available workflows** (9 total):
+**Available workflows** (6 total):
 
-*Basic workflows:*
 - `simple_address`: Create and verify single address object
 - `address_with_approval`: Address creation with approval gate
 - `web_server_setup`: Multi-object creation (addresses, services, groups)
 - `multi_address_creation`: Multiple addresses with grouping
 - `network_segmentation`: Complete network segment setup
-- `security_rule_complete`: End-to-end security rule with dependencies
-
-*Batch & Advanced workflows:*
-- `batch_address_creation`: Parallel creation of 10 addresses (4-10x faster)
-- `batch_with_dependencies`: Auto-resolves dependencies (groups → addresses)
-- `complete_security_workflow`: Full workflow with batch ops + commit
+- `complete_security_workflow`: Full workflow with object creation + policy + commit
 
 ## Development Status
 
@@ -217,20 +209,16 @@ graph TD
 
 ### ✅ Phase 4: Advanced Features (Completed)
 
-- [x] **Dependency resolver**: Topological sorting for cross-object references
-- [x] **Batch subgraph**: Parallel execution with Send API (4-10x speedup)
 - [x] **Commit subgraph**: PAN-OS commit with job polling and approval gates
 - [x] **Expanded policy tools**: Security policy full CRUD (5 tools)
 - [x] **NAT policy tools**: Basic NAT CRUD (4 tools)
-- [x] **Orchestration tools**: batch_operation, commit_changes
-- [x] **3 advanced workflows**: Batch creation, dependencies, complete workflow
-- [x] **Total: 34 tools** across all categories
+- [x] **Orchestration tools**: crud_operation, commit_changes
+- [x] **Total: 33 tools** across all categories
 
 ### ✅ Phase 5: Testing & Polish (Completed)
 
 - [x] **Pre-commit hooks**: black, flake8, isort auto-formatting
 - [x] **Pytest configuration**: Test framework setup with fixtures
-- [x] **Unit tests**: Dependency resolver (100% coverage)
 - [x] **Mock fixtures**: Firewall, objects, sample data
 - [x] **ARCHITECTURE.md**: Comprehensive technical guide
 - [x] **SETUP.md**: Development environment guide
@@ -243,8 +231,7 @@ graph TD
 - **[ARCHITECTURE.md](docs/ARCHITECTURE.md)**: Complete technical architecture guide
   - **ReAct vs Deterministic comparison**: Detailed workflows, structures, decision-making
   - State management patterns
-  - Subgraph design (CRUD, Batch, Commit, Deterministic)
-  - Dependency resolution algorithm
+  - Subgraph design (CRUD, Commit, Deterministic)
   - Testing strategy
   - Troubleshooting guide
 
@@ -278,6 +265,6 @@ See repository root for license information.
 ---
 
 **Status**: ✅ Complete (All 5 phases)
-**Features**: 34 tools, batch ops, commit workflow, 9 workflows, pre-commit hooks, comprehensive docs
-**Coverage**: Unit tests, architecture guide, setup guide
-**Last Updated**: 2025-11-07
+**Features**: 33 tools, commit workflow, 6 workflows, pre-commit hooks, comprehensive docs
+**Coverage**: Architecture guide, setup guide
+**Last Updated**: 2025-01-08

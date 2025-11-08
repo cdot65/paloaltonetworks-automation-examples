@@ -9,7 +9,7 @@ from typing import Literal
 
 from langchain_anthropic import ChatAnthropic
 from langchain_core.messages import SystemMessage
-from langgraph.graph import StateGraph, END
+from langgraph.graph import StateGraph, START, END
 from langgraph.prebuilt import ToolNode
 from langgraph.checkpoint.memory import MemorySaver
 
@@ -124,7 +124,7 @@ def create_autonomous_graph() -> StateGraph:
     workflow.add_node("tools", tool_node)
 
     # Add edges
-    workflow.set_entry_point("agent")
+    workflow.add_edge(START, "agent")
 
     # Conditional routing after agent
     workflow.add_conditional_edges(

@@ -8,7 +8,7 @@ import logging
 import uuid
 from typing import Literal
 
-from langgraph.graph import StateGraph, END
+from langgraph.graph import StateGraph, START, END
 from langgraph.checkpoint.memory import MemorySaver
 
 from src.core.state_schemas import DeterministicState
@@ -163,7 +163,7 @@ def create_deterministic_graph() -> StateGraph:
     workflow.add_node("execute_workflow", execute_workflow)
 
     # Add edges
-    workflow.set_entry_point("load_workflow_definition")
+    workflow.add_edge(START, "load_workflow_definition")
 
     # Conditional routing after load
     workflow.add_conditional_edges(

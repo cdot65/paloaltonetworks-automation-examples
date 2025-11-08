@@ -8,7 +8,7 @@ Adapted from SCM agent patterns for PAN-OS XML API.
 import logging
 from typing import Literal
 
-from langgraph.graph import StateGraph, END
+from langgraph.graph import StateGraph, START, END
 
 from panos.objects import AddressObject, AddressGroup, ServiceObject, ServiceGroup
 from panos.policies import SecurityRule, NatRule
@@ -433,7 +433,7 @@ def create_crud_subgraph() -> StateGraph:
     workflow.add_node("format_response", format_response)
 
     # Add edges
-    workflow.set_entry_point("validate_input")
+    workflow.add_edge(START, "validate_input")
     workflow.add_edge("validate_input", "check_existence")
     workflow.add_conditional_edges(
         "check_existence",

@@ -10,7 +10,7 @@ from src.tools.service_groups import SERVICE_GROUP_TOOLS
 from src.tools.security_policies import SECURITY_POLICY_TOOLS
 from src.tools.nat_policies import NAT_POLICY_TOOLS
 from src.tools.orchestration.crud_operations import crud_operation
-from src.tools.orchestration.batch_operations import batch_operation, commit_changes
+from src.tools.orchestration.commit_operations import commit_changes
 
 # All tools combined for autonomous agent
 ALL_TOOLS = [
@@ -22,9 +22,8 @@ ALL_TOOLS = [
     # Policy tools (9 tools)
     *SECURITY_POLICY_TOOLS, # 5 tools
     *NAT_POLICY_TOOLS,      # 4 tools
-    # Orchestration tools (3 tools)
+    # Orchestration tools (2 tools)
     crud_operation,         # Unified CRUD
-    batch_operation,        # Parallel batch ops
     commit_changes,         # Commit workflow
 ]
 
@@ -37,6 +36,5 @@ __all__ = [
     "SECURITY_POLICY_TOOLS",
     "NAT_POLICY_TOOLS",
     "crud_operation",
-    "batch_operation",
     "commit_changes",
 ]

@@ -19,7 +19,7 @@ Features:
 import logging
 import time
 
-from langgraph.graph import StateGraph, END
+from langgraph.graph import StateGraph, START, END
 from langgraph.types import interrupt
 
 from src.core.state_schemas import CommitState
@@ -286,7 +286,7 @@ def create_commit_subgraph() -> StateGraph:
     workflow.add_node("format_commit_response", format_commit_response)
 
     # Add edges
-    workflow.set_entry_point("validate_commit_input")
+    workflow.add_edge(START, "validate_commit_input")
     workflow.add_edge("validate_commit_input", "check_approval_required")
     workflow.add_edge("check_approval_required", "execute_commit")
     workflow.add_edge("execute_commit", "poll_job_status")

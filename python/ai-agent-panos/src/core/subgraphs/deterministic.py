@@ -10,7 +10,7 @@ from typing import Literal
 
 from langchain_anthropic import ChatAnthropic
 from langchain_core.messages import SystemMessage, HumanMessage
-from langgraph.graph import StateGraph, END
+from langgraph.graph import StateGraph, START, END
 from langgraph.types import interrupt
 
 from src.core.state_schemas import DeterministicWorkflowState
@@ -373,7 +373,7 @@ def create_deterministic_workflow_subgraph() -> StateGraph:
     workflow.add_node("format_result", format_result)
 
     # Add edges
-    workflow.set_entry_point("load_workflow")
+    workflow.add_edge(START, "load_workflow")
     workflow.add_edge("load_workflow", "execute_step")
     workflow.add_edge("execute_step", "evaluate_step")
 

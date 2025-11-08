@@ -327,85 +327,28 @@ WORKFLOWS = {
             },
         ],
     },
-    "batch_address_creation": {
-        "name": "Batch Address Creation with Dependencies",
-        "description": "Create multiple addresses in parallel with automatic dependency resolution",
-        "steps": [
-            {
-                "name": "Batch create 10 addresses with dependencies",
-                "type": "tool_call",
-                "tool": "batch_operation",
-                "params": {
-                    "operation": "create",
-                    "object_type": "address",
-                    "items": [
-                        {"name": "batch-addr-1", "value": "10.100.1.1"},
-                        {"name": "batch-addr-2", "value": "10.100.1.2"},
-                        {"name": "batch-addr-3", "value": "10.100.1.3"},
-                        {"name": "batch-addr-4", "value": "10.100.1.4"},
-                        {"name": "batch-addr-5", "value": "10.100.1.5"},
-                        {"name": "batch-addr-6", "value": "10.100.1.6"},
-                        {"name": "batch-addr-7", "value": "10.100.1.7"},
-                        {"name": "batch-addr-8", "value": "10.100.1.8"},
-                        {"name": "batch-addr-9", "value": "10.100.1.9"},
-                        {"name": "batch-addr-10", "value": "10.100.1.10"},
-                    ],
-                },
-            },
-            {
-                "name": "List all addresses",
-                "type": "tool_call",
-                "tool": "address_list",
-                "params": {},
-            },
-        ],
-    },
-    "batch_with_dependencies": {
-        "name": "Batch Creation with Dependency Resolution",
-        "description": "Demonstrates automatic dependency ordering for grouped objects",
-        "steps": [
-            {
-                "name": "Batch create addresses and groups",
-                "type": "tool_call",
-                "tool": "batch_operation",
-                "params": {
-                    "operation": "create",
-                    "object_type": "address_group",
-                    "items": [
-                        # These will be created first (level 0)
-                        {"name": "web-1", "value": "10.200.1.1"},
-                        {"name": "web-2", "value": "10.200.1.2"},
-                        {"name": "app-1", "value": "10.200.2.1"},
-                        {"name": "app-2", "value": "10.200.2.2"},
-                        # These depend on above (level 1)
-                        {
-                            "name": "web-servers-group",
-                            "static_members": ["web-1", "web-2"],
-                        },
-                        {
-                            "name": "app-servers-group",
-                            "static_members": ["app-1", "app-2"],
-                        },
-                    ],
-                },
-            },
-        ],
-    },
     "complete_security_workflow": {
         "name": "Complete Security Policy Workflow with Commit",
-        "description": "End-to-end: batch create objects, create policy, commit changes",
+        "description": "End-to-end: create objects, create policy, commit changes",
         "steps": [
             {
-                "name": "Batch create source addresses",
+                "name": "Create first source address",
                 "type": "tool_call",
-                "tool": "batch_operation",
+                "tool": "address_create",
                 "params": {
-                    "operation": "create",
-                    "object_type": "address",
-                    "items": [
-                        {"name": "internal-net-1", "value": "192.168.1.0/24"},
-                        {"name": "internal-net-2", "value": "192.168.2.0/24"},
-                    ],
+                    "name": "internal-net-1",
+                    "value": "192.168.1.0/24",
+                    "description": "Internal network 1",
+                },
+            },
+            {
+                "name": "Create second source address",
+                "type": "tool_call",
+                "tool": "address_create",
+                "params": {
+                    "name": "internal-net-2",
+                    "value": "192.168.2.0/24",
+                    "description": "Internal network 2",
                 },
             },
             {

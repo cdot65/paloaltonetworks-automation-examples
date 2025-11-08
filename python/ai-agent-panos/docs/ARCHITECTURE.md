@@ -17,11 +17,9 @@
 5. [State Management](#state-management)
 6. [Subgraph Patterns](#subgraph-patterns)
 7. [Tool Organization](#tool-organization)
-8. [Dependency Resolution](#dependency-resolution)
-9. [Batch Operations](#batch-operations)
-10. [Testing Strategy](#testing-strategy)
-11. [Common Patterns](#common-patterns)
-12. [Troubleshooting](#troubleshooting)
+8. [Testing Strategy](#testing-strategy)
+9. [Common Patterns](#common-patterns)
+10. [Troubleshooting](#troubleshooting)
 
 ---
 
@@ -46,10 +44,9 @@ AI-powered automation agent for Palo Alto Networks PAN-OS firewalls using LangGr
 
 ### Key Metrics
 
-- **34 tools** across 7 categories
-- **4 subgraphs** (CRUD, Batch, Commit, Deterministic)
-- **9 workflows** (6 basic, 3 advanced)
-- **4-10x speedup** with batch operations
+- **33 tools** across 7 categories
+- **3 subgraphs** (CRUD, Commit, Deterministic)
+- **6 workflows**
 - **100% tool error handling** (no exceptions leak to LLM)
 
 ---
@@ -172,16 +169,18 @@ User: "Create address objects for web servers 10.1.1.1 through 10.1.1.5"
 
 Turn 1:
   Agent → Thinks: "I need to create 5 address objects"
-  Agent → Calls: batch_operation(operation="create", items=[...5 addresses])
-  Tools → Executes batch creation
-  Tools → Returns: "✅ Successful: 5"
+  Agent → Calls: address_create() for first server
+  Tools → Returns: "✅ Created address: web-server-1"
 
 Turn 2:
-  Agent → Sees: Batch creation succeeded
-  Agent → Calls: address_list() to verify
-  Tools → Returns: List of addresses including new ones
+  Agent → Calls: address_create() for remaining servers (4 more calls)
+  Tools → Returns: "✅ Created address" for each
 
 Turn 3:
+  Agent → Calls: address_list() to verify all created
+  Tools → Returns: List of addresses including new ones
+
+Turn 4:
   Agent → Sees: All addresses created successfully
   Agent → Returns: "I've created 5 address objects for web servers 10.1.1.1 through 10.1.1.5. All objects are confirmed."
   END
@@ -676,10 +675,8 @@ panos-agent/
 │   │   ├── client.py               # Singleton PAN-OS firewall client
 │   │   ├── state_schemas.py        # All TypedDict state definitions
 │   │   ├── retry_helper.py         # Exponential backoff retry
-│   │   ├── dependency_resolver.py  # Topological sorting
 │   │   └── subgraphs/
 │   │       ├── crud.py             # Single object lifecycle
-│   │       ├── batch.py            # Parallel batch operations
 │   │       ├── commit.py           # PAN-OS commit with polling
 │   │       └── deterministic.py    # Workflow step executor
 │   ├── tools/
@@ -691,14 +688,13 @@ panos-agent/
 │   │   ├── nat_policies.py         # 4 tools
 │   │   └── orchestration/
 │   │       ├── crud_operations.py  # crud_operation (unified)
-│   │       └── batch_operations.py # batch_operation, commit_changes
+│   │       └── commit_operations.py # commit_changes
 │   ├── workflows/
-│   │   └── definitions.py          # 9 predefined workflows
+│   │   └── definitions.py          # 6 predefined workflows
 │   └── cli/
 │       └── commands.py             # Typer CLI
 ├── tests/
 │   ├── conftest.py                 # Shared fixtures
-│   ├── test_dependency_resolver.py # Unit tests
 │   └── ...
 ├── docs/
 │   └── ARCHITECTURE.md             # This file
@@ -790,37 +786,6 @@ def route_operation(state: CRUDState):
 - Always returns error in state, never raises
 - Uses `with_retry()` for transient failures
 - Classifies errors (permanent vs transient)
-
-### Batch Subgraph
-
-**File**: `src/core/subgraphs/batch.py`
-
-**Purpose**: Parallel execution with dependency resolution
-
-**Flow**:
-```
-validate → split_into_batches (dependency resolver) →
-FOR EACH LEVEL:
-    check_and_process_next_batch →
-    [Send] process_single_item (parallel) →
-    aggregate_batch_results →
-LOOP or format_batch_response → END
-```
-
-**Parallel Execution**:
-```python
-def check_and_process_next_batch(state: BatchState):
-    sends = []
-    for item in current_level:
-        sends.append(Send("process_single_item", item_state))
-    return sends
-```
-
-**Key Features**:
-- Topological sorting via `dependency_resolver.py`
-- Fan-out with `Send` API
-- Fan-in with `operator.add` reducer
-- Level-by-level execution (sequential across levels, parallel within)
 
 ### Commit Subgraph
 
@@ -933,105 +898,6 @@ def my_tool(param: str) -> str:
 
 ---
 
-## Dependency Resolution
-
-### Algorithm
-
-**File**: `src/core/dependency_resolver.py`
-
-**Purpose**: Topological sorting to prevent "not a valid reference" errors
-
-**Steps**:
-1. Extract references from each item
-2. Build dependency graph
-3. Calculate in-degrees
-4. Level-order traversal (Kahn's algorithm)
-5. Return levels for sequential-then-parallel execution
-
-**Reference Mappings**:
-```python
-REFERENCE_FIELDS = {
-    "address": [("tag", "tag")],
-    "address_group": [
-        ("static_value", "address"),
-        ("static_members", "address"),
-        ("tag", "tag"),
-    ],
-    "service_group": [
-        ("value", "service"),
-        ("members", "service"),
-        ("tag", "tag"),
-    ],
-}
-```
-
-**Example**:
-```python
-items = [
-    {"name": "addr-1", "tag": ["tag-1"]},
-    {"name": "tag-1", "color": "Red"},
-    {"name": "addr-2", "tag": ["tag-1"]},
-]
-
-levels = sort_items_by_dependencies(items, "address")
-# Result: [
-#   [{"name": "tag-1", ...}],        # Level 0
-#   [{"name": "addr-1", ...}, {...}] # Level 1 (parallel)
-# ]
-```
-
-### Circular Dependency Detection
-
-```python
-if len(visited) != len(dependency_graph):
-    unvisited = set(graph.keys()) - visited
-    raise ValueError(f"Circular dependency: {unvisited}")
-```
-
----
-
-## Batch Operations
-
-### Performance
-
-**Sequential** (old approach):
-```
-addr-1 → addr-2 → addr-3 → ... → addr-10
-Time: ~20 seconds (10 × 2s per object)
-```
-
-**Parallel** (batch subgraph):
-```
-Level 0: [addr-1, addr-2, ..., addr-10] (all parallel)
-Time: ~3 seconds
-Speedup: 6.7x
-```
-
-**With Dependencies**:
-```
-Level 0: [tag-1, tag-2] (parallel)
-Level 1: [addr-1, addr-2, addr-3, addr-4] (parallel, depend on tags)
-Time: ~6 seconds vs. ~25 seconds sequential
-Speedup: 4.2x
-```
-
-### State Reducer Pattern
-
-**Problem**: Multiple parallel nodes writing to same field
-
-**Solution**: Annotated reducer
-```python
-# ❌ BAD: LastValue channel
-current_batch_results: list[dict]
-
-# ✅ GOOD: Accumulator
-current_batch_results: Annotated[list[dict], operator.add]
-```
-
-**Why**: `Send` API fans out to multiple parallel invocations of `process_single_item`. Each returns a result. Without reducer, only last write would be kept.
-
----
-
 ## Testing Strategy
 
 ### Test Structure
@@ -1039,9 +905,8 @@ current_batch_results: Annotated[list[dict], operator.add]
 ```
 tests/
 ├── conftest.py              # Shared fixtures (mock firewall, objects)
-├── test_dependency_resolver.py  # Unit tests (pure functions)
 ├── test_crud_subgraph.py    # Integration tests (with mocks)
-├── test_batch_subgraph.py   # Integration tests
+├── test_commit_subgraph.py  # Integration tests
 └── test_tools.py            # Tool invocation tests
 ```
 
@@ -1066,8 +931,8 @@ def mock_firewall():
 
 **Sample Data**:
 - `sample_addresses`
-- `sample_addresses_with_dependencies`
-- `sample_address_groups_with_dependencies`
+- `sample_services`
+- `sample_security_rules`
 
 ### Running Tests
 
@@ -1076,7 +941,7 @@ def mock_firewall():
 pytest
 
 # Specific file
-pytest tests/test_dependency_resolver.py
+pytest tests/test_crud_subgraph.py
 
 # With coverage
 pytest --cov=src --cov-report=html
@@ -1126,39 +991,9 @@ def route_based_on_state(state: MyState):
         return "continue"
 ```
 
-### Pattern 4: Parallel Fan-Out
-
-```python
-def create_sends(state: BatchState):
-    sends = []
-    for item in state["items"]:
-        sends.append(Send("process_item", {"item": item}))
-    return sends
-```
-
 ---
 
 ## Troubleshooting
-
-### Issue: InvalidUpdateError
-
-**Symptom**: `Can receive only one value per step`
-
-**Cause**: Parallel nodes writing to field without reducer
-
-**Fix**:
-```python
-# Add reducer to state schema
-field: Annotated[list, operator.add]
-```
-
-### Issue: Circular Dependency
-
-**Symptom**: `ValueError: Circular dependency detected`
-
-**Cause**: Items reference each other (A → B → A)
-
-**Fix**: Break into separate batches or remove circular refs
 
 ### Issue: tool_use without tool_result
 

@@ -91,29 +91,6 @@ def sample_addresses():
 
 
 @pytest.fixture
-def sample_addresses_with_dependencies():
-    """Sample address objects with dependencies for testing resolver."""
-    return [
-        {"name": "addr-1", "value": "10.1.1.1", "tag": ["tag-1"]},  # Depends on tag-1
-        {"name": "tag-1", "color": "Red"},  # No dependencies
-        {"name": "addr-2", "value": "10.1.1.2", "tag": ["tag-1"]},  # Depends on tag-1
-    ]
-
-
-@pytest.fixture
-def sample_address_groups_with_dependencies():
-    """Sample address groups with dependencies."""
-    return [
-        {"name": "addr-1", "value": "10.1.1.1"},  # Level 0
-        {"name": "addr-2", "value": "10.1.1.2"},  # Level 0
-        {
-            "name": "group-1",
-            "static_members": ["addr-1", "addr-2"],  # Level 1 (depends on above)
-        },
-    ]
-
-
-@pytest.fixture
 def mock_commit_result():
     """Mock commit job result."""
     result = MagicMock()
