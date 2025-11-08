@@ -1,6 +1,7 @@
 # PAN-OS LangGraph Agent
 
-AI agent for automating Palo Alto Networks PAN-OS firewalls using natural language. Built with LangGraph and pan-os-python.
+AI agent for automating Palo Alto Networks PAN-OS firewalls using natural language.
+Built with LangGraph and pan-os-python.
 
 ## Overview
 
@@ -8,8 +9,11 @@ This project demonstrates two approaches to AI-driven network automation:
 
 | Mode | Description | Use Case |
 |------|-------------|----------|
-| **Autonomous** | ReAct agent with full tool access | Exploratory automation, ad-hoc tasks, natural language queries |
-| **Deterministic** | Step-by-step workflows with conditional routing | Production workflows, repeatable processes, Ansible-like execution |
+| **Autonomous** | ReAct agent with full tool access | Exploratory automation, ad-hoc tasks, |
+|                 |                                 | natural language queries |
+| **Deterministic** | Step-by-step workflows with conditional routing | Production workflows, |
+|                    |                                                 | repeatable processes, |
+|                    |                                                 | Ansible-like execution |
 
 ### Key Features
 
@@ -32,6 +36,7 @@ This project demonstrates two approaches to AI-driven network automation:
 ### 2. Setup
 
 ```bash
+
 # Install Python 3.11
 pyenv install 3.11
 pyenv local 3.11
@@ -46,11 +51,13 @@ uv pip install -e .
 # Configure environment
 cp .env.example .env
 # Edit .env with your credentials
-```
+
+```bash
 
 ### 3. Environment Variables
 
 ```bash
+
 # Required
 PANOS_HOSTNAME=192.168.1.1
 PANOS_USERNAME=admin
@@ -60,23 +67,27 @@ ANTHROPIC_API_KEY=sk-ant-your-key-here
 # Optional
 DEFAULT_MODE=autonomous
 LOG_LEVEL=INFO
-```
+
+```text
 
 ### 4. Run with LangGraph Studio
 
 ```bash
+
 # Start LangGraph Studio
 langgraph dev
 
 # Or via CLI command (once implemented)
 panos-agent studio
-```
 
-Then open `http://localhost:8000` and select a graph (autonomous or deterministic).
+```text
+
+Then open `<http://localhost:8000`> and select a graph (autonomous or deterministic).
 
 ### 5. CLI Usage
 
 ```bash
+
 # Autonomous mode (natural language)
 panos-agent run -m autonomous -p "Create address object web-server at 10.1.1.100"
 panos-agent run -m autonomous -p "List all service groups"
@@ -92,7 +103,8 @@ panos-agent test-connection
 
 # Version info
 panos-agent version
-```
+
+```text
 
 ## Testing the Graphs
 
@@ -101,21 +113,27 @@ panos-agent version
 Test the autonomous ReAct agent with natural language queries:
 
 ```bash
+
 # List operations
 panos-agent run -p "List all address objects" -m autonomous --log-level ERROR
 
 # Create operations
-panos-agent run -p "Create an address object named test-server-123 with IP 192.168.100.123" -m autonomous --log-level ERROR
+panos-agent run -p "Create an address object named test-server-123 with IP 192.168.100.123" \\
+  -m autonomous --log-level ERROR
 
 # Delete operations
 panos-agent run -p "Delete the address object named test-server-123" -m autonomous --log-level ERROR
 
 # Complex queries
-panos-agent run -p "Show me all NAT policies and explain what they do" -m autonomous --log-level ERROR
-```
+panos-agent run -p "Show me all NAT policies and explain what they do" \\
+  -m autonomous --log-level ERROR
+
+```bash
 
 **Expected Output (List Example):**
-```
+
+```bash
+
 PAN-OS Agent - Mode: autonomous
 Prompt: List all address objects
 
@@ -124,6 +142,7 @@ Great! There are **37 address objects** currently configured on the PAN-OS
 firewall.
 
 Would you like me to:
+
 - Get details about a specific address object?
 - Filter or search for particular addresses?
 - Create new address objects?
@@ -132,13 +151,15 @@ Would you like me to:
 Let me know how I can help!
 
 Thread ID: 49d5513e-2763-4b54-bdfc-3b6f072d6020
-```
+
+```bash
 
 ### Deterministic Mode Examples
 
 Test predefined workflows with step-by-step execution:
 
 ```bash
+
 # List available workflows
 panos-agent list-workflows
 
@@ -150,10 +171,13 @@ panos-agent run -p "web_server_setup" -m deterministic
 
 # Workflow with approval gate
 panos-agent run -p "address_with_approval" -m deterministic
-```
+
+```bash
 
 **Expected Output (simple_address):**
-```
+
+```bash
+
 PAN-OS Agent - Mode: deterministic
 Prompt: simple_address
 
@@ -178,7 +202,9 @@ Steps: 2/2
 ❌ Failed: 0
 
 Step Details:
+
   1. ✅ Create address object
+
   2. ✅ Verify address object
 
 Final Decision: continue
@@ -186,43 +212,53 @@ Reason: Address object successfully retrieved (demo-server). No errors reported.
 Step completed as expected.
 
 Thread ID: ac43a662-137c-464c-b118-c6d399a7fbe4
-```
+
+```bash
 
 ### Testing with Thread IDs
 
 Both modes support conversation continuity using thread IDs:
 
 ```bash
+
 # Start a conversation
 panos-agent run -p "List address objects" -m autonomous --thread-id my-session-1
 
 # Continue the same conversation
-panos-agent run -p "Now create one called test-server at 10.1.1.1" -m autonomous --thread-id my-session-1
+panos-agent run -p "Now create one called test-server at 10.1.1.1" -m autonomous --thread-id
+  my-session-1
 
 # Start a fresh conversation
 panos-agent run -p "List address objects" -m autonomous --thread-id my-session-2
-```
+
+```bash
 
 ### Connection Testing
 
 Always test your connection first before running operations:
 
 ```bash
+
 panos-agent test-connection
-```
+
+```bash
 
 **Expected Output:**
-```
+
+```bash
+
 Testing PAN-OS connection...
 
 ✅ Connected to PAN-OS 11.1.4-h7 (serial: 021201109830)
-```
+
+```bash
 
 ## Architecture
 
 ### Project Structure
 
-```
+```bash
+
 panos-agent/
 ├── src/
 │   ├── autonomous_graph.py      # ReAct agent graph
@@ -254,22 +290,26 @@ panos-agent/
 ├── langgraph.json               # LangGraph Studio config
 ├── pyproject.toml
 └── README.md
-```
+
+```bash
 
 ### Autonomous Mode
 
 ReAct pattern: **agent → tools → agent** loop.
 
 ```mermaid
+
 graph LR
     A[User Input] --> B[Agent LLM]
     B --> C{Tool Call?}
     C -->|Yes| D[Execute Tools]
     D --> B
     C -->|No| E[Final Response]
-```
+
+```bash
 
 **Use cases:**
+
 - "Show me all address objects"
 - "Create security rule allowing web traffic from Trust to Untrust"
 - "Find unused address groups and delete them"
@@ -279,6 +319,7 @@ graph LR
 Step-by-step workflow with conditional routing.
 
 ```mermaid
+
 graph TD
     A[Load Workflow] --> B[Execute Step]
     B --> C{LLM Evaluates Result}
@@ -287,14 +328,17 @@ graph TD
     D -->|Yes| B
     D -->|No| F[Complete]
     E --> D
-```
+
+```bash
 
 **Use cases:**
+
 - Pre-defined security rule creation workflow
 - Multi-step object provisioning
 - Repeatable, auditable operations
 
 **Key features:**
+
 - **LLM-based conditional routing**: Agent evaluates each step result
 - **HITL approval gates**: Human approval required at critical points
 - **Sequential execution**: Predictable, step-by-step workflow
@@ -374,7 +418,8 @@ graph TD
 
 ## Contributing
 
-This is a standalone example project within the broader `paloaltonetworks-automation-examples` repository.
+This is a standalone example project within the broader `paloaltonetworks-automation-examples`
+  repository.
 
 ## License
 
@@ -392,6 +437,7 @@ See repository root for license information.
 **Features**: 33 tools, commit workflow, 6 workflows, LangSmith observability, comprehensive docs
 **Coverage**: Architecture guide, setup guide, testing examples
 **Recent Updates**:
+
 - ✅ LangSmith environment variables and anonymizers (Phase 1.1-1.2)
 - ✅ Metadata and tags for observability (Phase 1.3)
 - ✅ Fixed CRUD subgraph pan-os-python API usage

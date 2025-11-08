@@ -10,16 +10,25 @@
 
 ## Table of Contents
 
-1. [Project Overview](#project-overview)
-2. [Core Architecture](#core-architecture)
-3. [ReAct vs Deterministic: Deep Dive](#react-vs-deterministic-deep-dive)
-4. [Directory Structure](#directory-structure)
-5. [State Management](#state-management)
-6. [Subgraph Patterns](#subgraph-patterns)
-7. [Tool Organization](#tool-organization)
-8. [Testing Strategy](#testing-strategy)
-9. [Common Patterns](#common-patterns)
-10. [Troubleshooting](#troubleshooting)
+1. Project Overview
+
+2. Core Architecture  
+
+3. ReAct vs Deterministic: Deep Dive
+
+4. Directory Structure
+
+5. State Management
+
+6. Subgraph Patterns
+
+7. Tool Organization
+
+8. Testing Strategy
+
+9. Common Patterns
+
+10. Troubleshooting
 
 ---
 
@@ -27,9 +36,12 @@
 
 ### Purpose
 
-AI-powered automation agent for Palo Alto Networks PAN-OS firewalls using LangGraph and pan-os-python. Demonstrates two distinct automation approaches:
+AI-powered automation agent for Palo Alto Networks PAN-OS firewalls using LangGraph and
+  pan-os-python.
+  Demonstrates two distinct automation approaches:
 
 1. **Autonomous Mode**: ReAct agent with full tool access for exploratory automation
+
 2. **Deterministic Mode**: Predefined workflows for repeatable, auditable operations
 
 ### Tech Stack
@@ -55,19 +67,24 @@ AI-powered automation agent for Palo Alto Networks PAN-OS firewalls using LangGr
 
 ### Composable Subgraph Pattern
 
-```
+```text
+
 Main Graph (checkpointer)
     ├── Autonomous Graph (ReAct loop)
     │   └── Tools → Subgraphs (stateless)
     └── Deterministic Graph (workflow executor)
         └── Workflow Subgraph → Tools → Subgraphs
-```
+
+```text
 
 **Key Principles:**
 
 1. **Checkpointing**: Only main graphs have checkpointers (MemorySaver)
+
 2. **Stateless Subgraphs**: All subgraphs compile without checkpointers
+
 3. **Transactional**: Subgraphs execute atomically within tool calls
+
 4. **Reusable**: Same subgraph can be invoked by multiple tools
 
 ### Dual-Mode Design
@@ -83,7 +100,8 @@ Main Graph (checkpointer)
 
 ### Overview Comparison
 
-The agent implements two fundamentally different automation paradigms, each optimized for different use cases:
+The agent implements two fundamentally different automation paradigms,
+  each optimized for different use cases:
 
 | Aspect | Autonomous (ReAct) | Deterministic (Workflow) |
 |--------|-------------------|-------------------------|
@@ -103,7 +121,9 @@ The agent implements two fundamentally different automation paradigms, each opti
 **File**: `src/autonomous_graph.py`
 
 **Graph Structure**:
-```
+
+```text
+
 ┌─────────────────────────────────────────────────┐
 │           Autonomous Graph (ReAct)              │
 │  ┌─────────────────────────────────────────┐   │
@@ -150,21 +170,29 @@ The agent implements two fundamentally different automation paradigms, each opti
 │    - Persists conversation history             │
 │    - Enables multi-turn dialogue               │
 └─────────────────────────────────────────────────┘
-```
+
+```text
 
 **Execution Flow**:
 1. **User Input**: Natural language prompt → `HumanMessage`
+
 2. **Agent Reasoning**: LLM receives full message history + system prompt + all 34 tools
+
 3. **Decision Point**:
+
    - If LLM wants more info → calls tools (e.g., `address_list`)
    - If ready to act → calls tools (e.g., `address_create`)
    - If task complete → returns final message
 4. **Tool Execution**: Tools execute (may invoke subgraphs), results appended to messages
+
 5. **Loop**: Agent sees tool results, decides next action
+
 6. **Termination**: Agent returns response with no tool calls
 
 **Example Execution**:
-```
+
+```text
+
 User: "Create address objects for web servers 10.1.1.1 through 10.1.1.5"
 
 Turn 1:
@@ -182,9 +210,11 @@ Turn 3:
 
 Turn 4:
   Agent → Sees: All addresses created successfully
-  Agent → Returns: "I've created 5 address objects for web servers 10.1.1.1 through 10.1.1.5. All objects are confirmed."
+  Agent → Returns: "I've created 5 address objects for web servers 10.1.1.1 through 10.1.1.5.
+  All objects are confirmed."
   END
-```
+
+```text
 
 **Key Characteristics**:
 - **Adaptive**: Can change strategy based on results
@@ -197,7 +227,9 @@ Turn 4:
 **File**: `src/deterministic_graph.py`
 
 **Graph Structure**:
-```
+
+```text
+
 ┌──────────────────────────────────────────────────────┐
 │        Deterministic Graph (Workflow Executor)       │
 │  ┌──────────────────────────────────────────────┐   │
@@ -264,10 +296,13 @@ Turn 4:
 │  Checkpointer: MemorySaver                          │
 │    - Persists workflow execution state              │
 └──────────────────────────────────────────────────────┘
-```
+
+```text
 
 **Workflow Definition Structure**:
+
 ```python
+
 {
     "name": "Web Server Setup",
     "description": "Create web server infrastructure",
@@ -297,21 +332,28 @@ Turn 4:
         }
     ]
 }
-```
+
+```text
 
 **Execution Flow**:
 1. **Workflow Lookup**: Parse user input → find workflow in `WORKFLOWS` dict
+
 2. **Step Iteration**: Execute each step sequentially
+
 3. **Step Execution**:
+
    - **tool_call**: Invoke specified tool with params
    - **approval**: Pause for human approval (LangGraph `interrupt()`)
 4. **LLM Evaluation**: After each step, LLM analyzes result
+
    - Success → continue to next step
    - Failure → stop or retry (based on config)
 5. **Summary**: Format comprehensive report of execution
 
 **Example Execution**:
-```
+
+```text
+
 User: "workflow: web_server_setup"
 
 Step 1/4: Create web address
@@ -340,7 +382,8 @@ Summary:
   Steps: 4/4
   ✅ Successful: 4
   ❌ Failed: 0
-```
+
+```text
 
 **Key Characteristics**:
 - **Predictable**: Always executes same steps in same order
@@ -353,10 +396,12 @@ Summary:
 #### Autonomous State
 
 ```python
+
 class AutonomousState(TypedDict):
     """ReAct agent state - accumulates conversation"""
     messages: Annotated[Sequence[BaseMessage], add_messages]
-```
+
+```text
 
 **Characteristics**:
 - **Simple**: Single field (messages)
@@ -365,18 +410,22 @@ class AutonomousState(TypedDict):
 - **Conversation-based**: Everything tracked in message history
 
 **State Evolution**:
-```
+
+```text
+
 Turn 1: [HumanMessage("Create address")]
 Turn 2: [HumanMessage("Create address"),
          AIMessage(tool_calls=[...]),
          ToolMessage(result="✅ Created")]
 Turn 3: [... previous messages ...,
          AIMessage("Address created successfully")]
-```
+
+```text
 
 #### Deterministic State
 
 ```python
+
 class DeterministicState(TypedDict):
     """Workflow execution state - tracks step progress"""
     messages: Annotated[Sequence[BaseMessage], add_messages]
@@ -386,7 +435,8 @@ class DeterministicState(TypedDict):
     continue_workflow: bool              # Should continue?
     workflow_complete: bool              # Finished?
     error_occurred: bool                 # Any failures?
-```
+
+```text
 
 **Characteristics**:
 - **Structured**: Multiple fields tracking execution
@@ -395,7 +445,9 @@ class DeterministicState(TypedDict):
 - **Workflow-based**: Knows entire execution plan upfront
 
 **State Evolution**:
-```
+
+```text
+
 Initial: {
     workflow_steps: [step1, step2, step3],
     current_step_index: 0,
@@ -423,13 +475,15 @@ Complete: {
     step_results: [...all 3 results...],
     workflow_complete: true
 }
-```
+
+```text
 
 ### Decision-Making Comparison
 
 #### Autonomous Mode Decision Flow
 
-```
+```text
+
 User Input
     │
     ▼
@@ -469,27 +523,36 @@ User Input
     │
     └─► Final Response
         (no more tool calls needed)
-```
+
+```text
 
 **Example Decision Process**:
-```
+
+```text
+
 User: "Set up web server access for 10.1.1.0/24 to internet"
 
 LLM Reasoning:
+
   1. Need to create source address (10.1.1.0/24)
+
   2. Need to identify appropriate services (likely HTTP/HTTPS)
+
   3. Need to create security policy (trust → untrust)
+
   4. Should verify before committing
 
 Decision: Call tools sequentially
   → address_create(name="internal-web", value="10.1.1.0/24")
   → security_policy_create(source=["internal-web"], ...)
   → Ask user about commit
-```
+
+```text
 
 #### Deterministic Mode Decision Flow
 
-```
+```text
+
 Workflow Definition (Static)
     │
     ▼
@@ -530,16 +593,20 @@ Workflow Definition (Static)
     │
     └─► Pause (approval type)
         Wait for human → then continue
-```
+
+```text
 
 **Example Decision Process**:
-```
+
+```text
+
 Workflow: "complete_security_workflow"
 
 Step 1: Batch create addresses
   Execute: batch_operation(items=[...])
   Result: "✅ Successful: 2"
   LLM Evaluation:
+
     - Sees "✅" indicator
     - Confirms 2/2 success
     - Decision: continue
@@ -548,39 +615,46 @@ Step 2: Create security policy
   Execute: security_policy_create(...)
   Result: "❌ Error: Object 'internal-net-1' does not exist"
   LLM Evaluation:
+
     - Sees "❌" indicator
     - Detects dependency error
     - Decision: stop
 
 Workflow: STOPPED
 Reason: Critical error - missing dependency
-```
+
+```text
 
 ### When to Use Each Mode
 
 #### Use Autonomous Mode When:
 
 ✅ **Exploratory Tasks**
+
 - "Show me all address objects and groups"
 - "Find unused security policies"
 - "Investigate why traffic is being blocked"
 
 ✅ **Ad-hoc Operations**
+
 - "Create a new address for server X"
 - "Quickly add this IP to the DMZ group"
 - "Delete all objects with tag 'temporary'"
 
 ✅ **Complex Problem-Solving**
+
 - "Set up microsegmentation for database tier"
 - "Optimize our security policy rulebase"
 - "Troubleshoot connectivity issue between zones"
 
 ✅ **Learning/Training**
+
 - "What objects reference this address group?"
 - "How would I create a security policy for...?"
 - "Explain the current NAT configuration"
 
 ✅ **Adaptive Requirements**
+
 - Task requirements not fully known upfront
 - Need LLM to make decisions based on current state
 - Want agent to explore options and recommend
@@ -588,26 +662,31 @@ Reason: Critical error - missing dependency
 #### Use Deterministic Mode When:
 
 ✅ **Production Workflows**
+
 - Standard server onboarding
 - Network segment provisioning
 - Scheduled policy updates
 
 ✅ **Compliance/Audit**
+
 - Need exact record of steps executed
 - Require approval gates
 - Must follow specific procedures
 
 ✅ **Repeatable Operations**
+
 - Same task performed regularly
 - Multiple environments (dev/staging/prod)
 - Batch processing with known parameters
 
 ✅ **Critical Operations**
+
 - Changes requiring human approval
 - Multi-step processes with dependencies
 - Operations with rollback requirements
 
 ✅ **Team Collaboration**
+
 - Codify team procedures as workflows
 - Share standardized automation
 - Onboard new team members with workflows
@@ -627,6 +706,7 @@ Reason: Critical error - missing dependency
 #### Autonomous Mode Invocation
 
 ```python
+
 from src.autonomous_graph import create_autonomous_graph
 from langchain_core.messages import HumanMessage
 
@@ -641,11 +721,13 @@ result = graph.invoke(
 
 # LLM decides what tools to use
 # Might call: batch_operation, address_list, etc.
-```
+
+```text
 
 #### Deterministic Mode Invocation
 
 ```python
+
 from src.deterministic_graph import create_deterministic_graph
 from langchain_core.messages import HumanMessage
 
@@ -659,13 +741,15 @@ result = graph.invoke(
 )
 
 # Executes predefined steps exactly as specified
-```
+
+```text
 
 ---
 
 ## Directory Structure
 
-```
+```python
+
 panos-agent/
 ├── src/
 │   ├── autonomous_graph.py         # ReAct agent (agent → tools → agent)
@@ -702,7 +786,8 @@ panos-agent/
 ├── pyproject.toml                  # uv package config
 ├── .pre-commit-config.yaml         # Code quality hooks
 └── README.md
-```
+
+```text
 
 ---
 
@@ -715,11 +800,13 @@ All state schemas defined in `src/core/state_schemas.py` using `TypedDict`.
 #### Message Accumulation
 
 ```python
+
 from langgraph.graph.message import add_messages
 
 class AutonomousState(TypedDict):
     messages: Annotated[Sequence[BaseMessage], add_messages]
-```
+
+```text
 
 - `add_messages` reducer: Appends new messages to history
 - Used in both autonomous and deterministic graphs
@@ -727,11 +814,13 @@ class AutonomousState(TypedDict):
 #### Parallel Write Reducers
 
 ```python
+
 import operator
 
 class BatchState(TypedDict):
     current_batch_results: Annotated[list[dict], operator.add]
-```
+
+```text
 
 - `operator.add` reducer: Allows multiple parallel nodes to write
 - Critical for LangGraph `Send` API (fan-out/fan-in)
@@ -739,8 +828,11 @@ class BatchState(TypedDict):
 #### State Lifecycle
 
 1. **Initialization**: Tool/workflow invokes subgraph with initial state
+
 2. **Transformation**: Each node returns updated state dict
+
 3. **Aggregation**: Reducers combine parallel writes
+
 4. **Return**: Final state dict returned to caller
 
 ### State Schemas Reference
@@ -764,14 +856,19 @@ class BatchState(TypedDict):
 **Purpose**: Single object lifecycle with validation and retry
 
 **Flow**:
-```
+
+```text
+
 validate_input → check_existence →
 [create|read|update|delete|list]_object →
 format_response → END
-```
+
+```text
 
 **Routing Logic**:
+
 ```python
+
 def route_operation(state: CRUDState):
     if state.get("error"):
         return "format_response"
@@ -780,7 +877,8 @@ def route_operation(state: CRUDState):
         "read": "read_object",
         ...
     }[state["operation_type"]]
-```
+
+```text
 
 **Error Handling**:
 - Always returns error in state, never raises
@@ -794,14 +892,19 @@ def route_operation(state: CRUDState):
 **Purpose**: PAN-OS commit with approval and job polling
 
 **Flow**:
-```
+
+```text
+
 validate → check_approval →
 execute_commit → poll_job_status →
 format_response → END
-```
+
+```text
 
 **Job Polling**:
+
 ```python
+
 # Poll every 5 seconds for max 5 minutes
 for poll_count in range(60):
     status = get_job_status(job_id)
@@ -810,15 +913,19 @@ for poll_count in range(60):
     elif status in ["FAIL", "ERROR"]:
         return failure
     time.sleep(5)
-```
+
+```text
 
 **HITL Approval**:
+
 ```python
+
 approval = interrupt({
     "type": "commit_approval",
     "message": "Approve commit?"
 })
-```
+
+```text
 
 ### Deterministic Workflow Subgraph
 
@@ -827,21 +934,27 @@ approval = interrupt({
 **Purpose**: Execute predefined workflows step-by-step
 
 **Flow**:
-```
+
+```text
+
 load_workflow → execute_step →
 evaluate_step (LLM) →
 [increment_step | format_result]
-```
+
+```text
 
 **LLM Evaluation**:
+
 ```python
+
 # LLM decides: continue, stop, or retry
 evaluation = llm.invoke([
     SystemMessage("Evaluate step result"),
     HumanMessage(f"Step: {step_name}, Result: {result}")
 ])
 # Returns: {"decision": "continue", "reason": "...", "success": true}
-```
+
+```text
 
 ---
 
@@ -870,7 +983,9 @@ evaluation = llm.invoke([
 ### Tool Design Pattern
 
 **Template**:
+
 ```python
+
 from langchain_core.tools import tool
 
 @tool
@@ -887,13 +1002,18 @@ def my_tool(param: str) -> str:
         return result["message"]
     except Exception as e:
         return f"❌ Error: {type(e).__name__}: {e}"
-```
+
+```text
 
 **Key Rules**:
 1. **Always return string** (even on error)
+
 2. **Use unique thread_id** for stateless subgraphs
+
 3. **Comprehensive docstrings** with examples
+
 4. **Type hints** for all parameters
+
 5. **Error context** in return message
 
 ---
@@ -902,18 +1022,22 @@ def my_tool(param: str) -> str:
 
 ### Test Structure
 
-```
+```text
+
 tests/
 ├── conftest.py              # Shared fixtures (mock firewall, objects)
 ├── test_crud_subgraph.py    # Integration tests (with mocks)
 ├── test_commit_subgraph.py  # Integration tests
 └── test_tools.py            # Tool invocation tests
-```
+
+```text
 
 ### Fixtures
 
 **Mock Firewall**:
+
 ```python
+
 @pytest.fixture
 def mock_firewall():
     fw = MagicMock()
@@ -921,7 +1045,8 @@ def mock_firewall():
     fw.refreshall = Mock()
     fw.find = Mock()
     return fw
-```
+
+```text
 
 **Mock Objects**:
 - `mock_address_object`
@@ -937,6 +1062,7 @@ def mock_firewall():
 ### Running Tests
 
 ```bash
+
 # All tests
 pytest
 
@@ -948,7 +1074,8 @@ pytest --cov=src --cov-report=html
 
 # Verbose
 pytest -v
-```
+
+```text
 
 ---
 
@@ -957,6 +1084,7 @@ pytest -v
 ### Pattern 1: Subgraph Invocation
 
 ```python
+
 import uuid
 
 subgraph = create_my_subgraph()
@@ -965,11 +1093,13 @@ result = subgraph.invoke(
     config={"configurable": {"thread_id": str(uuid.uuid4())}}
 )
 return result["message"]
-```
+
+```text
 
 ### Pattern 2: Error Handling in Tools
 
 ```python
+
 @tool
 def my_tool() -> str:
     try:
@@ -977,11 +1107,13 @@ def my_tool() -> str:
         return result["message"]
     except Exception as e:
         return f"❌ Error: {type(e).__name__}: {e}"
-```
+
+```text
 
 ### Pattern 3: Conditional Routing
 
 ```python
+
 def route_based_on_state(state: MyState):
     if state.get("error"):
         return "error_handler"
@@ -989,7 +1121,8 @@ def route_based_on_state(state: MyState):
         return "request_approval"
     else:
         return "continue"
-```
+
+```text
 
 ---
 

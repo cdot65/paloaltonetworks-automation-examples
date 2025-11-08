@@ -9,7 +9,8 @@
 
 ## Overview
 
-This TODO tracks the implementation of enhancements identified through a comprehensive review of 25 LangGraph v1.0.0 documentation files against the current PAN-OS agent implementation.
+This TODO tracks the implementation of enhancements identified through a comprehensive review of 25
+LangGraph v1.0.0 documentation files against the current PAN-OS agent implementation.
 
 ### Summary Statistics
 
@@ -131,7 +132,7 @@ This TODO tracks the implementation of enhancements identified through a compreh
 **References:**
 
 - `docs/recommendations/19-observability.md` (lines 78-145)
-- LangSmith anonymizers: <https://docs.smith.langchain.com/how_to_guides/anonymization>
+- LangSmith anonymizers: <<https://docs.smith.langchain.com/how_to_guides/anonymization>>
 
 ---
 
@@ -243,7 +244,10 @@ This TODO tracks the implementation of enhancements identified through a compreh
   - **File:** `tests/unit/test_subgraphs.py` (NEW)
 
 - [ ] **Calculate and verify coverage**
-  - [ ] Run: `pytest --cov=src/autonomous_graph --cov=src/deterministic_graph --cov=src/core/tools tests/unit/`
+
+  -
+  [ ] Run: `pytest --cov=src/autonomous_graph --cov=src/deterministic_graph --cov=src/core/tools tests/unit/`
+
   - [ ] Achieve >80% coverage on critical paths
   - [ ] Generate coverage report: `pytest --cov-report=html`
 
@@ -259,11 +263,11 @@ This TODO tracks the implementation of enhancements identified through a compreh
 **References:**
 
 - `docs/recommendations/16-test.md` (lines 79-139)
-- LangGraph testing: <https://langchain-ai.github.io/langgraph/how-tos/testing/>
+- LangGraph testing: <<https://langchain-ai.github.io/langgraph/how-tos/testing/>>
 
 ---
 
-#### 2.2 Create Integration Tests for Full Graphs (3-4 hours)
+### 2.2 Create Integration Tests for Full Graphs (3-4 hours)
 
 **Priority:** HIGH
 **Dependencies:** Task 2.1 should be mostly complete (fixtures available)
@@ -391,7 +395,7 @@ This TODO tracks the implementation of enhancements identified through a compreh
 **References:**
 
 - `docs/recommendations/16-test.md` (lines 193-215)
-- LangSmith evaluation: <https://docs.smith.langchain.com/evaluation>
+- LangSmith evaluation: <<https://docs.smith.langchain.com/evaluation>>
 
 ---
 
@@ -622,7 +626,7 @@ This TODO tracks the implementation of enhancements identified through a compreh
 **References:**
 
 - `docs/recommendations/12-add-memory.md` (lines 79-154)
-- Store API: <https://langchain-ai.github.io/langgraph/how-tos/memory/>
+- Store API: <<https://langchain-ai.github.io/langgraph/how-tos/memory/>>
 
 ---
 
@@ -809,7 +813,7 @@ This TODO tracks the implementation of enhancements identified through a compreh
 **References:**
 
 - `docs/recommendations/17-deploy.md` (lines 79-187)
-- LangGraph deploy: <https://langchain-ai.github.io/langgraph/cloud/deployment/>
+- LangGraph deploy: <<https://langchain-ai.github.io/langgraph/cloud/deployment/>>
 
 ---
 
@@ -877,8 +881,8 @@ This TODO tracks the implementation of enhancements identified through a compreh
 
 - [ ] **Test Agent Chat UI with local server**
   - [ ] Run: `langgraph dev`
-  - [ ] Visit: <https://agentchat.vercel.app>
-  - [ ] Connect to: <http://localhost:8000>
+  - [ ] Visit: <<https://agentchat.vercel.app>>
+  - [ ] Connect to: <<http://localhost:8000>>
   - [ ] Test conversation, tool visualization, time-travel
 
 - [ ] **Add "Agent Chat UI" section to README**
@@ -891,10 +895,10 @@ This TODO tracks the implementation of enhancements identified through a compreh
 - [ ] **Document local setup**
   - [ ] Prerequisites: Node.js, npm
   - [ ] Steps:
-    - `git clone https://github.com/langchain-ai/agent-chat-ui`
+    - `git clone <https://github.com/langchain-ai/agent-chat-ui`>
     - `cd agent-chat-ui && npm install`
-    - `VITE_LANGGRAPH_API_URL=http://localhost:8000 npm run dev`
-  - [ ] Open: <http://localhost:5173>
+    - `VITE_LANGGRAPH_API_URL=<http://localhost:8000> npm run dev`
+  - [ ] Open: <<http://localhost:5173>>
 
 - [ ] **Create demo video or screenshots**
   - [ ] Screenshot: Tool call visualization
@@ -913,7 +917,7 @@ This TODO tracks the implementation of enhancements identified through a compreh
 **References:**
 
 - `docs/recommendations/18-agent-chat-ui.md`
-- Agent Chat UI: <https://github.com/langchain-ai/agent-chat-ui>
+- Agent Chat UI: <<https://github.com/langchain-ai/agent-chat-ui>>
 
 ---
 
@@ -1036,9 +1040,12 @@ This TODO tracks the implementation of enhancements identified through a compreh
 
 - [x] **Bug Fix 2: Deterministic Workflow - Step Accumulation**
   - **Issue:** 2-step workflows showing 10-20 steps due to reducer multiplying list items
-  - **Root Cause:** LangGraph's `operator.add` reducer was multiplying items with `**state` spread operator
+  -
+  **Root Cause:** LangGraph's `operator.add` reducer was multiplying items with `**state` spread operator
+
   - **Fix:**
     - Removed `operator.add` from `DeterministicWorkflowState.step_outputs` in `src/core/state_schemas.py`
+
     - Changed to manual list management: `state["step_outputs"] + [output]`
   - **Testing:** Verified 2-step workflow correctly shows 2/2 steps
   - **Files Modified:**
@@ -1063,7 +1070,8 @@ This TODO tracks the implementation of enhancements identified through a compreh
     - `src/core/subgraphs/crud.py` (6 functions updated with three-tier exception handling)
   - **Testing:** All error classes verified as imported and used
 
-**Impact:** Both graphs now fully functional and stable for production use, with robust PAN-OS-specific error handling.
+**Impact:** Both graphs now fully functional and stable for production use, with robust
+PAN-OS-specific error handling.
 
 ---
 
@@ -1100,7 +1108,8 @@ This TODO tracks the implementation of enhancements identified through a compreh
   - [x] Comprehensive documentation (README, ARCHITECTURE, SETUP)
   - [x] 25 LangGraph v1.0.0 recommendation reviews
 
-**Status:** Production-ready core functionality. This TODO adds observability, testing, and enhancements.
+**Status:** Production-ready core functionality. This TODO adds observability, testing,
+  and enhancements.
 
 ---
 
@@ -1136,7 +1145,8 @@ This TODO tracks the implementation of enhancements identified through a compreh
 
 ## Dependencies Graph
 
-```
+```text
+
 Phase 1:
   1.1 (env vars) ─→ 1.2 (anonymizers) ─→ 1.3 (metadata)
   2.1 (unit tests) ─→ 2.2 (integration tests)
@@ -1152,7 +1162,8 @@ Phase 2:
 
 Phase 3:
   All independent (can run in any order or skip entirely)
-```
+
+```text
 
 ---
 
@@ -1161,25 +1172,30 @@ Phase 3:
 **To begin implementation:**
 
 1. **Start with Phase 1, Task 1.1-1.2 (CRITICAL)**
+
    - Add LangSmith env vars (30 min)
    - Implement anonymizers (2-3h)
    - **DO NOT enable tracing until anonymizers are complete**
 
 2. **Continue Phase 1 sequentially**
+
    - Complete observability (1.3)
    - Add unit tests (2.1)
    - Add integration tests (2.2)
 
 3. **Phase 1 can be parallelized:**
+
    - One developer: Observability (1.1-1.3)
    - Another developer: Testing (2.1-2.2)
    - Another developer: Error handling (3.1-3.3)
 
 4. **Phase 2 after Phase 1 complete**
+
    - Prioritize: Streaming UX (8) for immediate user benefit
    - Then: Store API (4), Runtime Context (5)
 
 5. **Phase 3 optional**
+
    - Implement only if time permits
    - Best ROI: Time-travel CLI (11), Agent Chat UI (9)
 
@@ -1204,6 +1220,7 @@ Phase 3:
 ## Recent Progress (2025-01-08)
 
 **Completed:**
+
 - ✅ Phase 1.1: LangSmith Environment Variables (0.5h)
 - ✅ Phase 1.2: Anonymizers Implementation (2-3h) - core implementation, tests deferred
 - ✅ Phase 1.3: Metadata and Tags (1h) - implementation complete, docs to be updated
@@ -1212,6 +1229,7 @@ Phase 3:
 - ✅ Enhancement: PAN-OS-specific error handling (3-tier exception hierarchy)
 
 **Next Steps:**
+
 - Phase 1.2: Unit tests for anonymizers (deferred to Phase 1, Task 2.1)
 - Phase 1.3: Update README with observability section
 - Phase 1, Task 2: Testing Infrastructure (8-12h)
