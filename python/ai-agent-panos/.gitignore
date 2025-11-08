@@ -51,3 +51,7 @@ logs/
 # OS
 .DS_Store
 Thumbs.db
+
+# docs
+docs/langgraph/
+docs/recommendations/
