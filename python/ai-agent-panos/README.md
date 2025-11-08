@@ -315,6 +315,240 @@ Every execution includes rich metadata for filtering:
 
 Anonymization happens **before** traces are sent to LangSmith, so sensitive data never leaves your environment.
 
+## Timeouts
+
+### Execution Timeouts
+
+All graph invocations include automatic timeout protection to prevent runaway executions and ensure responsive behavior.
+
+**Default Timeouts:**
+
+- **Autonomous mode**: 300 seconds (5 minutes)
+  - Allows for ~10-15 ReAct iterations with typical LLM response times
+  - Covers multiple tool executions and LLM reasoning loops
+
+- **Deterministic mode**: 600 seconds (10 minutes)
+  - Allows for complex multi-step workflows
+  - Includes time for commit operations and approval gates
+
+- **Commit operations**: 180 seconds (3 minutes)
+  - PAN-OS commits typically take 30-120 seconds
+  - Provides buffer for slow commits while preventing indefinite hangs
+
+### Timeout Behavior
+
+When a timeout occurs:
+
+1. **Execution stops immediately** - Graph execution is terminated
+2. **Error message** - User-friendly timeout error with context
+3. **Logging** - Timeout logged with mode, thread_id, and prompt details
+4. **Exit code 1** - CLI exits with error code for scripting
+
+**Example timeout error:**
+
+```bash
+Timeout Error: Graph execution exceeded 300.0s timeout
+Mode: autonomous
+Thread ID: abc-123-def
+Prompt preview: Create 100 address objects and security rules...
+```
+
+### Overriding Timeouts
+
+Timeouts are configured in `src/core/config.py` as module constants. To adjust timeouts, modify:
+
+```python
+TIMEOUT_AUTONOMOUS = 300.0      # Change to desired seconds
+TIMEOUT_DETERMINISTIC = 600.0   # Change to desired seconds
+TIMEOUT_COMMIT = 180.0          # Change to desired seconds
+```
+
+**When to increase timeouts:**
+- Large-scale batch operations (100+ objects)
+- Complex workflows with many steps (10+ steps)
+- Slow firewall commits (older hardware, large configs)
+
+**When to decrease timeouts:**
+- Fast development/testing cycles
+- Simple queries that should complete quickly
+- CI/CD pipelines with strict time limits
+
+## Error Handling & Resilience
+
+### Automatic Retry Policies
+
+All PAN-OS API operations include automatic retry handling with exponential backoff to gracefully handle transient failures like network issues and temporary connection problems.
+
+**Retry behavior:**
+
+- **Max attempts:** 3 (initial attempt + 2 retries)
+- **Backoff strategy:** Exponential with factor 2.0
+  - 1st retry: 2 seconds delay
+  - 2nd retry: 4 seconds delay
+  - 3rd retry: 8 seconds delay
+
+**Retryable errors (automatically retried):**
+- `PanConnectionTimeout` - Firewall connection timeouts
+- `PanURLError` - Network/URL errors (DNS, routing issues)
+- `ConnectionError` - Generic network connection failures
+- `TimeoutError` - Operation timeouts
+
+**Non-retryable errors (fail immediately):**
+- `PanDeviceError` - Configuration/validation errors
+- `PanObjectError` - Object-specific errors (already exists, not found)
+- All other exceptions - Unknown errors fail fast
+
+### Commit Operations
+
+Commit operations use a specialized retry policy optimized for user-facing feedback:
+
+- **Max attempts:** 2 (initial + 1 retry)
+- **Backoff:** Exponential with factor 1.5 (delays: 1.5s, 2.25s)
+- **Retryable errors:** Connection and network errors only
+
+Commits fail quickly to provide rapid feedback, as retrying configuration errors is unlikely to succeed.
+
+### Retry Logging
+
+LangGraph automatically logs all retry attempts. You'll see messages like:
+
+```
+[WARNING] Attempt 1/3 failed: PanConnectionTimeout: Connection timed out. Retrying in 2.0s...
+[WARNING] Attempt 2/3 failed: PanConnectionTimeout: Connection timed out. Retrying in 4.0s...
+[INFO] Operation succeeded after 2 retries
+```
+
+Or on final failure:
+
+```
+[ERROR] Max retries (3) exceeded: PanConnectionTimeout: Connection timed out
+```
+
+### Error Classification
+
+The agent classifies errors into three tiers:
+
+1. **Tier 1 - Connectivity Errors (Retryable)**
+   - Network timeouts, DNS failures, connection resets
+   - Automatically retried with exponential backoff
+   - Example: `PanConnectionTimeout`, `PanURLError`
+
+2. **Tier 2 - API/Configuration Errors (Non-retryable)**
+   - Validation errors, object conflicts, permission issues
+   - Fail immediately with clear error messages
+   - Example: `PanDeviceError: "Object already exists"`
+
+3. **Tier 3 - Unexpected Errors (Non-retryable)**
+   - Unknown exceptions with full traceback logging
+   - Reported for debugging and investigation
+
+### Best Practices
+
+**When retries help:**
+- Temporary network issues
+- Firewall under heavy load
+- Transient API unavailability
+- Brief connection interruptions
+
+**When retries don't help (and the agent won't retry):**
+- Invalid configuration (wrong IP format, invalid port)
+- Duplicate object names
+- Missing dependencies (referenced objects don't exist)
+- Permission/authentication errors
+
+**Manual intervention needed for:**
+- Persistent network issues (check firewall connectivity)
+- Configuration errors (fix input parameters)
+- Permission issues (verify API credentials)
+
+### Recovering from Failures
+
+The agent uses checkpointing to save conversation state after every step, allowing you to resume from failures without losing progress.
+
+**Checkpoint features:**
+- **Automatic state persistence** - Every graph step is saved
+- **Thread-based isolation** - Each conversation has its own checkpoint history
+- **Resume capability** - Continue from the last successful step after errors
+- **Time-travel debugging** - View and fork from any historical checkpoint
+
+#### Resuming After Failures
+
+If an operation fails (timeout, network error, tool failure), you can resume using the same thread ID:
+
+```bash
+# Initial execution fails after 3 steps
+panos-agent run -p "Create 10 address objects" -m autonomous --thread-id session-123
+# Error: Operation timed out after creating 3 objects
+
+# Resume from last checkpoint - continues from step 4
+panos-agent run -p "Continue creating the remaining objects" -m autonomous --thread-id session-123
+# Picks up where it left off, creates objects 4-10
+```
+
+**Key points:**
+- Use the **same thread ID** to resume the conversation
+- The agent has access to **full conversation history**
+- Previous tool results are **remembered** (no duplicate work)
+- Works for both **autonomous and deterministic** modes
+
+#### Common Recovery Scenarios
+
+**1. Timeout during long workflow:**
+
+```bash
+# Workflow times out at step 5/10
+panos-agent run -p "complex_workflow" -m deterministic --thread-id wf-001
+# Timeout Error: Graph execution exceeded 600.0s timeout
+
+# Resume with same thread_id - continues from step 6
+panos-agent run -p "complex_workflow" -m deterministic --thread-id wf-001
+```
+
+**2. Network error during batch operation:**
+
+```bash
+# Network fails after creating 5/20 objects
+panos-agent run -p "Create 20 address objects" --thread-id batch-001
+# ❌ Error: PanConnectionTimeout
+
+# Fix network, resume with same thread - creates remaining 15
+panos-agent run -p "Continue the batch creation" --thread-id batch-001
+```
+
+**3. Tool failure requiring correction:**
+
+```bash
+# Tool fails due to invalid input
+panos-agent run -p "Create address with IP 256.1.1.1" --thread-id fix-001
+# ❌ Error: Invalid IP address
+
+# Correct the input and retry with same thread
+panos-agent run -p "Create address with IP 192.168.1.1 instead" --thread-id fix-001
+# Agent remembers the error and uses corrected input
+```
+
+#### Starting Fresh
+
+To start a new conversation without history, use a **different thread ID** or omit it entirely:
+
+```bash
+# Fresh conversation (auto-generates thread ID)
+panos-agent run -p "List address objects" -m autonomous
+
+# Fresh conversation with explicit new thread ID
+panos-agent run -p "List address objects" --thread-id session-new-001
+```
+
+#### Advanced: Checkpoint History
+
+Each thread maintains a full checkpoint history. While CLI commands for viewing history are planned (see [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md)), you can currently:
+
+- **View checkpoints** - Use LangGraph Studio to visualize checkpoint history
+- **Fork from checkpoint** - Create a new thread from any historical point (time-travel)
+- **Inspect state** - See exact state at any step in the workflow
+
+For detailed troubleshooting scenarios and recovery strategies, see **[docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md)**.
+
 ## Architecture
 
 ### Project Structure

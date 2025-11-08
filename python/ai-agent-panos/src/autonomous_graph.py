@@ -14,6 +14,7 @@ from langgraph.checkpoint.memory import MemorySaver
 from langgraph.graph import END, START, StateGraph
 from langgraph.prebuilt import ToolNode
 from src.core.config import get_settings
+from src.core.retry_policies import PANOS_RETRY_POLICY
 from src.core.state_schemas import AutonomousState
 from src.tools import ALL_TOOLS
 
@@ -123,7 +124,7 @@ def create_autonomous_graph() -> StateGraph:
 
     # Add nodes
     workflow.add_node("agent", call_agent)
-    workflow.add_node("tools", tool_node)
+    workflow.add_node("tools", tool_node, retry=PANOS_RETRY_POLICY)
 
     # Add edges
     workflow.add_edge(START, "agent")

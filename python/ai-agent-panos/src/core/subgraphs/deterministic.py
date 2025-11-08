@@ -14,6 +14,7 @@ from langgraph.graph import END, START, StateGraph
 from langgraph.types import interrupt
 from panos.errors import PanConnectionTimeout, PanDeviceError, PanURLError
 from src.core.config import get_settings
+from src.core.retry_policies import PANOS_RETRY_POLICY
 from src.core.state_schemas import DeterministicWorkflowState
 from src.tools import ALL_TOOLS
 
@@ -411,7 +412,7 @@ def create_deterministic_workflow_subgraph() -> StateGraph:
 
     # Add nodes
     workflow.add_node("load_workflow", load_workflow)
-    workflow.add_node("execute_step", execute_step)
+    workflow.add_node("execute_step", execute_step, retry=PANOS_RETRY_POLICY)
     workflow.add_node("evaluate_step", evaluate_step)
     workflow.add_node("increment_step", increment_step)
     workflow.add_node("format_result", format_result)

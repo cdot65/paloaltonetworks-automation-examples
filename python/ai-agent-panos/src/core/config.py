@@ -62,6 +62,31 @@ class Settings(BaseSettings):
     log_level: str = "INFO"
 
 
+# Timeout constants for graph invocations
+# These prevent runaway executions and ensure responsive behavior
+
+TIMEOUT_AUTONOMOUS = 300.0  # 5 minutes for autonomous mode
+"""Timeout for autonomous (ReAct) mode graph invocations.
+
+Autonomous mode can make multiple LLM calls and tool executions in a loop.
+5 minutes allows for ~10-15 ReAct iterations with typical response times.
+"""
+
+TIMEOUT_DETERMINISTIC = 600.0  # 10 minutes for deterministic mode
+"""Timeout for deterministic workflow mode graph invocations.
+
+Deterministic workflows execute predefined steps sequentially.
+10 minutes allows for complex multi-step workflows with commit operations.
+"""
+
+TIMEOUT_COMMIT = 180.0  # 3 minutes for commit operations
+"""Timeout for PAN-OS commit operations.
+
+Firewall commits can take 30-120 seconds depending on configuration size.
+3 minutes provides buffer for slow commits while preventing indefinite hangs.
+"""
+
+
 # Singleton instance
 _settings: Settings | None = None
 

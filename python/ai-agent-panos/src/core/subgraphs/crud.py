@@ -14,6 +14,7 @@ from panos.objects import AddressGroup, AddressObject, ServiceGroup, ServiceObje
 from panos.policies import NatRule, SecurityRule
 from src.core.client import get_firewall_client
 from src.core.retry_helper import with_retry
+from src.core.retry_policies import PANOS_RETRY_POLICY
 from src.core.state_schemas import CRUDState
 
 logger = logging.getLogger(__name__)
@@ -515,12 +516,12 @@ def create_crud_subgraph() -> StateGraph:
 
     # Add nodes
     workflow.add_node("validate_input", validate_input)
-    workflow.add_node("check_existence", check_existence)
-    workflow.add_node("create_object", create_object)
-    workflow.add_node("read_object", read_object)
-    workflow.add_node("update_object", update_object)
-    workflow.add_node("delete_object", delete_object)
-    workflow.add_node("list_objects", list_objects)
+    workflow.add_node("check_existence", check_existence, retry=PANOS_RETRY_POLICY)
+    workflow.add_node("create_object", create_object, retry=PANOS_RETRY_POLICY)
+    workflow.add_node("read_object", read_object, retry=PANOS_RETRY_POLICY)
+    workflow.add_node("update_object", update_object, retry=PANOS_RETRY_POLICY)
+    workflow.add_node("delete_object", delete_object, retry=PANOS_RETRY_POLICY)
+    workflow.add_node("list_objects", list_objects, retry=PANOS_RETRY_POLICY)
     workflow.add_node("format_response", format_response)
 
     # Add edges

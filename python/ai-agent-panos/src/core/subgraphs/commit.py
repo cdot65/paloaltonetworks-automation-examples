@@ -23,6 +23,7 @@ from langgraph.graph import END, START, StateGraph
 from langgraph.types import interrupt
 from src.core.client import get_firewall_client
 from src.core.retry_helper import with_retry
+from src.core.retry_policies import PANOS_COMMIT_RETRY_POLICY
 from src.core.state_schemas import CommitState
 
 logger = logging.getLogger(__name__)
@@ -281,8 +282,8 @@ def create_commit_subgraph() -> StateGraph:
     # Add nodes
     workflow.add_node("validate_commit_input", validate_commit_input)
     workflow.add_node("check_approval_required", check_approval_required)
-    workflow.add_node("execute_commit", execute_commit)
-    workflow.add_node("poll_job_status", poll_job_status)
+    workflow.add_node("execute_commit", execute_commit, retry=PANOS_COMMIT_RETRY_POLICY)
+    workflow.add_node("poll_job_status", poll_job_status, retry=PANOS_COMMIT_RETRY_POLICY)
     workflow.add_node("format_commit_response", format_commit_response)
 
     # Add edges

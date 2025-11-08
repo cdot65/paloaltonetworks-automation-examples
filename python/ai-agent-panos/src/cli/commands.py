@@ -13,6 +13,8 @@ from langchain_core.messages import HumanMessage
 from rich.console import Console
 from rich.logging import RichHandler
 
+from src.core.config import TIMEOUT_AUTONOMOUS, TIMEOUT_DETERMINISTIC
+
 app = typer.Typer(
     name="panos-agent",
     help="AI agent for PAN-OS firewall automation",
@@ -75,11 +77,12 @@ def run(
 
             tid = thread_id or str(uuid.uuid4())
 
-            # Invoke graph
+            # Invoke graph with timeout
             result = graph.invoke(
                 {"messages": [HumanMessage(content=prompt)]},
                 config={
                     "configurable": {"thread_id": tid},
+                    "timeout": TIMEOUT_AUTONOMOUS,
                     "tags": ["panos-agent", "autonomous", "v0.1.0"],
                     "metadata": {
                         "mode": "autonomous",
@@ -116,11 +119,12 @@ def run(
             else:
                 formatted_prompt = prompt
 
-            # Invoke graph with tags and metadata
+            # Invoke graph with tags, metadata, and timeout
             result = graph.invoke(
                 {"messages": [HumanMessage(content=formatted_prompt)]},
                 config={
                     "configurable": {"thread_id": tid},
+                    "timeout": TIMEOUT_DETERMINISTIC,
                     "tags": ["panos-agent", "deterministic", prompt, "v0.1.0"],
                     "metadata": {
                         "mode": "deterministic",
@@ -143,6 +147,22 @@ def run(
         else:
             console.print(f"[bold red]Error:[/bold red] Unknown mode '{mode}'")
             sys.exit(1)
+
+    except TimeoutError as e:
+        # Handle graph execution timeout
+        timeout_duration = TIMEOUT_AUTONOMOUS if mode == "autonomous" else TIMEOUT_DETERMINISTIC
+        console.print(
+            f"\n[bold red]Timeout Error:[/bold red] Graph execution exceeded "
+            f"{timeout_duration}s timeout"
+        )
+        console.print(f"[dim]Mode: {mode}[/dim]")
+        console.print(f"[dim]Thread ID: {thread_id or 'auto-generated'}[/dim]")
+        console.print(f"[dim]Prompt preview: {prompt[:100]}...[/dim]")
+        logging.error(
+            f"Graph timeout after {timeout_duration}s - mode={mode}, "
+            f"thread_id={thread_id}, prompt_length={len(prompt)}"
+        )
+        sys.exit(1)
 
     except Exception as e:
         console.print(f"\n[bold red]Error:[/bold red] {type(e).__name__}: {e}")
