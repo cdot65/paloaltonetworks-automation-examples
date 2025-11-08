@@ -52,7 +52,7 @@ uv pip install -e .
 cp .env.example .env
 # Edit .env with your credentials
 
-```bash
+```
 
 ### 3. Environment Variables
 
@@ -68,7 +68,7 @@ ANTHROPIC_API_KEY=sk-ant-your-key-here
 DEFAULT_MODE=autonomous
 LOG_LEVEL=INFO
 
-```text
+```
 
 ### 4. Run with LangGraph Studio
 
@@ -80,7 +80,7 @@ langgraph dev
 # Or via CLI command (once implemented)
 panos-agent studio
 
-```text
+```
 
 Then open `<http://localhost:8000`> and select a graph (autonomous or deterministic).
 
@@ -104,7 +104,7 @@ panos-agent test-connection
 # Version info
 panos-agent version
 
-```text
+```
 
 ## Testing the Graphs
 
@@ -128,7 +128,7 @@ panos-agent run -p "Delete the address object named test-server-123" -m autonomo
 panos-agent run -p "Show me all NAT policies and explain what they do" \\
   -m autonomous --log-level ERROR
 
-```bash
+```
 
 **Expected Output (List Example):**
 
@@ -152,7 +152,7 @@ Let me know how I can help!
 
 Thread ID: 49d5513e-2763-4b54-bdfc-3b6f072d6020
 
-```bash
+```
 
 ### Deterministic Mode Examples
 
@@ -172,7 +172,7 @@ panos-agent run -p "web_server_setup" -m deterministic
 # Workflow with approval gate
 panos-agent run -p "address_with_approval" -m deterministic
 
-```bash
+```
 
 **Expected Output (simple_address):**
 
@@ -213,7 +213,7 @@ Step completed as expected.
 
 Thread ID: ac43a662-137c-464c-b118-c6d399a7fbe4
 
-```bash
+```
 
 ### Testing with Thread IDs
 
@@ -231,7 +231,7 @@ panos-agent run -p "Now create one called test-server at 10.1.1.1" -m autonomous
 # Start a fresh conversation
 panos-agent run -p "List address objects" -m autonomous --thread-id my-session-2
 
-```bash
+```
 
 ### Connection Testing
 
@@ -241,7 +241,7 @@ Always test your connection first before running operations:
 
 panos-agent test-connection
 
-```bash
+```
 
 **Expected Output:**
 
@@ -251,7 +251,7 @@ Testing PAN-OS connection...
 
 ✅ Connected to PAN-OS 11.1.4-h7 (serial: 021201109830)
 
-```bash
+```
 
 ## Architecture
 
@@ -291,7 +291,7 @@ panos-agent/
 ├── pyproject.toml
 └── README.md
 
-```bash
+```
 
 ### Autonomous Mode
 
@@ -306,7 +306,7 @@ graph LR
     D --> B
     C -->|No| E[Final Response]
 
-```bash
+```
 
 **Use cases:**
 
@@ -329,7 +329,7 @@ graph TD
     D -->|No| F[Complete]
     E --> D
 
-```bash
+```
 
 **Use cases:**
 
