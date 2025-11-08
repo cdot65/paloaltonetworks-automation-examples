@@ -18,6 +18,7 @@ class TestCRUDSubgraphIntegration:
         # Setup mock firewall
         mock_fw = Mock()
         mock_fw.hostname = "192.168.1.1"
+        mock_fw.id = "192.168.1.1"
         mock_get_client.return_value = mock_fw
 
         # Mock AddressObject
@@ -25,7 +26,7 @@ class TestCRUDSubgraphIntegration:
             mock_addr = Mock(spec=AddressObject)
             mock_addr.name = "test-server"
             mock_addr_class.return_value = mock_addr
-            mock_addr_class.refreshall.return_value = []
+            mock_addr_class.refreshall = Mock(return_value=[])
 
             # Create and invoke CRUD subgraph
             from src.core.subgraphs.crud import create_crud_subgraph
@@ -58,6 +59,7 @@ class TestCRUDSubgraphIntegration:
         # Setup mock firewall
         mock_fw = Mock()
         mock_fw.hostname = "192.168.1.1"
+        mock_fw.id = "192.168.1.1"
         mock_get_client.return_value = mock_fw
 
         # Mock existing object
@@ -66,7 +68,7 @@ class TestCRUDSubgraphIntegration:
             mock_addr.name = "test-server"
             mock_addr.value = "10.1.1.1"
             mock_addr.type = "ip-netmask"
-            mock_addr_class.refreshall.return_value = [mock_addr]
+            mock_addr_class.refreshall = Mock(return_value=[mock_addr])
 
             # Create and invoke CRUD subgraph
             from src.core.subgraphs.crud import create_crud_subgraph
@@ -95,6 +97,7 @@ class TestCRUDSubgraphIntegration:
         # Setup mock firewall
         mock_fw = Mock()
         mock_fw.hostname = "192.168.1.1"
+        mock_fw.id = "192.168.1.1"
         mock_get_client.return_value = mock_fw
 
         # Mock multiple objects
@@ -103,7 +106,7 @@ class TestCRUDSubgraphIntegration:
                 Mock(spec=AddressObject, name=f"server-{i}", value=f"10.1.1.{i}")
                 for i in range(1, 4)
             ]
-            mock_addr_class.refreshall.return_value = mock_objs
+            mock_addr_class.refreshall = Mock(return_value=mock_objs)
 
             # Create and invoke CRUD subgraph
             from src.core.subgraphs.crud import create_crud_subgraph
@@ -132,13 +135,14 @@ class TestCRUDSubgraphIntegration:
         # Setup mock firewall
         mock_fw = Mock()
         mock_fw.hostname = "192.168.1.1"
+        mock_fw.id = "192.168.1.1"
         mock_get_client.return_value = mock_fw
 
         # Mock existing object
         with patch("src.core.subgraphs.crud.AddressObject") as mock_addr_class:
             mock_addr = Mock(spec=AddressObject)
             mock_addr.name = "test-server"
-            mock_addr_class.refreshall.return_value = [mock_addr]
+            mock_addr_class.refreshall = Mock(return_value=[mock_addr])
 
             # Create and invoke CRUD subgraph
             from src.core.subgraphs.crud import create_crud_subgraph
@@ -256,7 +260,7 @@ class TestSubgraphErrorHandling:
         from panos.errors import PanConnectionTimeout
 
         with patch("src.core.subgraphs.crud.AddressObject") as mock_addr_class:
-            mock_addr_class.refreshall.side_effect = PanConnectionTimeout("Connection timeout")
+            mock_addr_class.refreshall = Mock(side_effect=PanConnectionTimeout("Connection timeout"))
 
             # Create and invoke CRUD subgraph
             from src.core.subgraphs.crud import create_crud_subgraph
@@ -286,6 +290,7 @@ class TestSubgraphErrorHandling:
         # Setup mock firewall
         mock_fw = Mock()
         mock_fw.hostname = "192.168.1.1"
+        mock_fw.id = "192.168.1.1"
         mock_get_client.return_value = mock_fw
 
         # Mock validation error
@@ -294,7 +299,7 @@ class TestSubgraphErrorHandling:
         with patch("src.core.subgraphs.crud.AddressObject") as mock_addr_class:
             mock_addr = Mock(spec=AddressObject)
             mock_addr_class.return_value = mock_addr
-            mock_addr_class.refreshall.return_value = []
+            mock_addr_class.refreshall = Mock(return_value=[])
             mock_addr.create.side_effect = PanDeviceError("Invalid IP address")
 
             # Create and invoke CRUD subgraph
