@@ -33,14 +33,19 @@ class TestCRUDSubgraphIntegration:
             subgraph = create_crud_subgraph()
 
             result = subgraph.invoke({
-                "operation": "create",
+                "operation_type": "create",
                 "object_type": "address",
                 "object_name": "test-server",
-                "object_data": {
+                "data": {
                     "name": "test-server",
                     "value": "10.1.1.1",
                     "type": "ip-netmask",
                 },
+                "validation_result": None,
+                "exists": None,
+                "operation_result": None,
+                "message": "",
+                "error": None,
             })
 
             # Verify successful creation
@@ -69,9 +74,15 @@ class TestCRUDSubgraphIntegration:
             subgraph = create_crud_subgraph()
 
             result = subgraph.invoke({
-                "operation": "read",
+                "operation_type": "read",
                 "object_type": "address",
                 "object_name": "test-server",
+                "data": None,
+                "validation_result": None,
+                "exists": None,
+                "operation_result": None,
+                "message": "",
+                "error": None,
             })
 
             # Verify successful read
@@ -100,8 +111,15 @@ class TestCRUDSubgraphIntegration:
             subgraph = create_crud_subgraph()
 
             result = subgraph.invoke({
-                "operation": "list",
+                "operation_type": "list",
                 "object_type": "address",
+                "object_name": None,
+                "data": None,
+                "validation_result": None,
+                "exists": None,
+                "operation_result": None,
+                "message": "",
+                "error": None,
             })
 
             # Verify successful list
@@ -128,9 +146,15 @@ class TestCRUDSubgraphIntegration:
             subgraph = create_crud_subgraph()
 
             result = subgraph.invoke({
-                "operation": "delete",
+                "operation_type": "delete",
                 "object_type": "address",
                 "object_name": "test-server",
+                "data": None,
+                "validation_result": None,
+                "exists": None,
+                "operation_result": None,
+                "message": "",
+                "error": None,
             })
 
             # Verify successful deletion
@@ -159,8 +183,14 @@ class TestCommitSubgraphIntegration:
 
             result = subgraph.invoke({
                 "description": "Test commit",
+                "sync": False,
                 "require_approval": False,
-                "sync": False,  # Don't poll job status
+                "approval_granted": None,
+                "commit_job_id": None,
+                "job_status": None,
+                "job_result": None,
+                "message": "",
+                "error": None,
             })
 
             # Verify commit executed
@@ -196,8 +226,14 @@ class TestCommitSubgraphIntegration:
 
             result = subgraph.invoke({
                 "description": "Test commit with polling",
-                "require_approval": False,
                 "sync": True,
+                "require_approval": False,
+                "approval_granted": None,
+                "commit_job_id": None,
+                "job_status": None,
+                "job_result": None,
+                "message": "",
+                "error": None,
             })
 
             # Verify commit completed
@@ -228,8 +264,15 @@ class TestSubgraphErrorHandling:
             subgraph = create_crud_subgraph()
 
             result = subgraph.invoke({
-                "operation": "list",
+                "operation_type": "list",
                 "object_type": "address",
+                "object_name": None,
+                "data": None,
+                "validation_result": None,
+                "exists": None,
+                "operation_result": None,
+                "message": "",
+                "error": None,
             })
 
             # Should handle error gracefully
@@ -260,14 +303,19 @@ class TestSubgraphErrorHandling:
             subgraph = create_crud_subgraph()
 
             result = subgraph.invoke({
-                "operation": "create",
+                "operation_type": "create",
                 "object_type": "address",
                 "object_name": "invalid-server",
-                "object_data": {
+                "data": {
                     "name": "invalid-server",
                     "value": "256.1.1.1",  # Invalid IP
                     "type": "ip-netmask",
                 },
+                "validation_result": None,
+                "exists": None,
+                "operation_result": None,
+                "message": "",
+                "error": None,
             })
 
             # Should handle error without retry (validation errors are non-retryable)

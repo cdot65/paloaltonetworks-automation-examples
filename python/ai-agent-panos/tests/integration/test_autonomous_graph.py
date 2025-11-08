@@ -153,7 +153,7 @@ class TestAutonomousGraphCheckpointing:
 
         # Verify checkpoint was created
         assert state is not None
-        assert "values" in state
+        assert hasattr(state, "values")
         assert "messages" in state.values
 
     @patch("src.core.client.get_firewall_client")

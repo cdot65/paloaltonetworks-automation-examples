@@ -41,14 +41,14 @@ class TestDeterministicGraphExecution:
 
         # Verify execution
         assert "messages" in result
-        assert "step_outputs" in result
+        assert "step_results" in result
 
         # Should have executed 2 steps
-        step_outputs = result["step_outputs"]
-        assert len(step_outputs) == 2
+        step_results = result["step_results"]
+        assert len(step_results) == 2
 
         # Both steps should be successful
-        assert all(output.get("status") == "success" for output in step_outputs)
+        assert all(output.get("status") == "success" for output in step_results)
 
     @patch("src.core.client.get_firewall_client")
     def test_workflow_with_error_handling(
@@ -77,14 +77,14 @@ class TestDeterministicGraphExecution:
             )
 
         # Verify error handling
-        step_outputs = result["step_outputs"]
+        step_results = result["step_results"]
 
         # First step should succeed
-        assert step_outputs[0].get("status") == "success"
+        assert step_results[0].get("status") == "success"
 
         # Second step should have error
-        assert step_outputs[1].get("status") == "error"
-        assert "not found" in step_outputs[1].get("error", "").lower()
+        assert step_results[1].get("status") == "error"
+        assert "not found" in step_results[1].get("error", "").lower()
 
     @patch("src.core.client.get_firewall_client")
     def test_workflow_state_management(
@@ -109,18 +109,15 @@ class TestDeterministicGraphExecution:
             )
 
         # Verify state structure
-        assert "workflow_name" in result
-        assert result["workflow_name"] == "test_workflow"
+        assert "workflow_steps" in result
+        assert len(result["workflow_steps"]) == 2
 
-        assert "steps" in result
-        assert len(result["steps"]) == 2
+        assert "current_step_index" in result
+        # After execution, current_step_index should be at or past last step
+        assert result["current_step_index"] >= len(result["workflow_steps"]) - 1
 
-        assert "current_step" in result
-        # After execution, current_step should be at or past last step
-        assert result["current_step"] >= len(result["steps"]) - 1
-
-        assert "step_outputs" in result
-        assert len(result["step_outputs"]) == 2
+        assert "step_results" in result
+        assert len(result["step_results"]) == 2
 
     @patch("src.core.client.get_firewall_client")
     def test_empty_workflow_handling(
@@ -143,10 +140,10 @@ class TestDeterministicGraphExecution:
 
         # Should complete without errors
         assert "messages" in result
-        assert "step_outputs" in result
+        assert "step_results" in result
 
-        # Should have no step outputs
-        assert len(result["step_outputs"]) == 0
+        # Should have no step results
+        assert len(result["step_results"]) == 0
 
 
 class TestDeterministicGraphCheckpointing:
@@ -180,9 +177,9 @@ class TestDeterministicGraphCheckpointing:
 
         # Verify checkpoint
         assert state is not None
-        assert "values" in state
-        assert "workflow_name" in state.values
-        assert "step_outputs" in state.values
+        assert hasattr(state, "values")
+        assert "workflow_steps" in state.values
+        assert "step_results" in state.values
 
     @patch("src.core.client.get_firewall_client")
     def test_resume_workflow_after_partial_execution(
@@ -232,5 +229,5 @@ class TestDeterministicGraphCheckpointing:
             )
 
         # Verify all steps executed
-        assert len(result["step_outputs"]) == 3
-        assert all(output.get("status") == "success" for output in result["step_outputs"])
+        assert len(result["step_results"]) == 3
+        assert all(output.get("status") == "success" for output in result["step_results"])
