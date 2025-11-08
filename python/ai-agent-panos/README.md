@@ -549,6 +549,95 @@ Each thread maintains a full checkpoint history. While CLI commands for viewing 
 
 For detailed troubleshooting scenarios and recovery strategies, see **[docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md)**.
 
+## Evaluation & Testing
+
+### LangSmith Evaluation
+
+The agent includes a comprehensive evaluation framework to measure performance, accuracy, and reliability across different operation types.
+
+**Evaluation Metrics:**
+- **Success Rate** - % of examples completed successfully (target: ≥90%)
+- **Tool Accuracy** - % using correct tools (target: ≥95%)
+- **Response Completeness** - % with complete answers
+- **Error Handling** - % of errors handled gracefully (target: 100%)
+- **Token Efficiency** - Average tokens per operation (<10k target)
+
+#### Running Evaluation
+
+```bash
+# Evaluate both autonomous and deterministic modes
+python scripts/evaluate.py --mode both --save-results
+
+# Evaluate specific mode
+python scripts/evaluate.py --mode autonomous
+python scripts/evaluate.py --mode deterministic
+
+# View results
+cat evaluation_results/eval_autonomous_*.json
+```
+
+#### Evaluation Dataset
+
+The agent uses a curated evaluation dataset with 19+ examples covering:
+
+- **Simple List Operations** (4 examples) - Read-only queries
+- **CRUD Create** (3 examples) - Object creation
+- **CRUD Read** (2 examples) - Object retrieval
+- **CRUD Delete** (2 examples) - Object deletion
+- **Multi-step Operations** (2 examples) - Complex queries
+- **Error Handling** (3 examples) - Invalid inputs
+- **Workflows** (3 examples) - Deterministic execution
+
+See **[docs/EVALUATION_DATASET.md](docs/EVALUATION_DATASET.md)** for complete dataset definition and LangSmith setup instructions.
+
+#### Continuous Evaluation
+
+**Weekly Regression Testing:**
+```bash
+# Run weekly to detect regressions
+python scripts/evaluate.py --mode both --save-results
+
+# Alert if success rate drops >5%
+```
+
+**Pre-Deployment Validation:**
+```bash
+# Before deploying new version
+python scripts/evaluate.py --mode both
+
+# Ensure success rate ≥90%
+# Ensure no critical regressions
+```
+
+### Test Coverage
+
+**Unit Tests:** 63/67 passing (94%)
+- Autonomous graph nodes
+- Deterministic graph nodes
+- CRUD subgraph nodes
+- CLI timeout handling
+- Anonymizers
+
+**Integration Tests:** 6/20 passing (30%)
+- Autonomous graph end-to-end
+- Deterministic graph workflows
+- Subgraph execution
+- Checkpoint/resume functionality
+
+```bash
+# Run all tests
+pytest
+
+# Run unit tests only
+pytest tests/unit/
+
+# Run integration tests only
+pytest tests/integration/
+
+# Run with coverage report
+pytest --cov=src --cov-report=html
+```
+
 ## Architecture
 
 ### Project Structure
