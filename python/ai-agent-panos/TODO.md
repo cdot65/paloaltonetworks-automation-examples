@@ -56,11 +56,13 @@ This TODO tracks the implementation of enhancements identified through a compreh
   - **File:** `src/core/config.py`
 
 **Acceptance Criteria:**
+
 - [ ] All three env vars documented in `.env.example`
 - [ ] Settings class loads vars without errors
 - [ ] Default values allow running without LangSmith
 
 **References:**
+
 - `docs/recommendations/19-observability.md`
 
 ---
@@ -119,6 +121,7 @@ This TODO tracks the implementation of enhancements identified through a compreh
   - [ ] Document test procedure
 
 **Acceptance Criteria:**
+
 - [ ] All 4 sensitive data patterns detected and masked
 - [ ] No false positives (legitimate data not masked)
 - [ ] Unit tests achieve 100% pattern coverage
@@ -126,8 +129,9 @@ This TODO tracks the implementation of enhancements identified through a compreh
 - [ ] Code includes usage examples in docstring
 
 **References:**
+
 - `docs/recommendations/19-observability.md` (lines 78-145)
-- LangSmith anonymizers: https://docs.smith.langchain.com/how_to_guides/anonymization
+- LangSmith anonymizers: <https://docs.smith.langchain.com/how_to_guides/anonymization>
 
 ---
 
@@ -166,12 +170,14 @@ This TODO tracks the implementation of enhancements identified through a compreh
   - **File:** `README.md`
 
 **Acceptance Criteria:**
+
 - [ ] Both modes send tags and metadata
 - [ ] Metadata includes all specified fields
 - [ ] Tags allow easy filtering in LangSmith UI
 - [ ] Documentation explains observability features
 
 **References:**
+
 - `docs/recommendations/19-observability.md` (lines 147-187)
 
 ---
@@ -244,6 +250,7 @@ This TODO tracks the implementation of enhancements identified through a compreh
   - [ ] Generate coverage report: `pytest --cov-report=html`
 
 **Acceptance Criteria:**
+
 - [ ] All node functions have unit tests
 - [ ] All routing functions tested
 - [ ] Representative tool tests cover all categories
@@ -252,8 +259,9 @@ This TODO tracks the implementation of enhancements identified through a compreh
 - [ ] Tests use mocks (no real API calls)
 
 **References:**
+
 - `docs/recommendations/16-test.md` (lines 79-139)
-- LangGraph testing: https://langchain-ai.github.io/langgraph/how-tos/testing/
+- LangGraph testing: <https://langchain-ai.github.io/langgraph/how-tos/testing/>
 
 ---
 
@@ -318,6 +326,7 @@ This TODO tracks the implementation of enhancements identified through a compreh
   - [ ] Check execution time (should be <30s for all)
 
 **Acceptance Criteria:**
+
 - [ ] End-to-end tests for both graph modes
 - [ ] Tests verify state management and checkpointing
 - [ ] Tests verify tool execution and result aggregation
@@ -325,6 +334,7 @@ This TODO tracks the implementation of enhancements identified through a compreh
 - [ ] Tests complete in reasonable time (<30s total)
 
 **References:**
+
 - `docs/recommendations/16-test.md` (lines 141-191)
 
 ---
@@ -373,6 +383,7 @@ This TODO tracks the implementation of enhancements identified through a compreh
   - **File:** `README.md`
 
 **Acceptance Criteria:**
+
 - [ ] Evaluation dataset exists in LangSmith with 10+ examples
 - [ ] Evaluation script runs successfully
 - [ ] Metrics tracked: success rate, token usage, error rate
@@ -380,8 +391,9 @@ This TODO tracks the implementation of enhancements identified through a compreh
 - [ ] Process documented in README
 
 **References:**
+
 - `docs/recommendations/16-test.md` (lines 193-215)
-- LangSmith evaluation: https://docs.smith.langchain.com/evaluation
+- LangSmith evaluation: <https://docs.smith.langchain.com/evaluation>
 
 ---
 
@@ -422,12 +434,14 @@ This TODO tracks the implementation of enhancements identified through a compreh
   - **File:** `README.md`
 
 **Acceptance Criteria:**
+
 - [ ] Timeouts configured for both modes
 - [ ] TimeoutError caught and logged gracefully
 - [ ] User-friendly error message on timeout
 - [ ] Documented in README
 
 **References:**
+
 - `docs/recommendations/08-durable-execution.md` (lines 79-106)
 
 ---
@@ -480,6 +494,7 @@ This TODO tracks the implementation of enhancements identified through a compreh
   - **File:** `README.md`
 
 **Acceptance Criteria:**
+
 - [ ] Retry policy defined with exponential backoff
 - [ ] Applied to all PAN-OS API operation nodes
 - [ ] Retries logged with attempt count
@@ -487,6 +502,7 @@ This TODO tracks the implementation of enhancements identified through a compreh
 - [ ] Integration test verifies retry on transient failure
 
 **References:**
+
 - `docs/recommendations/08-durable-execution.md` (lines 108-155)
 - `docs/recommendations/21-use-the-graph-api.md` (lines 189-225)
 
@@ -519,12 +535,14 @@ This TODO tracks the implementation of enhancements identified through a compreh
   - [ ] Example: Fork from earlier checkpoint (time-travel)
 
 **Acceptance Criteria:**
+
 - [ ] README has recovery section
 - [ ] TROUBLESHOOTING.md created with 5+ scenarios
 - [ ] Examples show thread_id usage for resume
 - [ ] Links between README and TROUBLESHOOTING.md
 
 **References:**
+
 - `docs/recommendations/08-durable-execution.md` (lines 157-189)
 
 ---
@@ -595,6 +613,7 @@ This TODO tracks the implementation of enhancements identified through a compreh
   - **File:** `README.md`
 
 **Acceptance Criteria:**
+
 - [ ] Store API integrated into both graphs
 - [ ] Firewall config and workflow history stored
 - [ ] Agent uses memory context in prompts
@@ -603,8 +622,9 @@ This TODO tracks the implementation of enhancements identified through a compreh
 - [ ] README explains memory features
 
 **References:**
+
 - `docs/recommendations/12-add-memory.md` (lines 79-154)
-- Store API: https://langchain-ai.github.io/langgraph/how-tos/memory/
+- Store API: <https://langchain-ai.github.io/langgraph/how-tos/memory/>
 
 ---
 
@@ -659,6 +679,7 @@ This TODO tracks the implementation of enhancements identified through a compreh
   - **File:** `README.md`
 
 **Acceptance Criteria:**
+
 - [ ] Runtime context implemented with AgentContext
 - [ ] CLI supports model and temperature selection
 - [ ] Agent respects context overrides
@@ -666,6 +687,7 @@ This TODO tracks the implementation of enhancements identified through a compreh
 - [ ] Backwards compatible (defaults work without context)
 
 **References:**
+
 - `docs/recommendations/20-graph-api.md` (lines 99-156)
 
 ---
@@ -717,6 +739,7 @@ This TODO tracks the implementation of enhancements identified through a compreh
   - **File:** `tests/integration/test_deterministic_graph.py`
 
 **Acceptance Criteria:**
+
 - [ ] Recursion checks in workflow execution nodes
 - [ ] Graceful stopping at 80% threshold
 - [ ] User-friendly partial completion message
@@ -725,6 +748,7 @@ This TODO tracks the implementation of enhancements identified through a compreh
 - [ ] Test verifies graceful handling
 
 **References:**
+
 - `docs/recommendations/20-graph-api.md` (lines 175-236)
 
 ---
@@ -777,6 +801,7 @@ This TODO tracks the implementation of enhancements identified through a compreh
   - **File:** `docs/DEPLOYMENT.md`
 
 **Acceptance Criteria:**
+
 - [ ] README has deployment section
 - [ ] DEPLOYMENT.md comprehensive guide
 - [ ] API usage examples work with deployed agent
@@ -784,8 +809,9 @@ This TODO tracks the implementation of enhancements identified through a compreh
 - [ ] REST API documented with curl examples
 
 **References:**
+
 - `docs/recommendations/17-deploy.md` (lines 79-187)
-- LangGraph deploy: https://langchain-ai.github.io/langgraph/cloud/deployment/
+- LangGraph deploy: <https://langchain-ai.github.io/langgraph/cloud/deployment/>
 
 ---
 
@@ -826,6 +852,7 @@ This TODO tracks the implementation of enhancements identified through a compreh
   - **File:** `README.md`
 
 **Acceptance Criteria:**
+
 - [ ] Both modes use streaming by default
 - [ ] Real-time progress feedback visible
 - [ ] Output clearly shows what's happening
@@ -833,6 +860,7 @@ This TODO tracks the implementation of enhancements identified through a compreh
 - [ ] Documented with examples
 
 **References:**
+
 - `docs/recommendations/SUMMARY.md` (Streaming UX section)
 - `docs/recommendations/09-streaming.md`
 
@@ -851,8 +879,8 @@ This TODO tracks the implementation of enhancements identified through a compreh
 
 - [ ] **Test Agent Chat UI with local server**
   - [ ] Run: `langgraph dev`
-  - [ ] Visit: https://agentchat.vercel.app
-  - [ ] Connect to: http://localhost:8000
+  - [ ] Visit: <https://agentchat.vercel.app>
+  - [ ] Connect to: <http://localhost:8000>
   - [ ] Test conversation, tool visualization, time-travel
 
 - [ ] **Add "Agent Chat UI" section to README**
@@ -868,7 +896,7 @@ This TODO tracks the implementation of enhancements identified through a compreh
     - `git clone https://github.com/langchain-ai/agent-chat-ui`
     - `cd agent-chat-ui && npm install`
     - `VITE_LANGGRAPH_API_URL=http://localhost:8000 npm run dev`
-  - [ ] Open: http://localhost:5173
+  - [ ] Open: <http://localhost:5173>
 
 - [ ] **Create demo video or screenshots**
   - [ ] Screenshot: Tool call visualization
@@ -878,14 +906,16 @@ This TODO tracks the implementation of enhancements identified through a compreh
   - **Files:** `docs/images/agent-chat-*.png` (NEW)
 
 **Acceptance Criteria:**
+
 - [ ] Tested with hosted Agent Chat UI
 - [ ] Local setup documented
 - [ ] README has Agent Chat UI section
 - [ ] Screenshots or demo video included
 
 **References:**
+
 - `docs/recommendations/18-agent-chat-ui.md`
-- Agent Chat UI: https://github.com/langchain-ai/agent-chat-ui
+- Agent Chat UI: <https://github.com/langchain-ai/agent-chat-ui>
 
 ---
 
@@ -921,12 +951,14 @@ This TODO tracks the implementation of enhancements identified through a compreh
   - **File:** `README.md`
 
 **Acceptance Criteria:**
+
 - [ ] Benchmarks show caching provides value (>20% improvement)
 - [ ] Cache policy applied to read operations only
 - [ ] TTL set appropriately (60s for configs, 300s for system info)
 - [ ] Documented if implemented
 
 **References:**
+
 - `docs/recommendations/20-graph-api.md` (lines 322-367)
 
 **Note:** Only implement if benchmarks show significant benefit. Most operations are writes.
@@ -973,12 +1005,14 @@ This TODO tracks the implementation of enhancements identified through a compreh
   - **File:** `examples/time_travel_examples.py` (NEW)
 
 **Acceptance Criteria:**
+
 - [ ] Three commands implemented: history, show-checkpoint, fork
 - [ ] Commands work with existing checkpointer
 - [ ] Documented in README with examples
 - [ ] User-friendly output formatting
 
 **References:**
+
 - `docs/recommendations/SUMMARY.md` (Time-Travel section)
 - `docs/recommendations/11-time-travel.md`
 
@@ -1026,12 +1060,14 @@ This TODO tracks the implementation of enhancements identified through a compreh
 ## Progress Tracking
 
 ### Phase 1 Progress (16-24h)
+
 - [ ] 1. Observability & Security (0 / 4.5h)
 - [ ] 2. Testing Infrastructure (0 / 10h)
 - [ ] 3. Error Handling (0 / 4h)
 **Total Phase 1:** 0 / 18.5h
 
 ### Phase 2 Progress (12-18h)
+
 - [ ] 4. Store API (0 / 7h)
 - [ ] 5. Runtime Context (0 / 3h)
 - [ ] 6. Recursion Handling (0 / 2.5h)
@@ -1040,6 +1076,7 @@ This TODO tracks the implementation of enhancements identified through a compreh
 **Total Phase 2:** 0 / 16.5h
 
 ### Phase 3 Progress (5-9h)
+
 - [ ] 9. Agent Chat UI (0 / 1.5h)
 - [ ] 10. Node Caching (0 / 1.5h)
 - [ ] 11. Time-Travel CLI (0 / 2.5h)
@@ -1108,6 +1145,7 @@ Phase 3:
 - **Flexibility:** Phase 3 tasks are entirely optional based on user needs
 
 **Questions?** See:
+
 - `docs/recommendations/IMPLEMENTATION_PRIORITIES.md` - Detailed rationale
 - `docs/recommendations/` - Individual review files (00-24)
 - `README.md` - User-facing documentation

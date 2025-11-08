@@ -4,6 +4,7 @@ Environment variables loaded from .env file using pydantic-settings.
 """
 
 from typing import Literal
+from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -18,6 +19,10 @@ class Settings(BaseSettings):
         anthropic_api_key: Anthropic API key for LLM
         default_mode: Default agent mode (autonomous or deterministic)
         log_level: Logging level (DEBUG, INFO, WARNING, ERROR)
+        langsmith_api_key: LangSmith API key for logging and evaluation
+        langsmith_project: LangSmith project for logging and evaluation
+        langsmith_tracing: Whether to enable LangSmith tracing
+        langsmith_endpoint: LangSmith endpoint for logging and evaluation
     """
 
     model_config = SettingsConfigDict(
@@ -35,6 +40,21 @@ class Settings(BaseSettings):
 
     # Anthropic
     anthropic_api_key: str
+
+    # LangSmith Observability
+    langsmith_tracing: bool = Field(
+        default=False,
+        description="Enable LangSmith tracing for observability",
+    )
+    langsmith_api_key: str | None = Field(
+        default=None,
+        description="LangSmith API key (starts with lsv2_pt_)",
+    )
+    langsmith_project: str = Field(
+        default="panos-agent",
+        description="LangSmith project name for organizing traces",
+    )
+    langsmith_endpoint: str = "https://api.smith.langchain.com"
 
     # Agent Configuration
     default_mode: Literal["autonomous", "deterministic"] = "autonomous"
