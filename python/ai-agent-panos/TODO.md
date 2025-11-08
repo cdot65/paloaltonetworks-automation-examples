@@ -161,19 +161,19 @@ LangGraph v1.0.0 documentation files against the current PAN-OS agent implementa
     - `timestamp`: ISO format
   - **File:** `src/cli/commands.py` (line ~127)
 
-- [ ] **Update README.md with observability section**
-  - [ ] Add "Observability" section
-  - [ ] Document metadata fields and their purposes
-  - [ ] Show how to filter traces by tags in LangSmith
-  - [ ] Include screenshot or example trace URL
-  - **File:** `README.md` (will be done next)
+- [x] **Update README.md with observability section**
+  - [x] Add "Observability" section
+  - [x] Document metadata fields and their purposes
+  - [x] Show how to filter traces by tags in LangSmith
+  - [x] Document security/anonymization features
+  - **File:** `README.md` (lines 256-316)
 
 **Acceptance Criteria:**
 
 - [x] Both modes send tags and metadata
 - [x] Metadata includes all specified fields
 - [x] Tags allow easy filtering in LangSmith UI
-- [ ] Documentation explains observability features (will be done next)
+- [x] Documentation explains observability features
 
 **References:**
 
@@ -1223,7 +1223,7 @@ Phase 3:
 
 - ✅ Phase 1.1: LangSmith Environment Variables (0.5h)
 - ✅ Phase 1.2: Anonymizers Implementation (2-3h) - core implementation, tests deferred
-- ✅ Phase 1.3: Metadata and Tags (1h) - implementation complete, docs to be updated
+- ✅ Phase 1.3: Metadata and Tags (1.5h) - FULLY COMPLETE including observability docs
 - ✅ Bug Fix: CRUD subgraph pan-os-python API usage (2 critical bugs)
 - ✅ Bug Fix: Deterministic workflow step accumulation
 - ✅ Enhancement: PAN-OS-specific error handling (3-tier exception hierarchy)
@@ -1231,7 +1231,6 @@ Phase 3:
 **Next Steps:**
 
 - Phase 1.2: Unit tests for anonymizers (deferred to Phase 1, Task 2.1)
-- Phase 1.3: Update README with observability section
 - Phase 1, Task 2: Testing Infrastructure (8-12h)
 - Phase 1, Task 3: Error Handling & Resilience (4-6h)
 
@@ -1240,4 +1239,4 @@ Phase 3:
 **Last Updated:** 2025-01-08
 **Total Tasks:** 60+ subtasks across 11 major tasks
 **Estimated Completion:** 33-51 hours (4-6 days for 1 developer, 2-3 days for 2 developers)
-**Current Progress:** 4.5h / 40.5h (11% complete)
+**Current Progress:** 5.0h / 40.5h (12% complete)

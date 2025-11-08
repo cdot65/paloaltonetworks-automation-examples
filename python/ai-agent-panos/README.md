@@ -253,6 +253,68 @@ Testing PAN-OS connection...
 
 ```
 
+## Observability
+
+### LangSmith Integration
+
+This project includes built-in observability through LangSmith for debugging, monitoring, and improving your AI workflows.
+
+**What you get:**
+
+- **Execution traces**: See every LLM call, tool execution, and state transition
+- **Performance metrics**: Track latency, token usage, and costs
+- **Debugging**: Inspect inputs/outputs at each step of the graph
+- **Filtering**: Use tags and metadata to find specific traces
+
+### Setup
+
+1. **Get a LangSmith API key** at [smith.langchain.com](https://smith.langchain.com)
+
+2. **Add to your `.env` file:**
+
+```bash
+# LangSmith Observability (optional)
+LANGSMITH_TRACING=true
+LANGSMITH_API_KEY=lsv2_pt_your_api_key_here
+LANGSMITH_PROJECT=panos-agent-prod
+```
+
+3. **Run your agent** - traces automatically appear in LangSmith
+
+### Metadata and Tags
+
+Every execution includes rich metadata for filtering:
+
+**Tags:**
+- `panos-agent` - All executions from this agent
+- `autonomous` or `deterministic` - Execution mode
+- Workflow name (deterministic mode only)
+- `v0.1.0` - Version tag
+
+**Metadata:**
+- `mode` - autonomous or deterministic
+- `thread_id` - Conversation thread ID
+- `firewall_host` - Target PAN-OS firewall
+- `timestamp` - ISO format execution time
+- `user_prompt_length` - Size of user input
+- `workflow` - Workflow name (deterministic mode)
+
+**Example filtering in LangSmith:**
+- Filter by tag: `panos-agent` AND `autonomous`
+- Filter by metadata: `firewall_host = "192.168.1.1"`
+- Time range + workflow: Last 7 days where `workflow = "web_server_setup"`
+
+### Security
+
+**Automatic data masking**: All traces use client-side anonymizers to prevent credential leakage:
+
+- PAN-OS API keys → `<panos-api-key>`
+- Anthropic API keys → `<anthropic-api-key>`
+- Password fields → `password: <password>`
+- XML password elements → `<password><redacted></password>`
+
+Anonymization happens **before** traces are sent to LangSmith, so sensitive data never leaves your environment.
+
 ## Architecture
 
 ### Project Structure
