@@ -8,9 +8,8 @@ import logging
 import uuid
 from typing import Literal
 
-from langgraph.graph import StateGraph, START, END
 from langgraph.checkpoint.memory import MemorySaver
-
+from langgraph.graph import END, START, StateGraph
 from src.core.state_schemas import DeterministicState
 from src.core.subgraphs.deterministic import create_deterministic_workflow_subgraph
 
@@ -100,7 +99,11 @@ def execute_workflow(state: DeterministicState) -> DeterministicState:
     # Extract workflow name (from loading step)
     last_message = state["messages"][-1]
     user_input = last_message.content
-    workflow_name = user_input.lower().split("workflow:")[-1].strip() if "workflow:" in user_input.lower() else user_input.strip()
+    workflow_name = (
+        user_input.lower().split("workflow:")[-1].strip()
+        if "workflow:" in user_input.lower()
+        else user_input.strip()
+    )
 
     # Invoke workflow subgraph
     try:

@@ -12,7 +12,10 @@
 
 ### Purpose
 
-This PRD defines requirements for enhancing the PAN-OS automation AI agent from a functional implementation to a production-ready system. The enhancements address critical gaps in observability, testing, and resilience identified through a comprehensive review of 25 LangGraph v1.0.0 documentation files.
+This PRD defines requirements for enhancing the PAN-OS automation AI agent from a functional
+implementation to a production-ready system. The enhancements address critical gaps in
+observability, testing, and resilience identified through a comprehensive review of 25
+LangGraph v1.0.0 documentation files.
 
 ### Current State
 
@@ -79,7 +82,9 @@ Production-ready system with:
 
 ### Background
 
-The PAN-OS automation agent was developed to streamline firewall management through conversational AI. After completing core functionality (33 tools, dual-mode architecture, HITL), a systematic review against LangGraph v1.0.0 documentation revealed production-readiness gaps.
+The PAN-OS automation agent was developed to streamline firewall management through
+conversational AI. After completing core functionality (33 tools, dual-mode architecture, HITL),
+a systematic review against LangGraph v1.0.0 documentation revealed production-readiness gaps.
 
 ### Problems to Solve
 
@@ -219,19 +224,19 @@ All queries use expensive Sonnet model
 
 ### Secondary Objectives
 
-4. **Context: Add Long-Term Memory**
+1. **Context: Add Long-Term Memory**
    - Implement Store API for firewall configuration history
    - Remember workflow execution patterns
    - Provide context-aware responses
    - **Success Metric:** 30% improvement in response relevance
 
-5. **Flexibility: Enable Runtime Configuration**
+2. **Flexibility: Enable Runtime Configuration**
    - Support dynamic model selection (Sonnet, Haiku)
    - Allow temperature tuning per invocation
    - Enable dependency injection for testing
    - **Success Metric:** 50% cost reduction on simple queries (Haiku)
 
-6. **UX: Enhance User Experience**
+3. **UX: Enhance User Experience**
    - Implement streaming for real-time feedback
    - Document deployment process
    - Add time-travel debugging for power users
@@ -478,7 +483,8 @@ All queries use expensive Sonnet model
 
 **Requirements:**
 
-- **FR4.1:** System SHALL timeout operations after configured limit (300s autonomous, 600s deterministic)
+- **FR4.1:** System SHALL timeout operations after configured limit (300s autonomous,
+  600s deterministic)
 - **FR4.2:** System SHALL retry PAN-OS API operations up to 3 times on transient failures
 - **FR4.3:** System SHALL use exponential backoff for retries (2s, 4s, 8s)
 - **FR4.4:** System SHALL log all retry attempts with context
@@ -553,7 +559,8 @@ All queries use expensive Sonnet model
 **Requirements:**
 
 - **FR7.1:** System SHALL stream node outputs in real-time (default behavior)
-- **FR7.2:** System SHALL display progress indicators (🔄 Agent thinking, 🔧 Executing tools, ✅ Complete)
+- **FR7.2:** System SHALL display progress indicators (🔄 Agent thinking, 🔧 Executing tools,
+  ✅ Complete)
 - **FR7.3:** Deterministic mode SHALL display step-by-step progress (Step 1/5: ...)
 - **FR7.4:** CLI SHALL provide `--no-stream` flag for automation (use .invoke())
 - **FR7.5:** Streaming SHALL flush output immediately (no buffering)
@@ -759,7 +766,7 @@ All queries use expensive Sonnet model
 
 ### System Architecture
 
-```
+```texttexttexttexttexttexttexttexttexttextpythontext
 ┌─────────────────────────────────────────────────────────────┐
 │                     PAN-OS Agent v1.0.0                      │
 ├─────────────────────────────────────────────────────────────┤
@@ -812,7 +819,8 @@ All queries use expensive Sonnet model
 anonymizer = create_anonymizer([
     {"pattern": r"LUFRPT[A-Za-z0-9+/=]{40,}", "replace": "<panos-api-key>"},
     {"pattern": r"sk-ant-[A-Za-z0-9-_]{40,}", "replace": "<anthropic-api-key>"},
-    {"pattern": r"(password|passwd|pwd)['\"]?\s*[:=]\s*['\"]?[^\s'\"]+", "replace": r"\1: <password>"},
+    {"pattern": r"(password|passwd|pwd)['\"]?\s*[:=]\s*['\"]?[^\s'\"]+",
+     "replace": r"\1: <password>"},
     {"pattern": r"<password>.*?</password>", "replace": "<password><redacted></password>"},
 ])
 
@@ -1012,7 +1020,7 @@ for chunk in graph.stream(input, config, stream_mode="updates"):
 
 #### Autonomous Mode (with enhancements)
 
-```
+```text
 User Input
     │
     ▼
@@ -1136,7 +1144,7 @@ User Input
 
 ### Deployment Architecture
 
-```
+```text
 GitHub Repository
       │
       ▼
@@ -1400,7 +1408,8 @@ LangSmith Cloud
 
 | Milestone | Tasks | Hours | Completion Criteria |
 |-----------|-------|-------|---------------------|
-| **M3.1: Power Features** | 9, 10, 11 | 5-9h | Agent Chat UI docs, caching (if needed), time-travel CLI |
+| **M3.1: Power Features** | 9, 10, 11 | 5-9h | Agent Chat UI docs, caching (if needed), |
+|                          |           |      | time-travel CLI |
 
 **Dependencies:**
 
@@ -1421,7 +1430,7 @@ LangSmith Cloud
 
 ### Critical Path
 
-```
+```text
 Week 1 (Phase 1):
 Day 1-2: Observability (M1.1) [CRITICAL - blocks all else]
 Day 2-4: Testing (M1.2) [HIGH - quality foundation]
@@ -1602,7 +1611,7 @@ All 25 recommendation files in `docs/recommendations/` (00-24):
 
 Use this checklist to verify PRD implementation:
 
-#### Phase 1: Production Readiness
+#### Phase 1: Production Readiness (Acceptance Criteria)
 
 - [ ] Anonymizers mask all 4 sensitive data patterns (LUFRPT, sk-ant-, password, XML)
 - [ ] LangSmith tracing enabled with anonymization
@@ -1651,4 +1660,4 @@ Use this checklist to verify PRD implementation:
 
 ---
 
-**End of Document**
+### End of Document

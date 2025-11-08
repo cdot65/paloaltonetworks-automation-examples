@@ -9,12 +9,12 @@ import logging
 from typing import Literal
 
 from langchain_anthropic import ChatAnthropic
-from langchain_core.messages import SystemMessage, HumanMessage
-from langgraph.graph import StateGraph, START, END
+from langchain_core.messages import HumanMessage, SystemMessage
+from langgraph.graph import END, START, StateGraph
 from langgraph.types import interrupt
-
-from src.core.state_schemas import DeterministicWorkflowState
+from panos.errors import PanConnectionTimeout, PanDeviceError, PanURLError
 from src.core.config import get_settings
+from src.core.state_schemas import DeterministicWorkflowState
 from src.tools import ALL_TOOLS
 
 logger = logging.getLogger(__name__)
@@ -99,7 +99,40 @@ def execute_step(state: DeterministicWorkflowState) -> DeterministicWorkflowStat
                 }
 
             # Execute tool
-            result = tool.invoke(tool_params)
+            try:
+                result = tool.invoke(tool_params)
+            except (PanConnectionTimeout, PanURLError) as e:
+                # Network/connectivity errors - these are often transient
+                logger.error(f"PAN-OS connectivity error in step '{step_name}': {e}")
+                return {
+                    **state,
+                    "step_outputs": state["step_outputs"]
+                    + [
+                        {
+                            "step": step_name,
+                            "status": "error",
+                            "error": f"PAN-OS connectivity error: {str(e)}",
+                            "error_type": "connectivity",
+                            "retryable": True,
+                        }
+                    ],
+                }
+            except PanDeviceError as e:
+                # PAN-OS API errors - configuration issues, object conflicts, etc.
+                logger.error(f"PAN-OS API error in step '{step_name}': {e}")
+                return {
+                    **state,
+                    "step_outputs": state["step_outputs"]
+                    + [
+                        {
+                            "step": step_name,
+                            "status": "error",
+                            "error": f"PAN-OS API error: {str(e)}",
+                            "error_type": "api_error",
+                            "retryable": False,
+                        }
+                    ],
+                }
 
             # Add to step outputs
             output = {
@@ -110,6 +143,7 @@ def execute_step(state: DeterministicWorkflowState) -> DeterministicWorkflowStat
                 "params": tool_params,
             }
 
+            # Manually append to list (no reducer)
             return {
                 **state,
                 "step_outputs": state["step_outputs"] + [output],
@@ -155,7 +189,8 @@ def execute_step(state: DeterministicWorkflowState) -> DeterministicWorkflowStat
             }
 
     except Exception as e:
-        logger.error(f"Error executing step: {e}")
+        # Catch any other unexpected errors (non-PAN-OS)
+        logger.error(f"Unexpected error executing step '{step_name}': {e}", exc_info=True)
         return {
             **state,
             "step_outputs": state["step_outputs"]
@@ -163,7 +198,9 @@ def execute_step(state: DeterministicWorkflowState) -> DeterministicWorkflowStat
                 {
                     "step": step_name,
                     "status": "error",
-                    "error": str(e),
+                    "error": f"Unexpected error: {str(e)}",
+                    "error_type": "unexpected",
+                    "retryable": False,
                 }
             ],
         }
@@ -180,7 +217,7 @@ def evaluate_step(state: DeterministicWorkflowState) -> DeterministicWorkflowSta
     """
     settings = get_settings()
     llm = ChatAnthropic(
-        model="claude-3-5-sonnet-20241022",
+        model="claude-haiku-4-5",
         temperature=0,
         api_key=settings.anthropic_api_key,
     )
@@ -327,11 +364,11 @@ def format_result(state: DeterministicWorkflowState) -> DeterministicWorkflowSta
     # Build result message
     message_parts = [
         f"📊 Workflow '{state['workflow_name']}' Execution Summary",
-        f"",
+        "",
         f"Steps: {completed_steps}/{total_steps}",
         f"✅ Successful: {successful_steps}",
         f"❌ Failed: {failed_steps}",
-        f"",
+        "",
         "Step Details:",
     ]
 
@@ -339,7 +376,14 @@ def format_result(state: DeterministicWorkflowState) -> DeterministicWorkflowSta
         status_icon = "✅" if output.get("status") == "success" else "❌"
         message_parts.append(f"  {i}. {status_icon} {output.get('step')}")
         if output.get("status") == "error":
-            message_parts.append(f"     Error: {output.get('error')}")
+            error_msg = f"     Error: {output.get('error')}"
+            # Add error type and retryable info if available
+            if output.get("error_type"):
+                error_type = output.get("error_type")
+                retryable = output.get("retryable", False)
+                retry_hint = " (retryable)" if retryable else " (non-retryable)"
+                error_msg += f" [{error_type}{retry_hint}]"
+            message_parts.append(error_msg)
 
     # Overall result
     if state.get("overall_result"):

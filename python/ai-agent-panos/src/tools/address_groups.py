@@ -7,7 +7,6 @@ import uuid
 from typing import Optional
 
 from langchain_core.tools import tool
-
 from src.core.subgraphs.crud import create_crud_subgraph
 
 

@@ -7,7 +7,6 @@ import uuid
 from typing import Optional
 
 from langchain_core.tools import tool
-
 from src.core.client import get_firewall_client
 from src.core.retry_helper import with_retry
 

@@ -10,7 +10,6 @@ from typing import Annotated, Literal, Optional, Sequence, TypedDict
 from langchain_core.messages import BaseMessage
 from langgraph.graph.message import add_messages
 
-
 # ============================================================================
 # Main Agent States (for top-level graphs)
 # ============================================================================
@@ -165,7 +164,7 @@ class DeterministicWorkflowState(TypedDict):
         workflow_params: Parameters for workflow execution
         steps: List of steps in workflow
         current_step: Current step index
-        step_outputs: Accumulated outputs from each step
+        step_outputs: Accumulated outputs from each step (manually managed, no reducer)
         overall_result: Final workflow result
         message: Formatted result message
     """
@@ -174,7 +173,7 @@ class DeterministicWorkflowState(TypedDict):
     workflow_params: dict
     steps: list[dict]
     current_step: int
-    step_outputs: Annotated[list[dict], operator.add]
+    step_outputs: list[dict]  # Removed operator.add - manual management
     overall_result: Optional[dict]
     message: str
 

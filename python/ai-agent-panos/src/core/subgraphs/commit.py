@@ -19,12 +19,11 @@ Features:
 import logging
 import time
 
-from langgraph.graph import StateGraph, START, END
+from langgraph.graph import END, START, StateGraph
 from langgraph.types import interrupt
-
-from src.core.state_schemas import CommitState
 from src.core.client import get_firewall_client
 from src.core.retry_helper import with_retry
+from src.core.state_schemas import CommitState
 
 logger = logging.getLogger(__name__)
 
@@ -177,8 +176,9 @@ def poll_job_status(state: CommitState) -> CommitState:
 
             # Get job status via XML API
             try:
-                from panos.errors import PanDeviceError
                 import xml.etree.ElementTree as ET
+
+                from panos.errors import PanDeviceError
 
                 # Show job status
                 xpath = f"/config/mgt-config/jobs/job[id='{job_id}']"

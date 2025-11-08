@@ -8,7 +8,7 @@ import logging
 import time
 from typing import Any, Callable, Optional
 
-from panos.errors import PanDeviceError, PanConnectionTimeout, PanURLError
+from panos.errors import PanConnectionTimeout, PanDeviceError, PanURLError
 
 logger = logging.getLogger(__name__)
 

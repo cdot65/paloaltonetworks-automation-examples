@@ -1,7 +1,8 @@
 """Pytest configuration and shared fixtures for PAN-OS agent tests."""
 
-import pytest
 from unittest.mock import MagicMock, Mock
+
+import pytest
 
 
 @pytest.fixture

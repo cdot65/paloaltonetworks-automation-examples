@@ -4,6 +4,7 @@ Environment variables loaded from .env file using pydantic-settings.
 """
 
 from typing import Literal
+
 from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 

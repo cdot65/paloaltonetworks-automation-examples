@@ -9,12 +9,12 @@ from typing import Literal
 
 from langchain_anthropic import ChatAnthropic
 from langchain_core.messages import SystemMessage
-from langgraph.graph import StateGraph, START, END
-from langgraph.prebuilt import ToolNode
+from langchain_core.messages.base import BaseMessage
 from langgraph.checkpoint.memory import MemorySaver
-
-from src.core.state_schemas import AutonomousState
+from langgraph.graph import END, START, StateGraph
+from langgraph.prebuilt import ToolNode
 from src.core.config import get_settings
+from src.core.state_schemas import AutonomousState
 from src.tools import ALL_TOOLS
 
 logger = logging.getLogger(__name__)
@@ -70,14 +70,16 @@ def call_agent(state: AutonomousState) -> AutonomousState:
 
     # Initialize LLM with tools
     llm = ChatAnthropic(
-        model="claude-3-5-sonnet-20241022",
+        model="claude-haiku-4-5",
         temperature=0,
         api_key=settings.anthropic_api_key,
     )
     llm_with_tools = llm.bind_tools(ALL_TOOLS)
 
     # Prepend system message
-    messages = [SystemMessage(content=AUTONOMOUS_SYSTEM_PROMPT)] + list(state["messages"])
+    messages = [SystemMessage(content=AUTONOMOUS_SYSTEM_PROMPT)] + list[BaseMessage](
+        state["messages"]
+    )
 
     # Get response
     response = llm_with_tools.invoke(messages)

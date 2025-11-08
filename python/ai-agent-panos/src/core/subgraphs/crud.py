@@ -8,15 +8,13 @@ Adapted from SCM agent patterns for PAN-OS XML API.
 import logging
 from typing import Literal
 
-from langgraph.graph import StateGraph, START, END
-
-from panos.objects import AddressObject, AddressGroup, ServiceObject, ServiceGroup
-from panos.policies import SecurityRule, NatRule
-from panos.errors import PanDeviceError
-
-from src.core.state_schemas import CRUDState
+from langgraph.graph import END, START, StateGraph
+from panos.errors import PanConnectionTimeout, PanDeviceError, PanURLError
+from panos.objects import AddressGroup, AddressObject, ServiceGroup, ServiceObject
+from panos.policies import NatRule, SecurityRule
 from src.core.client import get_firewall_client
 from src.core.retry_helper import with_retry
+from src.core.state_schemas import CRUDState
 
 logger = logging.getLogger(__name__)
 
@@ -95,7 +93,7 @@ def check_existence(state: CRUDState) -> CRUDState:
         # Refresh objects from firewall
         if state["object_type"] in ["address", "address_group", "service", "service_group"]:
             # Objects live under firewall
-            fw.refreshall(object_class)
+            object_class.refreshall(fw)
             existing = fw.find(state["object_name"], object_class)
         else:
             # Policies (security/NAT) need different handling
@@ -107,16 +105,39 @@ def check_existence(state: CRUDState) -> CRUDState:
 
         return {**state, "exists": exists}
 
-    except Exception as e:
-        logger.error(f"Error checking existence: {e}")
+    except (PanConnectionTimeout, PanURLError) as e:
+        logger.error(f"PAN-OS connectivity error checking existence: {e}")
         return {
             **state,
             "exists": False,
-            "error": f"Failed to check existence: {e}",
+            "error": f"Connectivity error: {e}",
+        }
+    except PanDeviceError as e:
+        logger.error(f"PAN-OS API error checking existence: {e}")
+        return {
+            **state,
+            "exists": False,
+            "error": f"API error: {e}",
+        }
+    except Exception as e:
+        logger.error(f"Unexpected error checking existence: {e}", exc_info=True)
+        return {
+            **state,
+            "exists": False,
+            "error": f"Unexpected error: {e}",
         }
 
 
-def route_operation(state: CRUDState) -> Literal["create_object", "read_object", "update_object", "delete_object", "list_objects", "format_response"]:
+def route_operation(
+    state: CRUDState,
+) -> Literal[
+    "create_object",
+    "read_object",
+    "update_object",
+    "delete_object",
+    "list_objects",
+    "format_response",
+]:
     """Route to appropriate operation based on operation_type.
 
     Args:
@@ -184,12 +205,26 @@ def create_object(state: CRUDState) -> CRUDState:
             },
         }
 
-    except Exception as e:
-        logger.error(f"Failed to create object: {e}")
+    except (PanConnectionTimeout, PanURLError) as e:
+        logger.error(f"PAN-OS connectivity error creating object: {e}")
         return {
             **state,
-            "error": str(e),
-            "operation_result": {"status": "error", "message": str(e)},
+            "error": f"Connectivity error: {e}",
+            "operation_result": {"status": "error", "message": f"Connectivity error: {e}"},
+        }
+    except PanDeviceError as e:
+        logger.error(f"PAN-OS API error creating object: {e}")
+        return {
+            **state,
+            "error": f"API error: {e}",
+            "operation_result": {"status": "error", "message": f"API error: {e}"},
+        }
+    except Exception as e:
+        logger.error(f"Unexpected error creating object: {e}", exc_info=True)
+        return {
+            **state,
+            "error": f"Unexpected error: {e}",
+            "operation_result": {"status": "error", "message": f"Unexpected error: {e}"},
         }
 
 
@@ -215,7 +250,7 @@ def read_object(state: CRUDState) -> CRUDState:
         fw = get_firewall_client()
         object_class = OBJECT_CLASS_MAP[state["object_type"]]
 
-        fw.refreshall(object_class)
+        object_class.refreshall(fw)
         obj = fw.find(state["object_name"], object_class)
 
         # Extract object data
@@ -230,12 +265,26 @@ def read_object(state: CRUDState) -> CRUDState:
             },
         }
 
-    except Exception as e:
-        logger.error(f"Failed to read object: {e}")
+    except (PanConnectionTimeout, PanURLError) as e:
+        logger.error(f"PAN-OS connectivity error reading object: {e}")
         return {
             **state,
-            "error": str(e),
-            "operation_result": {"status": "error", "message": str(e)},
+            "error": f"Connectivity error: {e}",
+            "operation_result": {"status": "error", "message": f"Connectivity error: {e}"},
+        }
+    except PanDeviceError as e:
+        logger.error(f"PAN-OS API error reading object: {e}")
+        return {
+            **state,
+            "error": f"API error: {e}",
+            "operation_result": {"status": "error", "message": f"API error: {e}"},
+        }
+    except Exception as e:
+        logger.error(f"Unexpected error reading object: {e}", exc_info=True)
+        return {
+            **state,
+            "error": f"Unexpected error: {e}",
+            "operation_result": {"status": "error", "message": f"Unexpected error: {e}"},
         }
 
 
@@ -261,7 +310,7 @@ def update_object(state: CRUDState) -> CRUDState:
         fw = get_firewall_client()
         object_class = OBJECT_CLASS_MAP[state["object_type"]]
 
-        fw.refreshall(object_class)
+        object_class.refreshall(fw)
         obj = fw.find(state["object_name"], object_class)
 
         # Update attributes from data
@@ -285,12 +334,26 @@ def update_object(state: CRUDState) -> CRUDState:
             },
         }
 
-    except Exception as e:
-        logger.error(f"Failed to update object: {e}")
+    except (PanConnectionTimeout, PanURLError) as e:
+        logger.error(f"PAN-OS connectivity error updating object: {e}")
         return {
             **state,
-            "error": str(e),
-            "operation_result": {"status": "error", "message": str(e)},
+            "error": f"Connectivity error: {e}",
+            "operation_result": {"status": "error", "message": f"Connectivity error: {e}"},
+        }
+    except PanDeviceError as e:
+        logger.error(f"PAN-OS API error updating object: {e}")
+        return {
+            **state,
+            "error": f"API error: {e}",
+            "operation_result": {"status": "error", "message": f"API error: {e}"},
+        }
+    except Exception as e:
+        logger.error(f"Unexpected error updating object: {e}", exc_info=True)
+        return {
+            **state,
+            "error": f"Unexpected error: {e}",
+            "operation_result": {"status": "error", "message": f"Unexpected error: {e}"},
         }
 
 
@@ -316,7 +379,7 @@ def delete_object(state: CRUDState) -> CRUDState:
         fw = get_firewall_client()
         object_class = OBJECT_CLASS_MAP[state["object_type"]]
 
-        fw.refreshall(object_class)
+        object_class.refreshall(fw)
         obj = fw.find(state["object_name"], object_class)
 
         def delete_op():
@@ -335,12 +398,26 @@ def delete_object(state: CRUDState) -> CRUDState:
             },
         }
 
-    except Exception as e:
-        logger.error(f"Failed to delete object: {e}")
+    except (PanConnectionTimeout, PanURLError) as e:
+        logger.error(f"PAN-OS connectivity error deleting object: {e}")
         return {
             **state,
-            "error": str(e),
-            "operation_result": {"status": "error", "message": str(e)},
+            "error": f"Connectivity error: {e}",
+            "operation_result": {"status": "error", "message": f"Connectivity error: {e}"},
+        }
+    except PanDeviceError as e:
+        logger.error(f"PAN-OS API error deleting object: {e}")
+        return {
+            **state,
+            "error": f"API error: {e}",
+            "operation_result": {"status": "error", "message": f"API error: {e}"},
+        }
+    except Exception as e:
+        logger.error(f"Unexpected error deleting object: {e}", exc_info=True)
+        return {
+            **state,
+            "error": f"Unexpected error: {e}",
+            "operation_result": {"status": "error", "message": f"Unexpected error: {e}"},
         }
 
 
@@ -359,7 +436,7 @@ def list_objects(state: CRUDState) -> CRUDState:
         fw = get_firewall_client()
         object_class = OBJECT_CLASS_MAP[state["object_type"]]
 
-        fw.refreshall(object_class)
+        object_class.refreshall(fw)
         objects = fw.findall(object_class)
 
         object_list = [{"name": obj.name} for obj in objects]
@@ -373,12 +450,26 @@ def list_objects(state: CRUDState) -> CRUDState:
             },
         }
 
-    except Exception as e:
-        logger.error(f"Failed to list objects: {e}")
+    except (PanConnectionTimeout, PanURLError) as e:
+        logger.error(f"PAN-OS connectivity error listing objects: {e}")
         return {
             **state,
-            "error": str(e),
-            "operation_result": {"status": "error", "message": str(e)},
+            "error": f"Connectivity error: {e}",
+            "operation_result": {"status": "error", "message": f"Connectivity error: {e}"},
+        }
+    except PanDeviceError as e:
+        logger.error(f"PAN-OS API error listing objects: {e}")
+        return {
+            **state,
+            "error": f"API error: {e}",
+            "operation_result": {"status": "error", "message": f"API error: {e}"},
+        }
+    except Exception as e:
+        logger.error(f"Unexpected error listing objects: {e}", exc_info=True)
+        return {
+            **state,
+            "error": f"Unexpected error: {e}",
+            "operation_result": {"status": "error", "message": f"Unexpected error: {e}"},
         }
 
 

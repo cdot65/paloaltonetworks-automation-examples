@@ -7,7 +7,6 @@ import uuid
 from typing import Optional
 
 from langchain_core.tools import tool
-
 from src.core.client import get_firewall_client
 from src.core.retry_helper import with_retry
 
@@ -65,7 +64,12 @@ def security_policy_read(name: str) -> str:
         if not rule:
             return f"❌ Error: Security policy rule '{name}' not found"
 
-        return f"✅ Retrieved security policy rule: {name}\n" f"Action: {rule.action}\n" f"From zone: {rule.fromzone}\n" f"To zone: {rule.tozone}"
+        return (
+            f"✅ Retrieved security policy rule: {name}\n"
+            f"Action: {rule.action}\n"
+            f"From zone: {rule.fromzone}\n"
+            f"To zone: {rule.tozone}"
+        )
 
     except Exception as e:
         return f"❌ Error: {type(e).__name__}: {e}"

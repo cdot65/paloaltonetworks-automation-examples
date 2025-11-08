@@ -94,6 +94,130 @@ panos-agent test-connection
 panos-agent version
 ```
 
+## Testing the Graphs
+
+### Autonomous Mode Examples
+
+Test the autonomous ReAct agent with natural language queries:
+
+```bash
+# List operations
+panos-agent run -p "List all address objects" -m autonomous --log-level ERROR
+
+# Create operations
+panos-agent run -p "Create an address object named test-server-123 with IP 192.168.100.123" -m autonomous --log-level ERROR
+
+# Delete operations
+panos-agent run -p "Delete the address object named test-server-123" -m autonomous --log-level ERROR
+
+# Complex queries
+panos-agent run -p "Show me all NAT policies and explain what they do" -m autonomous --log-level ERROR
+```
+
+**Expected Output (List Example):**
+```
+PAN-OS Agent - Mode: autonomous
+Prompt: List all address objects
+
+Response:
+Great! There are **37 address objects** currently configured on the PAN-OS
+firewall.
+
+Would you like me to:
+- Get details about a specific address object?
+- Filter or search for particular addresses?
+- Create new address objects?
+- Modify or delete existing ones?
+
+Let me know how I can help!
+
+Thread ID: 49d5513e-2763-4b54-bdfc-3b6f072d6020
+```
+
+### Deterministic Mode Examples
+
+Test predefined workflows with step-by-step execution:
+
+```bash
+# List available workflows
+panos-agent list-workflows
+
+# Simple address creation workflow (2 steps)
+panos-agent run -p "simple_address" -m deterministic
+
+# Web server setup workflow (multi-object creation)
+panos-agent run -p "web_server_setup" -m deterministic
+
+# Workflow with approval gate
+panos-agent run -p "address_with_approval" -m deterministic
+```
+
+**Expected Output (simple_address):**
+```
+PAN-OS Agent - Mode: deterministic
+Prompt: simple_address
+
+[14:08:32] INFO     Loading workflow: simple_address
+           INFO     Executing step 1/2: Create address object
+           INFO     Validating create for address
+           INFO     Checking existence of address: demo-server
+           INFO     Connected to PAN-OS 11.1.4-h7 (serial: 021201109830)
+           INFO     Object exists: False
+           INFO     Creating address: demo-server
+           INFO     Successfully created address: demo-server
+           INFO     Step evaluation: continue - Address object successfully created
+           INFO     Executing step 2/2: Verify address object
+           INFO     Validating read for address
+           INFO     Reading address: demo-server
+
+Response:
+📊 Workflow 'simple_address' Execution Summary
+
+Steps: 2/2
+✅ Successful: 2
+❌ Failed: 0
+
+Step Details:
+  1. ✅ Create address object
+  2. ✅ Verify address object
+
+Final Decision: continue
+Reason: Address object successfully retrieved (demo-server). No errors reported.
+Step completed as expected.
+
+Thread ID: ac43a662-137c-464c-b118-c6d399a7fbe4
+```
+
+### Testing with Thread IDs
+
+Both modes support conversation continuity using thread IDs:
+
+```bash
+# Start a conversation
+panos-agent run -p "List address objects" -m autonomous --thread-id my-session-1
+
+# Continue the same conversation
+panos-agent run -p "Now create one called test-server at 10.1.1.1" -m autonomous --thread-id my-session-1
+
+# Start a fresh conversation
+panos-agent run -p "List address objects" -m autonomous --thread-id my-session-2
+```
+
+### Connection Testing
+
+Always test your connection first before running operations:
+
+```bash
+panos-agent test-connection
+```
+
+**Expected Output:**
+```
+Testing PAN-OS connection...
+
+✅ Connected to PAN-OS 11.1.4-h7 (serial: 021201109830)
+```
+
 ## Architecture
 
 ### Project Structure
@@ -264,7 +388,13 @@ See repository root for license information.
 
 ---
 
-**Status**: ✅ Complete (All 5 phases)
-**Features**: 33 tools, commit workflow, 6 workflows, pre-commit hooks, comprehensive docs
-**Coverage**: Architecture guide, setup guide
+**Status**: ✅ Complete (All 5 phases + Phase 1 observability)
+**Features**: 33 tools, commit workflow, 6 workflows, LangSmith observability, comprehensive docs
+**Coverage**: Architecture guide, setup guide, testing examples
+**Recent Updates**:
+- ✅ LangSmith environment variables and anonymizers (Phase 1.1-1.2)
+- ✅ Metadata and tags for observability (Phase 1.3)
+- ✅ Fixed CRUD subgraph pan-os-python API usage
+- ✅ Fixed deterministic workflow step accumulation bug
+
 **Last Updated**: 2025-01-08

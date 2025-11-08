@@ -5,13 +5,13 @@ Typer-based CLI for running autonomous and deterministic modes.
 
 import logging
 import sys
+from datetime import datetime
 from typing import Optional
 
 import typer
+from langchain_core.messages import HumanMessage
 from rich.console import Console
 from rich.logging import RichHandler
-
-from langchain_core.messages import HumanMessage
 
 app = typer.Typer(
     name="panos-agent",
@@ -34,8 +34,12 @@ def setup_logging(log_level: str = "INFO"):
 @app.command()
 def run(
     prompt: str = typer.Option(..., "--prompt", "-p", help="User prompt for the agent"),
-    mode: str = typer.Option("autonomous", "--mode", "-m", help="Agent mode (autonomous or deterministic)"),
-    thread_id: Optional[str] = typer.Option(None, "--thread-id", "-t", help="Thread ID for conversation continuity"),
+    mode: str = typer.Option(
+        "autonomous", "--mode", "-m", help="Agent mode (autonomous or deterministic)"
+    ),
+    thread_id: Optional[str] = typer.Option(
+        None, "--thread-id", "-t", help="Thread ID for conversation continuity"
+    ),
     log_level: str = typer.Option("INFO", "--log-level", "-l", help="Logging level"),
 ):
     """Run PAN-OS agent with specified mode and prompt.
@@ -59,6 +63,11 @@ def run(
         if mode == "autonomous":
             from src.autonomous_graph import create_autonomous_graph
 
+            # Get firewall hostname from settings
+            from src.core.config import get_settings
+
+            settings = get_settings()
+
             graph = create_autonomous_graph()
 
             # Use provided thread_id or generate new one
@@ -69,12 +78,22 @@ def run(
             # Invoke graph
             result = graph.invoke(
                 {"messages": [HumanMessage(content=prompt)]},
-                config={"configurable": {"thread_id": tid}},
+                config={
+                    "configurable": {"thread_id": tid},
+                    "tags": ["panos-agent", "autonomous", "v0.1.0"],
+                    "metadata": {
+                        "mode": "autonomous",
+                        "thread_id": tid,
+                        "user_prompt_length": len(prompt),
+                        "timestamp": datetime.now().isoformat(),
+                        "firewall_host": settings.panos_hostname,
+                    },
+                },
             )
 
             # Print response
             last_message = result["messages"][-1]
-            console.print(f"\n[bold green]Response:[/bold green]")
+            console.print("\n[bold green]Response:[/bold green]")
             console.print(last_message.content)
 
             console.print(f"\n[dim]Thread ID: {tid}[/dim]")
@@ -97,16 +116,27 @@ def run(
             else:
                 formatted_prompt = prompt
 
-            # Invoke graph
+            # Invoke graph with tags and metadata
             result = graph.invoke(
                 {"messages": [HumanMessage(content=formatted_prompt)]},
-                config={"configurable": {"thread_id": tid}},
+                config={
+                    "configurable": {"thread_id": tid},
+                    "tags": ["panos-agent", "deterministic", prompt, "v0.1.0"],
+                    "metadata": {
+                        "mode": "deterministic",
+                        "workflow": prompt,  # Original workflow name
+                        "thread_id": tid,
+                        "timestamp": datetime.now().isoformat(),
+                    },
+                },
             )
 
             # Print response
             last_message = result["messages"][-1]
-            console.print(f"\n[bold green]Response:[/bold green]")
-            console.print(last_message.content if isinstance(last_message, dict) else last_message.content)
+            console.print("\n[bold green]Response:[/bold green]")
+            console.print(
+                last_message.content if isinstance(last_message, dict) else last_message.content
+            )
 
             console.print(f"\n[dim]Thread ID: {tid}[/dim]")
 
@@ -133,12 +163,14 @@ def studio():
 
     try:
         subprocess.run(["langgraph", "dev"], check=True)
-    except subprocess.CalledProcessError as e:
-        console.print(f"\n[bold red]Error:[/bold red] Failed to start LangGraph Studio")
-        console.print("[dim]Make sure 'langgraph' CLI is installed: pip install langgraph-cli[/dim]")
+    except subprocess.CalledProcessError:
+        console.print("\n[bold red]Error:[/bold red] Failed to start LangGraph Studio")
+        console.print(
+            "[dim]Make sure 'langgraph' CLI is installed: pip install langgraph-cli[/dim]"
+        )
         sys.exit(1)
     except FileNotFoundError:
-        console.print(f"\n[bold red]Error:[/bold red] 'langgraph' command not found")
+        console.print("\n[bold red]Error:[/bold red] 'langgraph' command not found")
         console.print("[dim]Install it with: pip install langgraph-cli[/dim]")
         sys.exit(1)
 
@@ -192,7 +224,7 @@ def list_workflows():
             console.print()
 
         console.print(f"[dim]Total: {len(WORKFLOWS)} workflows[/dim]")
-        console.print(f"\n[dim]Run with: panos-agent run -m deterministic -p <workflow_name>[/dim]")
+        console.print("\n[dim]Run with: panos-agent run -m deterministic -p <workflow_name>[/dim]")
 
     except Exception as e:
         console.print(f"[bold red]Error:[/bold red] {type(e).__name__}: {e}")

@@ -6,9 +6,8 @@ Singleton pattern for reusable firewall connection across tools and subgraphs.
 import logging
 from typing import Optional
 
-from panos.firewall import Firewall
 from panos.errors import PanDeviceError
-
+from panos.firewall import Firewall
 from src.core.config import get_settings
 
 logger = logging.getLogger(__name__)
