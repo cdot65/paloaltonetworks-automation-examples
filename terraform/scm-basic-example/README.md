@@ -126,6 +126,7 @@ project_name = "scm-test"         # Project identifier
 ```
 
 **Important:** If you use a different folder than "Austin", update the `folder` parameter in:
+
 - `tags.tf`
 - `addresses.tf`
 - `address-groups.tf`
@@ -153,10 +154,12 @@ Type `yes` when prompted to confirm the changes.
 The configuration creates 6 tags for organizing resources:
 
 **Environment Tags:**
+
 - `production` (Red) - Production environment resources
 - `development` (Blue) - Development environment resources
 
 **Tier Tags:**
+
 - `web-tier` (Green) - Web tier resources
 - `app-tier` (Orange) - Application tier resources
 - `data-tier` (Purple) - Data tier resources
@@ -167,21 +170,26 @@ The configuration creates 6 tags for organizing resources:
 18 address objects organized by tier:
 
 **Web Tier (5 addresses):**
+
 - Production: web-prod-1, web-prod-2, web-prod-subnet
 - Development: web-dev-1, web-dev-subnet
 
 **Application Tier (4 addresses):**
+
 - Production: app-prod-1, app-prod-2, app-prod-range (IP range)
 - Development: app-dev-subnet
 
 **Data Tier (4 addresses):**
+
 - Production: db-prod-1, db-prod-2, db-prod-range (IP range)
 - Development: db-dev-subnet
 
 **DMZ (3 addresses):**
+
 - dmz-proxy-1, dmz-proxy-2, dmz-subnet
 
 **External (2 FQDN addresses):**
+
 - api-endpoint (api.company.com)
 - cdn-endpoint (cdn.company.com)
 
@@ -190,16 +198,19 @@ The configuration creates 6 tags for organizing resources:
 10 address groups organized by environment and purpose:
 
 **Production Groups:**
+
 - prod-web-servers - All production web servers
 - prod-app-servers - All production application servers
 - prod-db-servers - All production database servers
 
 **Development Groups:**
+
 - dev-web-servers - All development web servers
 - dev-app-servers - All development application servers
 - dev-db-servers - All development database servers
 
 **Combined Groups:**
+
 - all-web-servers - All web servers (prod + dev)
 - dmz-servers - All DMZ servers
 - external-endpoints - External API and CDN endpoints
