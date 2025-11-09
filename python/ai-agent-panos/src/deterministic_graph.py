@@ -8,6 +8,9 @@ import logging
 import uuid
 from typing import Literal
 
+# Import anonymizers FIRST to set up LangSmith client before any tracing
+import src.core.anonymizers  # noqa: F401
+
 from langgraph.checkpoint.memory import MemorySaver
 from langgraph.graph import END, START, StateGraph
 from src.core.state_schemas import DeterministicState

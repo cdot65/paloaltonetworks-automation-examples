@@ -7,6 +7,9 @@ Natural language interface for exploratory PAN-OS automation.
 import logging
 from typing import Literal
 
+# Import anonymizers FIRST to set up LangSmith client before any tracing
+import src.core.anonymizers  # noqa: F401
+
 from langchain_anthropic import ChatAnthropic
 from langchain_core.messages import SystemMessage
 from langchain_core.messages.base import BaseMessage
