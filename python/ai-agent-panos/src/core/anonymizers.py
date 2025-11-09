@@ -2,8 +2,7 @@
 LangSmith anonymizers for masking sensitive data in traces.
 
 This module provides anonymization patterns to prevent credential leakage
-when sending traces to LangSmith. CRITICAL: All sensitive data patterns must
-be masked before traces leave the application.
+when sending traces to LangSmith.
 
 Patterns covered:
 - PAN-OS API keys (LUFRPT... format)
@@ -12,7 +11,6 @@ Patterns covered:
 - XML password elements
 """
 
-from langsmith import Client
 from langsmith.anonymizer import create_anonymizer
 
 
@@ -38,37 +36,3 @@ def get_panos_anonymizer():
             {"pattern": r"<password>.*?</password>", "replace": "<password><redacted></password>"},
         ]
     )
-
-
-def create_panos_tracer():
-    """
-    Create LangChainTracer with PAN-OS-specific anonymization patterns.
-
-    This function creates a configured tracer that masks sensitive data in traces:
-    1. PAN-OS API keys (LUFRPT[base64 string])
-    2. Anthropic API keys (sk-ant-[alphanumeric])
-    3. Password fields in any format (password=, passwd=, pwd=)
-    4. XML password elements (<password>...</password>)
-
-    Returns:
-        LangChainTracer: Configured tracer with anonymized client
-
-    Example:
-        >>> from src.core.anonymizers import create_panos_tracer
-        >>> tracer = create_panos_tracer()
-        >>> graph = workflow.compile().with_config({'callbacks': [tracer]})
-
-    Security:
-        All patterns are applied CLIENT-SIDE before data leaves the application.
-        This ensures sensitive data never reaches LangSmith servers.
-    """
-    from langchain_core.tracers.langchain import LangChainTracer
-
-    # Create anonymizer with PAN-OS patterns
-    anonymizer = get_panos_anonymizer()
-
-    # Create client with anonymizer
-    client = Client(anonymizer=anonymizer)
-
-    # Create and return tracer with anonymized client
-    return LangChainTracer(client=client)

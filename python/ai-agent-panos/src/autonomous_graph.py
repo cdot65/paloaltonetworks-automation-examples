@@ -5,7 +5,6 @@ Natural language interface for exploratory PAN-OS automation.
 """
 
 import logging
-import os
 from typing import Literal
 
 from langchain_anthropic import ChatAnthropic
@@ -145,13 +144,4 @@ def create_autonomous_graph() -> StateGraph:
 
     # Compile with checkpointer for conversation memory
     checkpointer = MemorySaver()
-    compiled = workflow.compile(checkpointer=checkpointer)
-
-    # Attach anonymizing tracer if LangSmith tracing enabled
-    if os.getenv("LANGSMITH_TRACING") == "true":
-        from src.core.anonymizers import create_panos_tracer
-
-        tracer = create_panos_tracer()
-        return compiled.with_config({"callbacks": [tracer]})
-
-    return compiled
+    return workflow.compile(checkpointer=checkpointer)

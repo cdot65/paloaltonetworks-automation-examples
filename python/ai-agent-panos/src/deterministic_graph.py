@@ -5,7 +5,6 @@ More predictable than autonomous mode, similar to Ansible playbooks.
 """
 
 import logging
-import os
 import uuid
 from typing import Literal
 
@@ -184,13 +183,4 @@ def create_deterministic_graph() -> StateGraph:
 
     # Compile with checkpointer
     checkpointer = MemorySaver()
-    compiled = workflow.compile(checkpointer=checkpointer)
-
-    # Attach anonymizing tracer if LangSmith tracing enabled
-    if os.getenv("LANGSMITH_TRACING") == "true":
-        from src.core.anonymizers import create_panos_tracer
-
-        tracer = create_panos_tracer()
-        return compiled.with_config({"callbacks": [tracer]})
-
-    return compiled
+    return workflow.compile(checkpointer=checkpointer)
