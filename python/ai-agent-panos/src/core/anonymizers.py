@@ -13,7 +13,6 @@ Patterns covered:
 """
 
 import os
-from langchain_core.tracers.langchain import LangChainTracer
 from langsmith import Client
 from langsmith.anonymizer import create_anonymizer
 
