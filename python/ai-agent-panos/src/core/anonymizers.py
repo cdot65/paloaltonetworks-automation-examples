@@ -12,7 +12,6 @@ Patterns covered:
 - XML password elements
 """
 
-import os
 from langsmith import Client
 from langsmith.anonymizer import create_anonymizer
 
@@ -41,46 +40,35 @@ def get_panos_anonymizer():
     )
 
 
-def get_anonymized_langsmith_client() -> Client:
+def create_panos_tracer():
     """
-    Create LangSmith client with PAN-OS-specific anonymization patterns.
+    Create LangChainTracer with PAN-OS-specific anonymization patterns.
 
-    This function creates a LangSmith client that masks sensitive data:
+    This function creates a configured tracer that masks sensitive data in traces:
     1. PAN-OS API keys (LUFRPT[base64 string])
     2. Anthropic API keys (sk-ant-[alphanumeric])
     3. Password fields in any format (password=, passwd=, pwd=)
     4. XML password elements (<password>...</password>)
 
     Returns:
-        Client: LangSmith client with anonymization
+        LangChainTracer: Configured tracer with anonymized client
 
     Example:
-        >>> client = get_anonymized_langsmith_client()
-        >>> # Client automatically anonymizes all traces
+        >>> from src.core.anonymizers import create_panos_tracer
+        >>> tracer = create_panos_tracer()
+        >>> graph = workflow.compile().with_config({'callbacks': [tracer]})
 
     Security:
         All patterns are applied CLIENT-SIDE before data leaves the application.
         This ensures sensitive data never reaches LangSmith servers.
     """
-    return Client(anonymizer=get_panos_anonymizer())
+    from langchain_core.tracers.langchain import LangChainTracer
 
+    # Create anonymizer with PAN-OS patterns
+    anonymizer = get_panos_anonymizer()
 
-# Initialize global anonymized LangSmith client if tracing is enabled
-# This must happen before any LangChain imports that use LangSmith
-if os.getenv("LANGSMITH_TRACING") == "true":
-    # Override the lazy client getter in langsmith module
-    import langsmith
+    # Create client with anonymizer
+    client = Client(anonymizer=anonymizer)
 
-    # Save original get_client function
-    _original_get_client = getattr(langsmith, 'get_client', None)
-
-    # Create our anonymized client
-    _anonymized_client = get_anonymized_langsmith_client()
-
-    # Override get_client to always return our anonymized client
-    def get_anonymized_client():
-        return _anonymized_client
-
-    # Patch the module
-    langsmith.get_client = get_anonymized_client
-    langsmith.client = _anonymized_client
+    # Create and return tracer with anonymized client
+    return LangChainTracer(client=client)

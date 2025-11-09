@@ -3,17 +3,17 @@
 import pytest
 from unittest.mock import Mock, patch, MagicMock
 
-from src.core.anonymizers import create_panos_anonymizer
+from src.core.anonymizers import create_panos_tracer
 
 
-class TestCreatePanosAnonymizer:
-    """Tests for create_panos_anonymizer function."""
+class TestCreatePanosTracer:
+    """Tests for create_panos_tracer function."""
 
+    @patch("langchain_core.tracers.langchain.LangChainTracer")
     @patch("src.core.anonymizers.Client")
-    @patch("src.core.anonymizers.LangChainTracer")
     @patch("src.core.anonymizers.create_anonymizer")
     def test_create_anonymizer_called_with_patterns(
-        self, mock_create_anon, mock_tracer, mock_client
+        self, mock_create_anon, mock_client, mock_tracer_class
     ):
         """Test that create_anonymizer is called with correct patterns."""
         # Mock anonymizer
@@ -24,8 +24,12 @@ class TestCreatePanosAnonymizer:
         mock_ls_client = Mock()
         mock_client.return_value = mock_ls_client
 
+        # Mock tracer
+        mock_tracer = Mock()
+        mock_tracer_class.return_value = mock_tracer
+
         # Call function
-        result = create_panos_anonymizer()
+        result = create_panos_tracer()
 
         # Verify create_anonymizer was called
         assert mock_create_anon.called
@@ -41,7 +45,7 @@ class TestCreatePanosAnonymizer:
         assert any("<password>" in str(pattern) for pattern in call_args)  # XML password
 
     @patch("src.core.anonymizers.Client")
-    @patch("src.core.anonymizers.LangChainTracer")
+    @patch("langchain_core.tracers.langchain.LangChainTracer")
     @patch("src.core.anonymizers.create_anonymizer")
     def test_returns_langchain_tracer(self, mock_create_anon, mock_tracer, mock_client):
         """Test that function returns LangChainTracer instance."""
@@ -54,13 +58,13 @@ class TestCreatePanosAnonymizer:
         mock_tracer.return_value = mock_tracer_instance
 
         # Call function
-        result = create_panos_anonymizer()
+        result = create_panos_tracer()
 
         # Should return LangChainTracer
         assert result == mock_tracer_instance
 
     @patch("src.core.anonymizers.Client")
-    @patch("src.core.anonymizers.LangChainTracer")
+    @patch("langchain_core.tracers.langchain.LangChainTracer")
     @patch("src.core.anonymizers.create_anonymizer")
     def test_client_created_with_anonymizer(
         self, mock_create_anon, mock_tracer, mock_client
@@ -71,7 +75,7 @@ class TestCreatePanosAnonymizer:
         mock_create_anon.return_value = mock_anonymizer
 
         # Call function
-        create_panos_anonymizer()
+        create_panos_tracer()
 
         # Verify Client was called with anonymizer
         mock_client.assert_called_once_with(anonymizer=mock_anonymizer)
@@ -161,7 +165,7 @@ class TestAnonymizerIntegration:
     """Integration tests for anonymizer with sample data."""
 
     @patch("src.core.anonymizers.Client")
-    @patch("src.core.anonymizers.LangChainTracer")
+    @patch("langchain_core.tracers.langchain.LangChainTracer")
     @patch("src.core.anonymizers.create_anonymizer")
     def test_anonymizer_integration(self, mock_create_anon, mock_tracer, mock_client):
         """Test that anonymizer is properly integrated with tracer."""
@@ -176,7 +180,7 @@ class TestAnonymizerIntegration:
         mock_tracer.return_value = mock_tracer_instance
 
         # Create anonymizer
-        tracer = create_panos_anonymizer()
+        tracer = create_panos_tracer()
 
         # Verify workflow
         assert mock_create_anon.called, "create_anonymizer should be called"

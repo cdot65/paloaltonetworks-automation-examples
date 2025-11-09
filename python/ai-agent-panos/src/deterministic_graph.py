@@ -5,11 +5,9 @@ More predictable than autonomous mode, similar to Ansible playbooks.
 """
 
 import logging
+import os
 import uuid
 from typing import Literal
-
-# Import anonymizers FIRST to set up LangSmith client before any tracing
-import src.core.anonymizers  # noqa: F401
 
 from langgraph.checkpoint.memory import MemorySaver
 from langgraph.graph import END, START, StateGraph
@@ -186,4 +184,13 @@ def create_deterministic_graph() -> StateGraph:
 
     # Compile with checkpointer
     checkpointer = MemorySaver()
-    return workflow.compile(checkpointer=checkpointer)
+    compiled = workflow.compile(checkpointer=checkpointer)
+
+    # Attach anonymizing tracer if LangSmith tracing enabled
+    if os.getenv("LANGSMITH_TRACING") == "true":
+        from src.core.anonymizers import create_panos_tracer
+
+        tracer = create_panos_tracer()
+        return compiled.with_config({"callbacks": [tracer]})
+
+    return compiled

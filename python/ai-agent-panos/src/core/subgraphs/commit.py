@@ -179,8 +179,6 @@ def poll_job_status(state: CommitState) -> CommitState:
             try:
                 import xml.etree.ElementTree as ET
 
-                from panos.errors import PanDeviceError
-
                 # Show job status
                 xpath = f"/config/mgt-config/jobs/job[id='{job_id}']"
                 result = fw.xapi.show(xpath=xpath)

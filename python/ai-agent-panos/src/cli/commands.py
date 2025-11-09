@@ -148,7 +148,7 @@ def run(
             console.print(f"[bold red]Error:[/bold red] Unknown mode '{mode}'")
             sys.exit(1)
 
-    except TimeoutError as e:
+    except TimeoutError:
         # Handle graph execution timeout
         timeout_duration = TIMEOUT_AUTONOMOUS if mode == "autonomous" else TIMEOUT_DETERMINISTIC
         console.print(
