@@ -17,6 +17,30 @@ from langsmith import Client
 from langsmith.anonymizer import create_anonymizer
 
 
+def get_panos_anonymizer():
+    """
+    Create anonymizer with PAN-OS-specific patterns.
+
+    Returns:
+        Anonymizer: Configured anonymizer function
+    """
+    return create_anonymizer(
+        [
+            # Pattern 1: PAN-OS API keys (LUFRPT format)
+            {"pattern": r"LUFRPT[A-Za-z0-9+/=]{40,}", "replace": "<panos-api-key>"},
+            # Pattern 2: Anthropic API keys
+            {"pattern": r"sk-ant-[A-Za-z0-9-_]{40,}", "replace": "<anthropic-api-key>"},
+            # Pattern 3: Password fields
+            {
+                "pattern": r"(password|passwd|pwd)['\"]?\s*[:=]\s*['\"]?[^\s'\"]+",
+                "replace": r"\1: <password>",
+            },
+            # Pattern 4: XML password elements
+            {"pattern": r"<password>.*?</password>", "replace": "<password><redacted></password>"},
+        ]
+    )
+
+
 def get_anonymized_langsmith_client() -> Client:
     """
     Create LangSmith client with PAN-OS-specific anonymization patterns.
@@ -38,28 +62,25 @@ def get_anonymized_langsmith_client() -> Client:
         All patterns are applied CLIENT-SIDE before data leaves the application.
         This ensures sensitive data never reaches LangSmith servers.
     """
-    anonymizer = create_anonymizer(
-        [
-            # Pattern 1: PAN-OS API keys (LUFRPT format)
-            {"pattern": r"LUFRPT[A-Za-z0-9+/=]{40,}", "replace": "<panos-api-key>"},
-            # Pattern 2: Anthropic API keys
-            {"pattern": r"sk-ant-[A-Za-z0-9-_]{40,}", "replace": "<anthropic-api-key>"},
-            # Pattern 3: Password fields
-            {
-                "pattern": r"(password|passwd|pwd)['\"]?\s*[:=]\s*['\"]?[^\s'\"]+",
-                "replace": r"\1: <password>",
-            },
-            # Pattern 4: XML password elements
-            {"pattern": r"<password>.*?</password>", "replace": "<password><redacted></password>"},
-        ]
-    )
-
-    # Create client with anonymizer
-    return Client(anonymizer=anonymizer)
+    return Client(anonymizer=get_panos_anonymizer())
 
 
 # Initialize global anonymized LangSmith client if tracing is enabled
+# This must happen before any LangChain imports that use LangSmith
 if os.getenv("LANGSMITH_TRACING") == "true":
-    # Set the default LangSmith client to use anonymization
+    # Override the lazy client getter in langsmith module
     import langsmith
-    langsmith.client = get_anonymized_langsmith_client()
+
+    # Save original get_client function
+    _original_get_client = getattr(langsmith, 'get_client', None)
+
+    # Create our anonymized client
+    _anonymized_client = get_anonymized_langsmith_client()
+
+    # Override get_client to always return our anonymized client
+    def get_anonymized_client():
+        return _anonymized_client
+
+    # Patch the module
+    langsmith.get_client = get_anonymized_client
+    langsmith.client = _anonymized_client
