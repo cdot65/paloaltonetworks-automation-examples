@@ -136,9 +136,17 @@ def execute_step(state: DeterministicWorkflowState) -> DeterministicWorkflowStat
                 }
 
             # Add to step outputs
+            # Determine status from result message
+            if "✅" in result:
+                status = "success"
+            elif "⏭️" in result or "Skipped" in result:
+                status = "skipped"
+            else:
+                status = "error"
+
             output = {
                 "step": step_name,
-                "status": "success" if "✅" in result else "error",
+                "status": status,
                 "result": result,
                 "tool": tool_name,
                 "params": tool_params,
@@ -360,6 +368,7 @@ def format_result(state: DeterministicWorkflowState) -> DeterministicWorkflowSta
     successful_steps = sum(
         1 for output in state["step_outputs"] if output.get("status") == "success"
     )
+    skipped_steps = sum(1 for output in state["step_outputs"] if output.get("status") == "skipped")
     failed_steps = sum(1 for output in state["step_outputs"] if output.get("status") == "error")
 
     # Build result message
@@ -368,15 +377,28 @@ def format_result(state: DeterministicWorkflowState) -> DeterministicWorkflowSta
         "",
         f"Steps: {completed_steps}/{total_steps}",
         f"✅ Successful: {successful_steps}",
-        f"❌ Failed: {failed_steps}",
-        "",
-        "Step Details:",
     ]
 
+    if skipped_steps > 0:
+        message_parts.append(f"⏭️  Skipped: {skipped_steps}")
+
+    if failed_steps > 0:
+        message_parts.append(f"❌ Failed: {failed_steps}")
+
+    message_parts.extend(["", "Step Details:"])
+
     for i, output in enumerate(state["step_outputs"], 1):
-        status_icon = "✅" if output.get("status") == "success" else "❌"
+        status = output.get("status")
+        if status == "success":
+            status_icon = "✅"
+        elif status == "skipped":
+            status_icon = "⏭️ "
+        else:
+            status_icon = "❌"
+
         message_parts.append(f"  {i}. {status_icon} {output.get('step')}")
-        if output.get("status") == "error":
+
+        if status == "error":
             error_msg = f"     Error: {output.get('error')}"
             # Add error type and retryable info if available
             if output.get("error_type"):
@@ -385,6 +407,12 @@ def format_result(state: DeterministicWorkflowState) -> DeterministicWorkflowSta
                 retry_hint = " (retryable)" if retryable else " (non-retryable)"
                 error_msg += f" [{error_type}{retry_hint}]"
             message_parts.append(error_msg)
+        elif status == "skipped":
+            reason = output.get("result", "")
+            if "already exists" in reason:
+                message_parts.append(f"     Reason: Object already exists")
+            elif "not found" in reason:
+                message_parts.append(f"     Reason: Object not found")
 
     # Overall result
     if state.get("overall_result"):
