@@ -88,7 +88,6 @@ WORKFLOWS = {
                     "name": "web-server-1",
                     "value": "10.10.1.100",
                     "description": "Web server primary",
-                    "tag": ["Production", "Web"],
                 },
             },
             {
@@ -120,7 +119,6 @@ WORKFLOWS = {
                 "params": {
                     "name": "web-services",
                     "members": ["custom-http", "custom-https"],
-                    "description": "Web server services",
                 },
             },
             {

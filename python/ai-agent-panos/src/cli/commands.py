@@ -4,16 +4,25 @@ Typer-based CLI for running autonomous and deterministic modes.
 """
 
 import logging
+import os
 import sys
 from datetime import datetime
+from pathlib import Path
 from typing import Optional
 
 import typer
+from dotenv import load_dotenv
 from langchain_core.messages import HumanMessage
 from rich.console import Console
 from rich.logging import RichHandler
 
 from src.core.config import TIMEOUT_AUTONOMOUS, TIMEOUT_DETERMINISTIC
+
+# Load .env file into os.environ at module import
+# This ensures LangSmith SDK can access LANGSMITH_* env vars
+env_path = Path(__file__).parent.parent.parent / ".env"
+if env_path.exists():
+    load_dotenv(env_path, override=False)
 
 app = typer.Typer(
     name="panos-agent",
