@@ -18,6 +18,7 @@ def address_create(
     address_type: str = "ip-netmask",
     description: Optional[str] = None,
     tag: Optional[list[str]] = None,
+    mode: str = "strict",
 ) -> str:
     """Create a new address object on PAN-OS firewall.
 
@@ -27,12 +28,14 @@ def address_create(
         address_type: Type of address (ip-netmask, ip-range, fqdn) - default: ip-netmask
         description: Optional description
         tag: Optional list of tags to apply
+        mode: Error handling mode - "strict" (fail if exists) or "skip_if_exists" (skip if exists)
 
     Returns:
         Success/failure message
 
     Example:
         address_create(name="web-server", value="10.1.1.100", description="Web server")
+        address_create(name="web-server", value="10.1.1.100", mode="skip_if_exists")
     """
     crud_graph = create_crud_subgraph()
 
@@ -54,6 +57,7 @@ def address_create(
                 "object_type": "address",
                 "data": data,
                 "object_name": name,
+                "mode": mode,
             },
             config={"configurable": {"thread_id": str(uuid.uuid4())}},
         )
@@ -142,17 +146,19 @@ def address_update(
 
 
 @tool
-def address_delete(name: str) -> str:
+def address_delete(name: str, mode: str = "strict") -> str:
     """Delete an address object from PAN-OS firewall.
 
     Args:
         name: Name of the address object to delete
+        mode: Error handling mode - "strict" (fail if missing) or "skip_if_missing" (skip if missing)
 
     Returns:
         Success/failure message
 
     Example:
         address_delete(name="web-server")
+        address_delete(name="web-server", mode="skip_if_missing")
     """
     crud_graph = create_crud_subgraph()
 
@@ -163,6 +169,7 @@ def address_delete(name: str) -> str:
                 "object_type": "address",
                 "object_name": name,
                 "data": None,
+                "mode": mode,
             },
             config={"configurable": {"thread_id": str(uuid.uuid4())}},
         )

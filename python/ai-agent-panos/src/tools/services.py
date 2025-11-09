@@ -17,6 +17,7 @@ def service_create(
     port: str,
     description: Optional[str] = None,
     tag: Optional[list[str]] = None,
+    mode: str = "strict",
 ) -> str:
     """Create a new service object on PAN-OS firewall.
 
@@ -26,12 +27,14 @@ def service_create(
         port: Port number or range (e.g., "80", "8080-8090", "443")
         description: Optional description
         tag: Optional list of tags to apply
+        mode: Error handling mode - "strict" (fail if exists) or "skip_if_exists" (skip if exists)
 
     Returns:
         Success/failure message
 
     Example:
         service_create(name="web-http", protocol="tcp", port="80", description="HTTP service")
+        service_create(name="web-http", protocol="tcp", port="80", mode="skip_if_exists")
     """
     crud_graph = create_crud_subgraph()
 
@@ -53,6 +56,7 @@ def service_create(
                 "object_type": "service",
                 "data": data,
                 "object_name": name,
+                "mode": mode,
             },
             config={"configurable": {"thread_id": str(uuid.uuid4())}},
         )
@@ -145,17 +149,19 @@ def service_update(
 
 
 @tool
-def service_delete(name: str) -> str:
+def service_delete(name: str, mode: str = "strict") -> str:
     """Delete a service object from PAN-OS firewall.
 
     Args:
         name: Name of the service object to delete
+        mode: Error handling mode - "strict" (fail if missing) or "skip_if_missing" (skip if missing)
 
     Returns:
         Success/failure message
 
     Example:
         service_delete(name="web-http")
+        service_delete(name="web-http", mode="skip_if_missing")
     """
     crud_graph = create_crud_subgraph()
 
@@ -166,6 +172,7 @@ def service_delete(name: str) -> str:
                 "object_type": "service",
                 "object_name": name,
                 "data": None,
+                "mode": mode,
             },
             config={"configurable": {"thread_id": str(uuid.uuid4())}},
         )

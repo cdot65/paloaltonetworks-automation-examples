@@ -68,6 +68,7 @@ class CRUDState(TypedDict):
         object_type: PAN-OS object type (address, service, security_policy, etc.)
         object_name: Name of the object
         data: Object data dictionary (for create/update)
+        mode: Error handling mode (strict, skip_if_exists, skip_if_missing)
         validation_result: Result of input validation
         exists: Whether object exists (from check_existence)
         operation_result: Result from create/update/delete operation
@@ -80,6 +81,7 @@ class CRUDState(TypedDict):
     object_type: str  # address, service, address_group, etc.
     object_name: Optional[str]
     data: Optional[dict]
+    mode: Optional[str]  # strict, skip_if_exists, skip_if_missing
     validation_result: Optional[str]
     exists: Optional[bool]
     operation_result: Optional[dict]

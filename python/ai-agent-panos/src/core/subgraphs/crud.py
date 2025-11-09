@@ -172,11 +172,26 @@ def create_object(state: CRUDState) -> CRUDState:
     """
     logger.info(f"Creating {state['object_type']}: {state['data'].get('name')}")
 
+    mode = state.get("mode", "strict")
+    object_name = state['data'].get('name')
+
     # Check if already exists
     if state.get("exists"):
+        if mode == "skip_if_exists":
+            logger.info(f"Object {object_name} already exists (skipped)")
+            return {
+                **state,
+                "operation_result": {
+                    "status": "skipped",
+                    "name": object_name,
+                    "object_type": state["object_type"],
+                    "reason": "already_exists",
+                },
+            }
+        # Default strict mode - fail if exists
         return {
             **state,
-            "error": f"Object {state['data'].get('name')} already exists",
+            "error": f"Object {object_name} already exists",
             "operation_result": {"status": "error", "message": "Object already exists"},
         }
 
@@ -369,10 +384,25 @@ def delete_object(state: CRUDState) -> CRUDState:
     """
     logger.info(f"Deleting {state['object_type']}: {state['object_name']}")
 
+    mode = state.get("mode", "strict")
+    object_name = state['object_name']
+
     if not state.get("exists"):
+        if mode == "skip_if_missing":
+            logger.info(f"Object {object_name} does not exist (skipped)")
+            return {
+                **state,
+                "operation_result": {
+                    "status": "skipped",
+                    "name": object_name,
+                    "object_type": state["object_type"],
+                    "reason": "not_found",
+                },
+            }
+        # Default strict mode - fail if not found
         return {
             **state,
-            "error": f"Object {state['object_name']} does not exist",
+            "error": f"Object {object_name} does not exist",
             "operation_result": {"status": "error", "message": "Object not found"},
         }
 
@@ -487,7 +517,9 @@ def format_response(state: CRUDState) -> CRUDState:
         message = f"❌ Error: {state['error']}"
     elif state.get("operation_result"):
         result = state["operation_result"]
-        if result.get("status") == "success":
+        status = result.get("status")
+
+        if status == "success":
             if state["operation_type"] == "create":
                 message = f"✅ Created {state['object_type']}: {result.get('name')}"
             elif state["operation_type"] == "read":
@@ -498,6 +530,14 @@ def format_response(state: CRUDState) -> CRUDState:
                 message = f"✅ Deleted {state['object_type']}: {result.get('name')}"
             elif state["operation_type"] == "list":
                 message = f"✅ Found {result.get('count')} {state['object_type']} objects"
+        elif status == "skipped":
+            reason = result.get('reason')
+            if reason == "already_exists":
+                message = f"⏭️  Skipped {state['object_type']}: {result.get('name')} (already exists)"
+            elif reason == "not_found":
+                message = f"⏭️  Skipped {state['object_type']}: {result.get('name')} (not found)"
+            else:
+                message = f"⏭️  Skipped {state['object_type']}: {result.get('name')}"
         else:
             message = f"❌ Operation failed: {result.get('message')}"
     else:

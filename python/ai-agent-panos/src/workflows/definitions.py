@@ -88,6 +88,7 @@ WORKFLOWS = {
                     "name": "web-server-1",
                     "value": "10.10.1.100",
                     "description": "Web server primary",
+                    "mode": "skip_if_exists",
                 },
             },
             {
@@ -99,6 +100,7 @@ WORKFLOWS = {
                     "protocol": "tcp",
                     "port": "8080",
                     "description": "Custom HTTP port",
+                    "mode": "skip_if_exists",
                 },
             },
             {
@@ -110,6 +112,7 @@ WORKFLOWS = {
                     "protocol": "tcp",
                     "port": "8443",
                     "description": "Custom HTTPS port",
+                    "mode": "skip_if_exists",
                 },
             },
             {
@@ -119,6 +122,7 @@ WORKFLOWS = {
                 "params": {
                     "name": "web-services",
                     "members": ["custom-http", "custom-https"],
+                    "mode": "skip_if_exists",
                 },
             },
             {

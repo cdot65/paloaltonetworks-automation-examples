@@ -16,6 +16,7 @@ def service_group_create(
     members: list[str],
     description: Optional[str] = None,
     tag: Optional[list[str]] = None,
+    mode: str = "strict",
 ) -> str:
     """Create a new service group on PAN-OS firewall.
 
@@ -24,6 +25,7 @@ def service_group_create(
         members: List of service object names to include in group
         description: Optional description
         tag: Optional list of tags to apply
+        mode: Error handling mode - "strict" (fail if exists) or "skip_if_exists" (skip if exists)
 
     Returns:
         Success/failure message
@@ -34,6 +36,7 @@ def service_group_create(
             members=["web-http", "web-https"],
             description="Web service group"
         )
+        service_group_create(name="web-services", members=["web-http"], mode="skip_if_exists")
     """
     crud_graph = create_crud_subgraph()
 
@@ -54,6 +57,7 @@ def service_group_create(
                 "object_type": "service_group",
                 "data": data,
                 "object_name": name,
+                "mode": mode,
             },
             config={"configurable": {"thread_id": str(uuid.uuid4())}},
         )
