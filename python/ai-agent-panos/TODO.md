@@ -115,11 +115,13 @@ LangGraph v1.0.0 documentation files against the current PAN-OS agent implementa
   - [ ] Verify no false positives (don't mask legitimate data)
   - **File:** `tests/unit/test_anonymizers.py` (NEW)
 
-- [ ] **Integration test with LangSmith**
-  - [ ] Enable tracing with anonymizer in test environment
-  - [ ] Send test data with sensitive info
-  - [ ] Verify trace in LangSmith UI shows masked values
-  - [ ] Document test procedure
+- [x] **Integration test with LangSmith**
+  - [x] Enable tracing with anonymizer in test environment
+  - [x] Send test data with sensitive info
+  - [x] Verify trace in LangSmith UI shows masked values
+  - [x] Document test procedure
+  - **File:** `tests/integration/test_langsmith_anonymization.py` (NEW)
+  - **Script:** `scripts/test_anonymization.sh` (NEW)
 
 **Acceptance Criteria:**
 

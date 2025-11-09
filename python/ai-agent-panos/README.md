@@ -315,6 +315,39 @@ Every execution includes rich metadata for filtering:
 
 Anonymization happens **before** traces are sent to LangSmith, so sensitive data never leaves your environment.
 
+### Testing Anonymization
+
+Before enabling production tracing, verify that sensitive data is properly masked:
+
+```bash
+# Set your LangSmith API key
+export LANGSMITH_API_KEY="lsv2_pt_your_key_here"
+
+# Run anonymization tests
+./scripts/test_anonymization.sh
+```
+
+The test will:
+1. Send test data containing fake API keys and passwords
+2. Print unique test run IDs for each test
+3. Provide instructions for manual verification in LangSmith UI
+
+**Manual verification steps:**
+1. Go to [smith.langchain.com](https://smith.langchain.com)
+2. Search for the test run IDs printed by the script
+3. Verify that sensitive values are replaced with placeholders like `<panos-api-key>` and `<password>`
+
+**What success looks like:**
+- ✅ API keys appear as `<panos-api-key>`
+- ✅ Passwords appear as `password: <password>`
+- ✅ No actual sensitive values visible in traces
+
+**What failure looks like:**
+- ❌ Actual API keys or passwords visible in traces
+- Review `src/core/anonymizers.py` patterns if anonymization fails
+
+See `tests/integration/test_langsmith_anonymization.py` for detailed test documentation.
+
 ## Timeouts
 
 ### Execution Timeouts
