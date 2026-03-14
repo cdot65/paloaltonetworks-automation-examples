@@ -1,0 +1,32 @@
+# config/objects/service_groups.yaml
+panos_config:
+  device_groups:
+    Magnolia:
+      objects:
+        service_groups:
+          - name: "Web_Services"
+            value:
+              - "HTTP"
+              - "HTTPS"
+              - "DNS"
+              - "NTP"
+              - "SSH"
+            tag: ["web", "dns", "ntp"]
+
+          - name: "Database_Services"
+            value:
+              - "MySQL"
+              - "PostgreSQL"
+              - "MongoDB"
+              - "Redis"
+              - "Elasticsearch"
+            tag: ["database"]
+
+          - name: "Admin_Services"
+            value:
+              - "SSH"
+              - "TELNET"
+              - "RDP"
+              - "SNMP"
+              - "LDAP"
+            tag: ["ldap"]

@@ -1,0 +1,12 @@
+# PAN-OS Admin Password Rotation Tool Requirements
+
+# Core dependencies
+pan-os-python==1.11.0  # PAN-OS Python SDK for firewall automation
+python-dotenv==1.0.0   # Load environment variables from .env file
+setuptools==80.9.0
+
+# Optional dependencies for development
+# pytest==7.4.3        # Testing framework
+# black==23.12.1       # Code formatter
+# isort==5.13.2        # Import sorting
+# flake8==6.1.0        # Linting

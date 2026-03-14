@@ -1,0 +1,591 @@
+# ----------------------------------------------------------------------------
+# Panorama appliance
+# ----------------------------------------------------------------------------
+panorama = {
+  hostname = "panorama.example.io"
+  username = "my-panorama-username"
+  password = "my-panorama-password"
+}
+
+# ----------------------------------------------------------------------------
+# DNS settings
+# ----------------------------------------------------------------------------
+dns_settings = {
+  "Panorama" = {
+    location = {
+      system = {
+        panorama = {}
+      }
+    }
+    dns_setting = {
+      servers = {
+        primary   = "10.0.0.70"
+        secondary = "10.0.0.90"
+      }
+    }
+    fqdn_refresh_time = 3600
+  },
+  "Branch" = {
+    location = {
+      template = {
+        name = "Branch-Template"
+      }
+    }
+    dns_setting = {
+      servers = {
+        primary   = "1.1.1.1"
+        secondary = "9.9.9.9"
+      }
+    }
+    fqdn_refresh_time = 7200
+  },
+}
+
+# ----------------------------------------------------------------------------
+# NTP settings
+# ----------------------------------------------------------------------------
+ntp_settings = {
+  Panorama = {
+    location = {
+      system = {}
+    }
+    ntp_servers = {
+      primary_ntp_server = {
+        ntp_server_address = "0.us.pool.ntp.org"
+      }
+      secondary_ntp_server = {
+        ntp_server_address = "1.us.pool.ntp.org"
+      }
+    }
+  }
+  Branch = {
+    location = {
+      template = {
+        name = "Branch-Template"
+      }
+    }
+    ntp_servers = {
+      primary_ntp_server = {
+        ntp_server_address = "0.us.pool.ntp.org"
+      }
+      secondary_ntp_server = {
+        ntp_server_address = "1.us.pool.ntp.org"
+      }
+    }
+  }
+}
+
+# ----------------------------------------------------------------------------
+# Panorama Templates
+# ----------------------------------------------------------------------------
+templates = {
+  "Branch" = {
+    description = "Parent template for Branch firewalls"
+    name        = "Branch-Template"
+  },
+}
+
+# ----------------------------------------------------------------------------
+# Panorama Template Stacks
+# ----------------------------------------------------------------------------
+template_stacks = {
+  "Dallas" = {
+    description  = "Template Stack for Dallas firewalls"
+    name         = "Dallas-TemplateStack"
+    devices      = ["123456789012345"]
+    default_vsys = "vsys1"
+  },
+  "Woodlands" = {
+    description  = "Template Stack for Woodlands firewalls"
+    name         = "Woodlands-TemplateStack"
+    devices      = ["123456789012346"]
+    default_vsys = "vsys1"
+  }
+}
+
+# ----------------------------------------------------------------------------
+# Panorama Template Variables
+# ----------------------------------------------------------------------------
+template_variables = {
+  "interface_lan" = {
+    # Created within Branch Template
+    location = {
+      template = {
+        name            = "Branch-Template"
+        panorama_device = "localhost.localdomain"
+      }
+    }
+    description = "LAN interface"
+    name        = "$interface_lan"
+    type        = { "interface" = "ethernet1/2" }
+  }
+  "interface_wan" = {
+    # Created within Branch Template
+    location = {
+      template = {
+        name            = "Branch-Template"
+        panorama_device = "localhost.localdomain"
+      }
+    }
+    description = "WAN interface"
+    name        = "$interface_wan"
+    type        = { "interface" = "ethernet1/1" }
+  }
+}
+
+# ----------------------------------------------------------------------------
+# Panorama Template Interface Management Profile
+# ----------------------------------------------------------------------------
+interface_management_profiles = {
+  Local_Management = {
+    location = {
+      template = {
+        name = "Branch-Template"
+      }
+    }
+    name  = "Local-Management"
+    ping  = true
+    https = true
+    permitted_ips = [
+      "192.168.1.2",
+      "192.168.1.3",
+      "192.168.1.4",
+      "192.168.1.5",
+      "192.168.1.6",
+      "192.168.1.7",
+      "192.168.1.8",
+      "192.168.1.9",
+    ]
+    ssh = true
+  }
+}
+
+# ----------------------------------------------------------------------------
+# Panorama Template Ethernet Interfaces
+# ----------------------------------------------------------------------------
+ethernet_interfaces = {
+  "ethernet1" = {
+    # placing this within the Branch-Template
+    location = {
+      template = {
+        name = "Branch-Template",
+        vsys = "vsys1",
+      }
+    }
+
+    # interface configuration
+    name    = "ethernet1/1"
+    comment = "WAN interface, variable $interface_wan",
+    layer3 = {
+      dhcp_client = {
+        create_default_route = true,
+        enable               = true,
+        send_hostname = {
+          enabled  = true
+          hostname = "paloalto.example.io"
+        }
+      }
+    }
+  },
+  "ethernet2" = {
+    # placing this within the Branch-Template
+    location = {
+      template = {
+        name = "Branch-Template",
+        vsys = "vsys1",
+      }
+    }
+
+    # interface configuration
+    name    = "ethernet1/2"
+    comment = "LAN interface, variable $interface_lan",
+    layer3 = {
+      interface_management_profile = "Local-Management"
+      ips = [
+        { name = "192.168.1.1/24" }
+      ]
+    }
+  }
+}
+
+# ----------------------------------------------------------------------------
+# Panorama Template Loopback Interfaces
+# ----------------------------------------------------------------------------
+loopback_interfaces = {
+  Loopback1 = {
+    location = {
+      template = {
+        name = "Branch-Template"
+        vsys = "vsys1",
+      }
+    }
+    name = "loopback.1"
+    adjust_tcp_mss = {
+      enable              = true
+      ipv4_mss_adjustment = 40
+    }
+    comment                      = "Loopback Interface 1"
+    interface_management_profile = "Local-Management"
+    ips                          = ["10.0.0.1", "10.0.0.2"]
+    mtu                          = 1500
+  }
+}
+
+# ----------------------------------------------------------------------------
+# Panorama Template Security Zones
+# ----------------------------------------------------------------------------
+zones = {
+  "trust_zone" = {
+    name = "Trust-Zone"
+    location = {
+      template = {
+        name            = "Branch-Template"
+        panorama_device = "localhost.localdomain"
+      }
+    }
+    enable_device_identification = false
+    enable_user_identification   = false
+    network = {
+      enable_packet_buffer_protection = true
+      layer3                          = ["ethernet1/2"]
+    }
+  },
+  "untrust_zone" = {
+    name = "Untrust-Zone"
+    location = {
+      template = {
+        name            = "Branch-Template"
+        panorama_device = "localhost.localdomain"
+      }
+    }
+    enable_device_identification = false
+    enable_user_identification   = false
+    network = {
+      layer3 = ["ethernet1/1"]
+    }
+  }
+}
+
+# ----------------------------------------------------------------------------
+# Panorama Template Virtual Routers
+# ----------------------------------------------------------------------------
+virtual_routers = {
+  "branch_vr" = {
+    name = "Branch-VR"
+    location = {
+      template = {
+        name            = "Branch-Template"
+        panorama_device = "localhost.localdomain"
+      }
+    }
+    interfaces = [
+      "ethernet1/1",
+      "ethernet1/2"
+    ]
+    routing_table = {
+      ip = {
+        static_routes = [
+          {
+            name        = "default_route"
+            admin_dist  = 10
+            destination = "0.0.0.0/0"
+            interface   = "ethernet1/1"
+            metric      = 1
+          }
+        ]
+      }
+    }
+  }
+}
+
+# ----------------------------------------------------------------------------
+# Panorama Device Groups
+# ----------------------------------------------------------------------------
+device_groups = {
+  "Branch" = {
+    location = {
+      panorama = {}
+    }
+    name = "Branch-DG"
+  },
+  "Dallas" = {
+    location = {
+      panorama = {}
+    }
+    name    = "Dallas-DG"
+    devices = [{ name = "007954000543268" }]
+  }
+  "Woodlands" = {
+    location = {
+      panorama = {}
+    }
+    name    = "Woodlands-DG"
+    devices = [{ name = "007954000543269" }]
+  }
+}
+
+# ----------------------------------------------------------------------------
+# Panorama Device Group Parents
+# ----------------------------------------------------------------------------
+device_group_parents = {
+  "Dallas" = {
+    location = {
+      panorama = {}
+    }
+    device_group = "Dallas-DG"
+    parent       = "Branch-DG"
+  }
+  "Woodlands" = {
+    location = {
+      panorama = {}
+    }
+    device_group = "Woodlands-DG"
+    parent       = "Branch-DG"
+  }
+}
+
+# ----------------------------------------------------------------------------
+# Panorama Device Group Administrative Tags
+# ----------------------------------------------------------------------------
+administrative_tags = {
+  "Critical" = {
+    location = {
+      device_group = {
+        name = "Branch-DG"
+      }
+    }
+    name     = "Critical"
+    color    = "color1"
+    comments = "This tag is used for critical systems"
+  },
+  "Production" = {
+    location = {
+      device_group = {
+        name = "Branch-DG"
+      }
+    }
+    name     = "Production"
+    color    = "color2"
+    comments = "Used to mark resources for the production environment"
+  },
+  "Staging" = {
+    location = {
+      device_group = {
+        name = "Branch-DG"
+      }
+    }
+    name     = "Staging"
+    color    = "color3"
+    comments = "Used to mark resources for the staging environment"
+  },
+  "Automation" = {
+    location = {
+      device_group = {
+        name = "Branch-DG"
+      }
+    }
+    name     = "Automation"
+    color    = "color33"
+    comments = "This tag is shared across all configurations"
+  }
+}
+
+# ----------------------------------------------------------------------------
+# Panorama Device Group Address Objects
+# ----------------------------------------------------------------------------
+addresses = {
+  "Branch" = {
+    location = {
+      device_group = {
+        name = "Branch-DG"
+      }
+    }
+    addresses = {
+      "webserver1" = {
+        description = "Foo example address"
+        ip_netmask  = "192.168.1.1/24"
+        tags = [
+          "Automation",
+          "Staging"
+        ]
+      }
+      "webserver2" = {
+        description = "Bar example address"
+        ip_range    = "192.168.10.1-192.168.10.254"
+        tags = [
+          "Critical",
+          "Production"
+        ]
+      }
+      "database1" = {
+        description = "Postgres example address"
+        fqdn        = "postgres.example.com"
+        tags = [
+          "Critical",
+          "Production"
+        ]
+      }
+    }
+  },
+}
+
+# ----------------------------------------------------------------------------
+# Panorama Device Group Address Groups
+# ----------------------------------------------------------------------------
+address_groups = {
+  Branch = {
+    location = {
+      device_group = {
+        name = "Branch-DG"
+      }
+    }
+    groups = {
+      Webservers = {
+        name        = "webservers-group"
+        description = "Address group for web servers"
+        static      = ["webserver1", "webserver2"]
+        tags        = ["Production", "Automation"]
+      }
+      Databases = {
+        name        = "databases-group"
+        description = "Address group for databases"
+        static      = ["database1"]
+        tags        = ["Production", "Automation"]
+      }
+      Cloud_Workloads = {
+        name        = "cloud-workload-group"
+        description = "Dynamic address group for cloud workloads"
+        dynamic     = "'Production' and 'Critical' and 'Automation' and 'test123'"
+        tags        = ["Production", "Automation"]
+      }
+    }
+  }
+}
+
+# ----------------------------------------------------------------------------
+# Panorama Device Group Services
+# ----------------------------------------------------------------------------
+services = {
+  Branch = {
+    location = {
+      device_group = {
+        name = "Branch-DG"
+      }
+    }
+    services = {
+      web_service_dev = {
+        name        = "web-service-developer"
+        description = "Web service for HTTP traffic"
+        tags        = ["Automation"]
+        protocol = {
+          tcp = {
+            destination_port = "8888"
+          }
+        }
+      }
+      dns_service_dev = {
+        location = {
+          device_group = {
+            name = "Branch-DG"
+          }
+        }
+        name        = "dns-service"
+        description = "DNS service"
+        protocol = {
+          udp = {
+            destination_port = "453"
+          }
+        }
+      }
+    }
+  }
+}
+
+# ----------------------------------------------------------------------------
+# Panorama Device Group Service Groups
+# ----------------------------------------------------------------------------
+service_groups = {
+  Branch = {
+    location = {
+      device_group = {
+        name = "Branch-DG"
+      }
+    }
+    groups = {
+      web_group_dev = {
+        name        = "web-group-developer"
+        description = "Web services group"
+        tags        = ["Automation"]
+        members = [
+          "web-service-developer",
+          "dns-service"
+        ]
+      }
+    }
+  }
+}
+
+# ----------------------------------------------------------------------------
+# Panorama Device Group Security Policies
+# ----------------------------------------------------------------------------
+security_policies = {
+  Branch = {
+    location = {
+      device_group = {
+        name     = "Branch-DG"
+        rulebase = "pre-rulebase"
+      }
+    }
+    policy_rules = [
+      {
+        name                  = "Allow-Web-Traffic"
+        rule_type             = "interzone",
+        description           = "Allow web traffic to developer services"
+        tags                  = ["Automation"]
+        source_zones          = ["Trust-Zone"]
+        source_addresses      = ["any"]
+        destination_zones     = ["Untrust-Zone"]
+        destination_addresses = ["192.168.1.0/24"]
+        applications          = ["web-browsing"]
+        services              = ["web-group-developer"]
+        action                = "allow"
+        log_end               = true
+      },
+      {
+        name                  = "Allow-DNS-Traffic"
+        rule_type             = "interzone",
+        description           = "Allow DNS traffic to developer services"
+        tags                  = ["Automation"]
+        source_zones          = ["Trust-Zone"]
+        source_addresses      = ["any"]
+        destination_zones     = ["Untrust-Zone"]
+        destination_addresses = ["any"]
+        applications          = ["dns"]
+        services              = ["dns-service"]
+        action                = "allow"
+        log_end               = true
+      }
+    ]
+  }
+}
+
+# ----------------------------------------------------------------------------
+# Panorama Device Group Custom URL Categories
+# ----------------------------------------------------------------------------
+custom_url_categories = {
+  Branch = {
+    location = {
+      device_group = {
+        name = "Branch-DG"
+      }
+    }
+    categories = {
+      blocked_sites = {
+        name        = "blocked-sites"
+        description = "Blocked sites for developers"
+        type        = "URL List"
+        list        = ["test.com", "hello.com"]
+      }
+    }
+  }
+}

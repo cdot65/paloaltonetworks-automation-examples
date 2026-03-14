@@ -1,0 +1,11 @@
+# AI Runtime Security SDK
+pan-aisecurity==0.4.0.5.post2
+
+# Environment and configuration
+python-dotenv>=1.0.0
+
+# Data format support
+PyYAML>=6.0
+
+# Python 3.8+ compatibility
+# Note: The code uses asyncio features that require Python 3.8+

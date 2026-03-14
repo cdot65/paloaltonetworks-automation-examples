@@ -1,0 +1,36 @@
+---
+# ---------------------------------------------------------------------------
+# Deploy VM series firewall
+# ---------------------------------------------------------------------------
+- name: Deploy VM series firewall
+  hosts: localhost
+  connection: local
+  gather_facts: False
+  become: False
+  collections:
+    - paloaltonetworks.panos
+  tasks:
+    - name: Create VM series
+      community.vmware.vmware_guest:
+        # Define connection parameters
+        hostname: "{{ vcenter_hostname }}"
+        username: "{{ vcenter_username }}"
+        password: "{{ vcenter_password }}"
+        validate_certs: False
+
+        # Define vCenter parameters
+        datacenter: "{{ datacenter }}"
+        state: present
+        folder: "{{ folder }}"
+        esxi_hostname: "{{ esxi_host }}"
+
+        # Define VM specifics
+        template: "{{ template }}"
+        name: "{{ vm_name }}"
+        wait_for_ip_address: True
+      delegate_to: localhost
+      register: vmseries_details
+
+    - name: Print VM series details
+      debug:
+        var: vmseries_details

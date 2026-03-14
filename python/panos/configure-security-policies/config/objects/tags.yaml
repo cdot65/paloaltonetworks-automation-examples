@@ -1,0 +1,82 @@
+# config/objects/tags.yaml
+panos_config:
+  device_groups:
+    Magnolia:
+      objects:
+
+        tags:
+          - name: "web"
+            color: "color1"  # red
+            comments: "Web servers and services"
+          - name: "production"
+            color: "color2"  # green
+            comments: "Production environment"
+          - name: "app"
+            color: "color3"  # blue
+            comments: "Application servers"
+          - name: "database"
+            color: "color4"  # yellow
+            comments: "Database servers"
+          - name: "lb"
+            color: "color5"  # copper
+            comments: "Load balancers"
+          - name: "backup"
+            color: "color6"  # orange
+            comments: "Backup services"
+          - name: "monitoring"
+            color: "color7"  # purple
+            comments: "Monitoring services"
+          - name: "vpn"
+            color: "color8"  # gray
+            comments: "VPN services"
+          - name: "dns"
+            color: "color9"  # light green
+            comments: "DNS servers"
+          - name: "internal"
+            color: "color10"  # cyan
+            comments: "Internal services"
+          - name: "external"
+            color: "color11"  # light gray
+            comments: "External-facing services"
+          - name: "mail"
+            color: "color12"  # blue gray
+            comments: "Mail servers"
+          - name: "ftp"
+            color: "color13"  # lime
+            comments: "FTP servers"
+          - name: "ntp"
+            color: "color14"  # black
+            comments: "NTP servers"
+          - name: "ldap"
+            color: "color15"  # gold
+            comments: "LDAP servers"
+          - name: "proxy"
+            color: "color16"  # brown
+            comments: "Proxy servers"
+          - name: "nat"
+            color: "color17"  # olive
+            comments: "NAT services"
+          - name: "dmz"
+            color: "color19"  # maroon
+            comments: "DMZ servers"
+          - name: "staging"
+            color: "color20"  # red-orange
+            comments: "Staging environment"
+          - name: "cicd"
+            color: "color21"  # yellow-orange
+            comments: "CI/CD services"
+          - name: "logging"
+            color: "color22"  # forest green
+            comments: "Logging services"
+          - name: "dc"
+            color: "color23"  # turquoise blue
+            comments: "Domain controllers"
+          - name: "test"
+            color: "color24"  # azure blue
+            comments: "Test environment"
+          - name: "office"
+            color: "color25"  # cerulean blue
+            comments: "Office network"
+          - name: "development"
+            color: "color26"  # midnight blue
+            comments: "Development environment"

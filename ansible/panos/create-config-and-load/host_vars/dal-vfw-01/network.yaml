@@ -1,0 +1,11 @@
+---
+network:
+  interface:
+    - name: "ethernet1/1"
+      layer3:
+        ip:
+          - name: "wan_ip"
+    - name: "ethernet1/2"
+      layer3:
+        ip:
+          - name: "lan_ip"

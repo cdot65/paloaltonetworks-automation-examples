@@ -1,0 +1,14 @@
+{
+  "graphs": {
+    "autonomous": {
+      "path": "src/autonomous_graph.py:create_autonomous_graph",
+      "description": "Autonomous ReAct agent with full tool access for natural language PAN-OS automation"
+    },
+    "deterministic": {
+      "path": "src/deterministic_graph.py:create_deterministic_graph",
+      "description": "Deterministic workflow mode with step-by-step execution (Ansible-like)"
+    }
+  },
+  "env": ".env",
+  "python_version": "3.11"
+}

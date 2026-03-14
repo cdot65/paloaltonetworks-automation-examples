@@ -1,0 +1,28 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<uid-message>
+  <type>update</type>
+  <payload>
+    <register>
+      <entry ip="179.43.148.58">
+        <tag>
+          <member>Nasties</member>
+        </tag>
+      </entry>
+      <entry ip="93.84.47.59">
+        <tag>
+          <member>Nasties</member>
+        </tag>
+      </entry>
+      <entry ip="179.43.185.130">
+        <tag>
+          <member>Nasties</member>
+        </tag>
+      </entry>
+      <entry ip="179.43.152.58">
+        <tag>
+          <member>Nasties</member>
+        </tag>
+      </entry>
+    </register>
+  </payload>
+</uid-message>

@@ -1,0 +1,36 @@
+firewalls:
+  - hostname: "austin-fw1.example.com"
+    username: "this-is-a-placeholder"
+    password: "this-is-a-placeholder"
+
+  - hostname: "austin-fw2.example.com"
+    username: "this-is-a-placeholder"
+    password: "this-is-a-placeholder"
+
+  - hostname: "austin-fw3.example.com"
+    username: "this-is-a-placeholder"
+    password: "this-is-a-placeholder"
+
+  - hostname: "dallas-fw1.example.com"
+    username: "this-is-a-placeholder"
+    password: "this-is-a-placeholder"
+
+  - hostname: "dallas-fw2.example.com"
+    username: "this-is-a-placeholder"
+    password: "this-is-a-placeholder"
+
+  - hostname: "houston-fw1.example.com"
+    username: "this-is-a-placeholder"
+    password: "this-is-a-placeholder"
+
+  - hostname: "houston-fw2.example.com"
+    username: "this-is-a-placeholder"
+    password: "this-is-a-placeholder"
+
+  - hostname: "katy-fw1.example.com"
+    username: "this-is-a-placeholder"
+    password: "this-is-a-placeholder"
+
+  - hostname: "katy-fw2.example.com"
+    username: "this-is-a-placeholder"
+    password: "this-is-a-placeholder"

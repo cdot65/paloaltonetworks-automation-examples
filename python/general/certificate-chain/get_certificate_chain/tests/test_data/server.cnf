@@ -1,0 +1,27 @@
+[ req ]
+default_bits        = 2048
+default_keyfile     = server_key.pem
+distinguished_name  = req_distinguished_name
+req_extensions      = req_ext
+prompt              = no
+
+[ req_distinguished_name ]
+C  = US
+ST = California
+L  = San Francisco
+O  = Example Company
+OU = IT
+CN = www.example.com
+emailAddress = admin@example.com
+
+[ req_ext ]
+subjectKeyIdentifier = hash
+basicConstraints = CA:FALSE
+keyUsage = digitalSignature, keyEncipherment
+extendedKeyUsage = serverAuth
+
+[ v3_req ]
+subjectKeyIdentifier = hash
+basicConstraints = CA:FALSE
+keyUsage = digitalSignature, keyEncipherment
+extendedKeyUsage = serverAuth

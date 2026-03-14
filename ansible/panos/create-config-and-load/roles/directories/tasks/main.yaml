@@ -1,0 +1,18 @@
+---
+# -------------------------------------------------
+# REMOVE AND RECREATE DIRECTORIES
+# -------------------------------------------------
+- name: remove previous temporary build directory
+  file:
+    path: "{{ temporary_folder }}"
+    state: absent
+
+- name: create new temporary directory
+  file:
+    path: "{{ temporary_folder }}"
+    state: directory
+
+- name: ensure a completed config directory exists
+  file:
+    path: "{{ completed_folder }}"
+    state: directory

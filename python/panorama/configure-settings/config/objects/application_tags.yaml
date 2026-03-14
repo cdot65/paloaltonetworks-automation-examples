@@ -1,0 +1,26 @@
+# config/objects/application_tags.yaml
+panos_config:
+  device_groups:
+    Magnolia:
+      objects:
+        application_tags:
+          - name: "web-browsing"
+            tags: [ "production", "web" ]
+
+          - name: "mssql-db"
+            tags: [ "internal", "database" ]
+
+          - name: "solarwinds-npm"
+            tags: [ "production", "monitoring" ]
+
+          - name: "postgres"
+            tags: [ "internal", "database" ]
+
+          - name: "Custom-Grafana"
+            tags: [ "production", "monitoring" ]
+
+          - name: "Custom-Jenkins"
+            tags: [ "cicd", "development" ]
+
+          - name: "Custom-Elasticsearch"
+            tags: [ "internal", "database" ]

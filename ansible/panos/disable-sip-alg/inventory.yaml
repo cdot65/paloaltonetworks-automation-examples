@@ -1,0 +1,6 @@
+all:
+  children:
+    firewalls:
+      hosts:
+        aus-vfw-01:
+        hdq-vfw-01:

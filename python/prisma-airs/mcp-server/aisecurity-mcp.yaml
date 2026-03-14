@@ -1,0 +1,129 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: aisecurity
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: aisecurity-secrets
+  namespace: aisecurity
+type: Opaque
+stringData:
+  PANW_AI_SEC_API_KEY: "your-api-key-here"
+  PANW_AI_PROFILE_NAME: "your-profile-name-here"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: aisecurity-config
+  namespace: aisecurity
+data:
+  PANW_AI_SEC_API_ENDPOINT: "https://service.api.aisecurity.paloaltonetworks.com"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: aisecurity-mcp-server
+  namespace: aisecurity
+  labels:
+    app: aisecurity-mcp
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: aisecurity-mcp
+  template:
+    metadata:
+      labels:
+        app: aisecurity-mcp
+    spec:
+      imagePullSecrets:
+      - name: ghcr-secret
+      containers:
+      - name: mcp-server
+        image: ghcr.io/cdot65/aisecurity-mcp-server:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8000
+          name: sse
+          protocol: TCP
+        env:
+        - name: FASTMCP_TRANSPORT
+          value: "sse"
+        - name: FASTMCP_HOST
+          value: "0.0.0.0"
+        - name: FASTMCP_PORT
+          value: "8000"
+        envFrom:
+        - secretRef:
+            name: aisecurity-secrets
+        - configMapRef:
+            name: aisecurity-config
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "100m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        # Removed health checks since /sse/ is a streaming endpoint
+        # and FastMCP doesn't provide a dedicated health endpoint
+        securityContext:
+          runAsNonRoot: true
+          runAsUser: 1000
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: false
+          capabilities:
+            drop:
+            - ALL
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: aisecurity-mcp-service
+  namespace: aisecurity
+  labels:
+    app: aisecurity-mcp
+  annotations:
+    traefik.ingress.kubernetes.io/service.sticky: "true"
+    traefik.ingress.kubernetes.io/service.sticky.cookie: "true"
+spec:
+  type: ClusterIP
+  sessionAffinity: ClientIP
+  sessionAffinityConfig:
+    clientIP:
+      timeoutSeconds: 3600
+  ports:
+  - port: 8000
+    targetPort: 8000
+    protocol: TCP
+    name: sse
+  selector:
+    app: aisecurity-mcp
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: aisecurity-mcp-hpa
+  namespace: aisecurity
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: aisecurity-mcp-server
+  minReplicas: 2
+  maxReplicas: 10
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 70
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: 80

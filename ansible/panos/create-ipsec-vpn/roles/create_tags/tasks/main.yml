@@ -1,0 +1,7 @@
+- name: Create tags
+  panos_tag_object:
+    provider: "{{ provider }}"
+    name: "{{ item.name }}"
+    color: "{{ item.color }}"
+    comments: "{{ item.comments }}"
+  loop: "{{ tags }}"

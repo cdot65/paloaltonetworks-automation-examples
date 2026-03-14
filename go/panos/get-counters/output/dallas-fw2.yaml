@@ -1,0 +1,238 @@
+status: success
+result:
+  global:
+    t: 55504
+    counters:
+      entries:
+      - category: packet
+        name: pkt_recv
+        value: 715969
+        rate: 2
+        aspect: pktproc
+        desc: Packets received
+        id: 17
+        severity: info
+      - category: packet
+        name: pkt_recv_retry
+        value: 3456
+        rate: 0
+        aspect: pktproc
+        desc: Full Burst Packets received on retry
+        id: 18
+        severity: info
+      - category: packet
+        name: pkt_recv_flush_passive
+        value: 5489200
+        rate: 25
+        aspect: pktproc
+        desc: Packets drop due to passive VM in dpdk mode
+        id: 43
+        severity: drop
+      - category: packet
+        name: pkt_runtc_np
+        value: 715969
+        rate: 2
+        aspect: pktproc
+        desc: runtc flow_np
+        id: 65
+        severity: info
+      - category: packet
+        name: pkt_sent
+        value: 710349
+        rate: 2
+        aspect: pktproc
+        desc: Packets transmitted
+        id: 78
+        severity: info
+      - category: packet
+        name: pkt_sent_host
+        value: 709998
+        rate: 2
+        aspect: pktproc
+        desc: Packets successfully transmitted to host interface
+        id: 101
+        severity: info
+      - category: packet
+        name: pkt_sent_link_err
+        value: 26
+        rate: 0
+        aspect: pktproc
+        desc: Packets transmit error link down
+        id: 107
+        severity: error
+      - category: packet
+        name: pkt_stp_rcv
+        value: 311
+        rate: 0
+        aspect: pktproc
+        desc: STP BPDU packets received
+        id: 120
+        severity: info
+      - category: flow
+        name: flow_rcv_dot1q_tag_err
+        value: 6403
+        rate: 0
+        aspect: parse
+        desc: 'Packets dropped: 802.1q tag not configured'
+        id: 436
+        severity: drop
+      - category: flow
+        name: flow_no_interface
+        value: 6403
+        rate: 0
+        aspect: parse
+        desc: 'Packets dropped: invalid interface'
+        id: 441
+        severity: drop
+      - category: flow
+        name: flow_ip6_mcast_off
+        value: 2
+        rate: 0
+        aspect: pktproc
+        desc: 'Packets received: IPv6 multicast pkts with flow off'
+        id: 689
+        severity: info
+      - category: flow
+        name: flow_arp_pkt_rcv
+        value: 34
+        rate: 0
+        aspect: arp
+        desc: ARP packets received
+        id: 1078
+        severity: info
+      - category: flow
+        name: flow_arp_pkt_xmt
+        value: 94
+        rate: 0
+        aspect: arp
+        desc: ARP packets transmitted
+        id: 1079
+        severity: info
+      - category: flow
+        name: flow_arp_rcv_gratuitous
+        value: 34
+        rate: 0
+        aspect: arp
+        desc: Gratuitous ARP packets received
+        id: 1082
+        severity: info
+      - category: flow
+        name: flow_nd_pkt_submit
+        value: 2
+        rate: 0
+        aspect: nd
+        desc: ND packets submited to process
+        id: 1088
+        severity: info
+      - category: flow
+        name: flow_nd_pkt_rcv
+        value: 2
+        rate: 0
+        aspect: nd
+        desc: ND packets received
+        id: 1089
+        severity: info
+      - category: flow
+        name: flow_nd_neigh_gc
+        value: 193
+        rate: 0
+        aspect: nd
+        desc: ND entry GC
+        id: 1101
+        severity: info
+      - category: flow
+        name: flow_host_pkt_rcv
+        value: 710338
+        rate: 2
+        aspect: mgmt
+        desc: Packets received from control plane
+        id: 1115
+        severity: info
+      - category: flow
+        name: flow_host_pkt_xmt
+        value: 709998
+        rate: 2
+        aspect: mgmt
+        desc: Packets transmitted to control plane
+        id: 1116
+        severity: info
+      - category: flow
+        name: flow_host_rcv_err
+        value: 1
+        rate: 0
+        aspect: mgmt
+        desc: 'Packets dropped: receive error from control plane'
+        id: 1117
+        severity: drop
+      - category: flow
+        name: flow_host_decap_err
+        value: 38
+        rate: 0
+        aspect: mgmt
+        desc: 'Packets dropped: decapsulation error from control plane'
+        id: 1119
+        severity: drop
+      - category: flow
+        name: flow_host_service_allow
+        value: 22
+        rate: 0
+        aspect: mgmt
+        desc: Device management session allowed
+        id: 1123
+        severity: info
+      - category: flow
+        name: flow_host_ha_decap_err
+        value: 5
+        rate: 0
+        aspect: mgmt
+        desc: 'Packets dropped: decapsulation error from control plane''s HA agent'
+        id: 1129
+        severity: drop
+      - category: flow
+        name: flow_sdwan_internal_ager
+        value: 22790428
+        rate: 98
+        aspect: sdwan
+        desc: SDWAN FEC/PD ager count
+        id: 1278
+        severity: info
+      - category: device
+        name: device_invalid_netconf
+        value: 224
+        rate: 0
+        aspect: resource
+        desc: netconfig temporarily unavailable
+        id: 1654
+        severity: info
+      - category: device
+        name: device_netconf_switch
+        value: 4
+        rate: 0
+        aspect: resource
+        desc: netconfig switched
+        id: 1655
+        severity: info
+      - category: ctd
+        name: ctd_hitcount_period_update
+        value: 771
+        rate: 0
+        aspect: system
+        desc: Number of Policy Hit Count periodical update
+        id: 2785
+        severity: info
+      - category: log
+        name: log_pkt_diag_us
+        value: 1797
+        rate: 0
+        aspect: system
+        desc: Time (us) spent on writing packet-diag logs
+        id: 3040
+        severity: info
+      - category: ssl
+        name: ssl_hsm_up_down_event_rcv
+        value: 1
+        rate: 0
+        aspect: pktproc
+        desc: The number of HSM up/down events received
+        id: 3396
+        severity: info

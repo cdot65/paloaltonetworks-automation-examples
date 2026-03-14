@@ -1,0 +1,40 @@
+# config/objects/address_groups.yaml
+panos_config:
+  device_groups:
+    Magnolia:
+
+      objects:
+        address_groups:
+          - name: "Production_Servers"
+            type: "static"
+            description: "All production servers"
+            static_value:
+              - "Web_Server_1"
+              - "Web_Server_2"
+              - "App_Server_1"
+              - "App_Server_2"
+              - "DB_Server_1"
+              - "DB_Server_2"
+              - "Load_Balancer_1"
+              - "Load_Balancer_2"
+          - name: "Development_Servers"
+            type: "static"
+            description: "All development servers"
+            static_value:
+              - "Dev_Web_Server"
+              - "Dev_App_Server"
+              - "Dev_DB_Server"
+              - "Staging_Server"
+              - "CI_CD_Server"
+              - "Test_Range"
+          - name: "Database_Servers"
+            type: "dynamic"
+            description: "All database servers"
+            dynamic_value: "database"
+          - name: "DMZ_Servers"
+            type: "static"
+            description: "All DMZ servers"
+            static_value:
+              - "DMZ_Server_1"
+              - "DMZ_Server_2"
+

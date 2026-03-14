@@ -1,0 +1,161 @@
+/* ── Deep Purple / Amber overrides ────────────────────────────────── */
+
+:root {
+  --md-admonition-icon--tip: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>');
+}
+
+/* ── Typography & Readability ─────────────────────────────────────── */
+
+/* Wider content area for easier reading */
+.md-grid {
+  max-width: 1200px;
+}
+
+/* Relaxed line height for body text */
+.md-typeset {
+  font-size: 0.82rem;
+  line-height: 1.8;
+}
+
+/* Breathe between paragraphs */
+.md-typeset p {
+  margin-bottom: 1em;
+}
+
+/* Headings: clear hierarchy with spacing */
+.md-typeset h1 {
+  font-weight: 700;
+  margin-top: 0;
+  margin-bottom: 0.8em;
+  letter-spacing: -0.02em;
+}
+
+.md-typeset h2 {
+  font-weight: 600;
+  margin-top: 2em;
+  margin-bottom: 0.6em;
+  padding-bottom: 0.3em;
+  border-bottom: 1px solid var(--md-default-fg-color--lightest);
+}
+
+.md-typeset h3 {
+  font-weight: 600;
+  margin-top: 1.6em;
+  margin-bottom: 0.4em;
+}
+
+/* ── Hero Section (Home Page) ─────────────────────────────────────── */
+
+.hero {
+  text-align: center;
+  padding: 2rem 0 1rem;
+}
+
+.hero h1 {
+  font-size: 2.4rem;
+  margin-bottom: 0.2em;
+  border-bottom: none;
+}
+
+.hero p:first-of-type {
+  font-size: 1.15rem;
+  color: var(--md-default-fg-color--light);
+  margin-bottom: 1.2em;
+}
+
+/* ── Admonition accent colors ─────────────────────────────────────── */
+
+.md-typeset .admonition.tip,
+.md-typeset details.tip {
+  border-color: #ffb300;
+}
+
+.md-typeset .tip > .admonition-title,
+.md-typeset .tip > summary {
+  background-color: rgba(255, 179, 0, 0.1);
+}
+
+.md-typeset .admonition.info,
+.md-typeset details.info {
+  border-color: #7e57c2;
+}
+
+.md-typeset .info > .admonition-title,
+.md-typeset .info > summary {
+  background-color: rgba(126, 87, 194, 0.1);
+}
+
+/* ── Tables ───────────────────────────────────────────────────────── */
+
+.md-typeset table:not([class]) th {
+  background-color: var(--md-primary-fg-color);
+  color: var(--md-primary-bg-color);
+  font-weight: 600;
+}
+
+[data-md-color-scheme="slate"] .md-typeset table:not([class]) th {
+  background-color: rgba(126, 87, 194, 0.3);
+  color: var(--md-default-fg-color);
+}
+
+.md-typeset table:not([class]) tbody tr:hover {
+  background-color: rgba(126, 87, 194, 0.04);
+}
+
+/* ── Code blocks ──────────────────────────────────────────────────── */
+
+.md-typeset code {
+  border-radius: 4px;
+  font-size: 0.82em;
+}
+
+.md-typeset pre > code {
+  line-height: 1.6;
+}
+
+/* ── Mermaid diagrams ─────────────────────────────────────────────── */
+
+.md-typeset .mermaid {
+  margin: 1.5em 0;
+  text-align: center;
+}
+
+/* ── Navigation ───────────────────────────────────────────────────── */
+
+@media screen and (min-width: 76.25em) {
+  .md-nav--lifted > .md-nav__list > .md-nav__item--active > .md-nav__link {
+    font-weight: 600;
+  }
+}
+
+/* ── Footer ───────────────────────────────────────────────────────── */
+
+.md-footer-meta__inner {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+/* ── Content tabs accent ──────────────────────────────────────────── */
+
+.md-typeset .tabbed-labels > label:hover {
+  color: var(--md-accent-fg-color);
+}
+
+/* ── Lists: tighter but readable ──────────────────────────────────── */
+
+.md-typeset ul,
+.md-typeset ol {
+  margin-bottom: 1em;
+}
+
+.md-typeset li {
+  margin-bottom: 0.3em;
+}
+
+/* ── Horizontal rules ─────────────────────────────────────────────── */
+
+.md-typeset hr {
+  margin: 2em 0;
+  border-color: var(--md-default-fg-color--lightest);
+}

@@ -1,0 +1,10 @@
+ike_gateways:
+  - name: "SanAntonio-IKE-GW"
+    version: "ikev2"
+    interface: "ethernet1/1"
+    enable_passive_mode: True
+    enable_liveness_check: True
+    liveness_check_interval: "5"
+    peer_ip_value: "SanAntonio-WAN-IP"
+    pre_shared_key: "paloalto"
+    ike_profile: "remote-office-crypto-profile"

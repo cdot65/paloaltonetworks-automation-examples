@@ -1,0 +1,60 @@
+# GCP Project Configuration
+project_id = "your-gcp-project-id"
+region     = "us-central1"
+zone       = "us-central1-a"
+
+# Resource Naming
+name_prefix = "vmseries"
+
+# SSH Access
+# Format: "username:ssh-rsa AAAA...your-public-key... user@host"
+ssh_keys = "admin:ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDExampleKeyHere admin@example.com"
+
+# VM-Series Configuration
+vmseries_image_name = "vmseries-flex-bundle2-10210h14"  # Latest Bundle2 image (PAN-OS 10.2.10-h14)
+                                                         # Other options: vmseries-flex-bundle1-10210h14, vmseries-flex-bundle2-10114h9
+                                                         # List available: gcloud compute images list --project=paloaltonetworksgcp-public --filter="name~vmseries-flex"
+machine_type        = "n1-standard-4"                    # Recommended: n1-standard-4, n1-standard-8, n2-standard-4, n2-standard-8
+min_cpu_platform    = "Intel Skylake"                    # CPU platform - n1 supports up to Skylake, n2 supports Cascade Lake+
+
+# Network Configuration
+create_networks = true  # Set to false if using existing networks
+
+# Management Network
+mgmt_network_name = "mgmt-network"
+mgmt_subnet_name  = "mgmt-subnet"
+mgmt_subnet_cidr  = "10.0.0.0/24"
+
+# Untrust Network (External/Public-facing)
+untrust_network_name = "untrust-network"
+untrust_subnet_name  = "untrust-subnet"
+untrust_subnet_cidr  = "10.0.1.0/24"
+
+# Trust Network (Internal/Private)
+trust_network_name = "trust-network"
+trust_subnet_name  = "trust-subnet"
+trust_subnet_cidr  = "10.0.2.0/24"
+
+# Security
+allowed_mgmt_ips = ["0.0.0.0/0"]  # IMPORTANT: Replace with your IP address for security (e.g., "203.0.113.0/32")
+create_public_ip = true            # Set to false if you only want to access via IAP
+
+# Tags
+tags = ["vmseries", "firewall"]
+
+# Bootstrap Configuration (Optional)
+# Uncomment and configure if you want to bootstrap the VM-Series with a config
+# bootstrap_bucket_name = "my-bootstrap-bucket"
+# bootstrap_options = {
+#   type                        = "dhcp-client"
+#   mgmt-interface-swap         = "enable"
+#   panorama-server             = "192.168.1.1"
+#   dns-primary                 = "8.8.8.8"
+#   dns-secondary               = "8.8.4.4"
+#   op-command-modes            = "mgmt-interface-swap"
+#   dhcp-send-hostname          = "yes"
+#   dhcp-send-client-id         = "yes"
+#   dhcp-accept-server-hostname = "yes"
+#   dhcp-accept-server-domain   = "yes"
+# }
+

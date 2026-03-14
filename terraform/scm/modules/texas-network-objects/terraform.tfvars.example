@@ -1,0 +1,7 @@
+# Strata Cloud Manager API credentials
+# Rename this file to terraform.tfvars and fill in your actual values
+scm_host       = "api.strata.paloaltonetworks.com"
+client_id      = "your-client-id@12345"
+client_secret  = "your-client-secret"
+scope          = "tsg_id:12345"
+folder_name    = "Texas"

@@ -1,0 +1,27 @@
+# jenkins-agent-pod-template.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: jenkins-agent
+  namespace: jenkins
+  labels:
+    app: jenkins-agent
+spec:
+  serviceAccountName: jenkins-agent-sa  # Service Account for permissions
+  containers:
+    - name: jnlp
+      image: jenkins/inbound-agent:latest  # Jenkins agent image
+      resources:
+        requests:
+          cpu: "500m"
+          memory: "512Mi"
+        limits:
+          cpu: "1"
+          memory: "1024Mi"
+      volumeMounts:
+        - name: workspace-volume
+          mountPath: /home/jenkins/agent
+  volumes:
+    - name: workspace-volume
+      emptyDir: {}  # Temporary directory for the workspace
+

@@ -1,0 +1,117 @@
+# config/objects/log_forwarding_profile_match_lists.yaml
+panos_config:
+  device_groups:
+    Magnolia:
+      objects:
+        log_forwarding_profile_match_lists:
+          - name: "Traffic_Logs"
+            description: "Match list for traffic logs"
+            log_type: "traffic"
+            filter: "( zone.src eq 'trust' ) and ( zone.dst eq 'untrust' )"
+            send_to_panorama: true
+            syslog_profiles: [ "Central_Syslog" ]
+
+          - name: "Threat_Logs"
+            description: "Match list for threat logs"
+            log_type: "threat"
+            filter: "( severity geq high )"
+            send_to_panorama: true
+            syslog_profiles: [ "Central_Syslog", "SIEM_Syslog" ]
+
+          - name: "URL_Filtering_Logs"
+            description: "Match list for URL filtering logs"
+            log_type: "url"
+            filter: "( category eq 'malware' ) or ( category eq 'phishing' )"
+            send_to_panorama: true
+            http_profiles: [ "SIEM_HTTP" ]
+
+          - name: "WildFire_Logs"
+            description: "Match list for WildFire logs"
+            log_type: "wildfire"
+            filter: "( verdict eq malicious )"
+            send_to_panorama: true
+            email_profiles: [ "Security_Team_Email" ]
+
+          - name: "Data_Filtering_Logs"
+            description: "Match list for data filtering logs"
+            log_type: "data"
+            filter: "( data-pattern eq 'credit-card' ) or ( data-pattern eq 'ssn' )"
+            send_to_panorama: true
+            syslog_profiles: [ "Compliance_Syslog" ]
+
+          - name: "Authentication_Logs"
+            description: "Match list for authentication logs"
+            log_type: "auth"
+            filter: "( result eq failed )"
+            send_to_panorama: true
+            snmp_profiles: [ "NOC_SNMP" ]
+
+          - name: "Tunnel_Logs"
+            description: "Match list for tunnel logs"
+            log_type: "tunnel"
+            filter: "( type eq 'ipsec' )"
+            send_to_panorama: true
+            syslog_profiles: [ "VPN_Syslog" ]
+
+          - name: "High_Risk_Traffic"
+            description: "Match list for high-risk traffic"
+            log_type: "traffic"
+            filter: "( app eq 'bittorrent' ) or ( app eq 'tor-browser' )"
+            send_to_panorama: true
+            email_profiles: [ "Security_Team_Email" ]
+
+          - name: "Critical_Asset_Access"
+            description: "Match list for critical asset access"
+            log_type: "traffic"
+            filter: "( dst in '10.0.0.0/24' ) and ( app neq 'ssh' )"
+            send_to_panorama: true
+            http_profiles: [ "SIEM_HTTP" ]
+
+          - name: "Decryption_Logs"
+            description: "Match list for decryption logs"
+            log_type: "decryption"
+            filter: "( decrypt.result eq 'fail' )"
+            send_to_panorama: true
+            syslog_profiles: [ "Central_Syslog" ]
+
+        log_forwarding_profile_match_list_actions:
+          - name: "Tag_High_Risk_Source"
+            action_type: "tagging"
+            action: "add-tag"
+            target: "source-address"
+            registration: "localhost"
+            tags: [ "high-risk-source" ]
+
+          - name: "Tag_Malware_Destination"
+            action_type: "tagging"
+            action: "add-tag"
+            target: "destination-address"
+            registration: "localhost"
+            tags: [ "malware-destination" ]
+
+          - name: "Remove_Trusted_Tag"
+            action_type: "tagging"
+            action: "remove-tag"
+            target: "source-address"
+            registration: "localhost"
+            tags: [ "trusted-source" ]
+
+          - name: "Azure_Security_Integration"
+            action_type: "integration"
+            action: "Azure-Security-Center-Integration"
+
+          - name: "Tag_VPN_User"
+            action_type: "tagging"
+            action: "add-tag"
+            target: "source-address"
+            registration: "panorama"
+            tags: [ "vpn-user" ]
+            timeout: 1440  # 24 hours
+
+          - name: "Tag_Compliance_Violation"
+            action_type: "tagging"
+            action: "add-tag"
+            target: "source-address"
+            registration: "remote"
+            http_profile: "Compliance_HTTP"
+            tags: [ "compliance-violation" ]

@@ -1,0 +1,10 @@
+- name: Copy Root-CA.pem Certificate to the Windows Machine
+  ansible.windows.win_copy:
+    src: /var/tmp/Root-CA.pem
+    dest: "{{ ansible_env.TEMP }}\\Root-CA.pem"
+
+- name: Import Root-CA.pem Certificate into Trusted Root Store
+  ansible.windows.win_certificate_store:
+    path: "{{ ansible_env.TEMP }}\\Root-CA.pem"
+    store_name: Root
+    state: present

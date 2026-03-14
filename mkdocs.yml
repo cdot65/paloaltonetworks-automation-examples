@@ -1,0 +1,102 @@
+site_name: PAN Automation Examples
+site_url: https://cdot65.github.io/paloaltonetworks-automation-examples/
+site_description: Curated automation examples for Palo Alto Networks products — Ansible, Python, Terraform, Go, and Jenkins
+repo_name: cdot65/paloaltonetworks-automation-examples
+repo_url: https://github.com/cdot65/paloaltonetworks-automation-examples
+
+theme:
+  name: material
+  favicon: images/favicon.ico
+  palette:
+    - scheme: default
+      primary: deep purple
+      accent: amber
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - scheme: slate
+      primary: deep purple
+      accent: amber
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.expand
+    - navigation.top
+    - navigation.footer
+    - content.code.copy
+    - content.tabs.link
+    - search.suggest
+    - search.highlight
+  icon:
+    repo: fontawesome/brands/github
+
+extra_css:
+  - css/custom.css
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.mark
+  - pymdownx.critic
+  - pymdownx.keys
+  - attr_list
+  - md_in_html
+  - tables
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - toc:
+      permalink: true
+
+plugins:
+  - search
+
+nav:
+  - Home: index.md
+  - Getting Started:
+      - Overview: getting-started/overview.md
+      - Repository Structure: getting-started/structure.md
+  - Ansible:
+      - Overview: ansible/overview.md
+      - PAN-OS Playbooks: ansible/panos.md
+      - Panorama Playbooks: ansible/panorama.md
+      - vCenter Deployment: ansible/vcenter.md
+      - Event-Driven Ansible: ansible/event-driven.md
+      - Execution Environments: ansible/execution-environments.md
+  - Python:
+      - Overview: python/overview.md
+      - PAN-OS Tools: python/panos.md
+      - Panorama Tools: python/panorama.md
+      - Prisma AIRS: python/prisma-airs.md
+      - General Utilities: python/general.md
+  - Terraform:
+      - Overview: terraform/overview.md
+      - PAN-OS Provider: terraform/panos.md
+      - Strata Cloud Manager: terraform/scm.md
+      - GCP VM-Series: terraform/gcp.md
+      - vCenter Deployment: terraform/vcenter.md
+  - Go:
+      - Overview: go/overview.md
+      - PAN-OS Tools: go/panos.md
+      - Panorama Tools: go/panorama.md
+  - Jenkins:
+      - Overview: jenkins/overview.md
+      - Pipelines: jenkins/pipelines.md
+      - Infrastructure: jenkins/infrastructure.md
+  - About:
+      - Contributing: about/contributing.md
+      - License: about/license.md

@@ -1,0 +1,91 @@
+---
+dns:
+  domain: startrek.com
+  entries:
+    - name: Kirk
+      ip: "192.168.255.11"
+      domain_name: kirk.example.com
+
+    - name: Spock
+      ip: "192.168.255.12"
+      domain_name: spock.example.com
+
+    - name: Bones
+      ip: "192.168.255.13"
+      domain_name: bones.example.com
+
+    - name: Sisko
+      ip: "192.168.255.102"
+      domain_name: sisko.example.com
+
+    - name: Odo
+      ip: "192.168.255.16"
+      domain_name: odo.example.com
+
+    - name: Kira
+      ip: "192.168.255.17"
+      domain_name: kira.example.com
+
+    - name: Julian
+      ip: "192.168.255.101"
+      domain_name: julian.example.com
+
+    - name: Dax
+      ip: "192.168.255.14"
+      domain_name: dax.example.com
+
+    - name: Picard
+      ip: "192.168.255.15"
+      domain_name: picard.example.com
+
+    - name: Riker
+      ip: "192.168.255.41"
+      domain_name: riker.example.com
+
+    - name: Data
+      ip: "192.168.255.42"
+      domain_name: data.example.com
+
+    - name: Geordi
+      ip: "192.168.255.2"
+      domain_name: geordi.example.com
+
+    - name: Archer
+      ip: "192.168.255.1"
+      domain_name: archer.example.com
+
+    - name: Tpol
+      ip: "10.0.0.2"
+      domain_name: tpol.example.com
+
+    - name: Trip
+      ip: "172.16.0.2"
+      domain_name: trip.example.com
+
+    - name: Malcolm
+      ip: "192.168.255.103"
+      domain_name: malcom.example.com
+
+    - name: Hoshi
+      ip: "192.168.255.191"
+      domain_name: hoshi.example.com
+
+    - name: Janeway
+      ip: "192.168.255.192"
+      domain_name: janeway.example.com
+
+    - name: Chakotay
+      ip: "192.168.255.3"
+      domain_name: hakotay.example.com
+
+    - name: 7of9
+      ip: "192.168.255.21"
+      domain_name: sevenofnine.example.com
+
+    - name: EMH
+      ip: "192.168.255.22"
+      domain_name: emh.example.com
+
+    - name: Tuvok
+      ip: "192.168.255.23"
+      domain_name: tuvok.example.com

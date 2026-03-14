@@ -1,0 +1,17 @@
+---
+- name: check if directory is present
+  file:
+    path: "config"
+    state: directory
+  run_once: true
+
+- name: "assemble configurations to temp completed folder"
+  assemble:
+    src: "{{ temporary_folder }}"
+    dest: "{{ completed_config_file }}"
+
+- name: Remove blank lines between matches
+  lineinfile:
+    path: "{{ completed_config_file }}"
+    regexp: '(^\s*$)'
+    state: absent

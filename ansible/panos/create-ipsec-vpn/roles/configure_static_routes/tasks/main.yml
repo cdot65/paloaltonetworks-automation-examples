@@ -1,0 +1,11 @@
+- name: Create static default route
+  panos_static_route:
+    provider:
+      ip_address: "{{ ansible_host }}"
+      username: "admin"
+      password: "your-password-here"
+    name: "{{ item.name }}"
+    destination: "{{ item.destination }}"
+    nexthop: "{{ item.nexthop }}"
+    virtual_router: "{{ item.vr }}"
+  loop: "{{ static_routes }}"

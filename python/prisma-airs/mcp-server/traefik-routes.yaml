@@ -1,0 +1,47 @@
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: aisecurity-mcp-route
+  namespace: aisecurity
+spec:
+  entryPoints:
+    - web
+  routes:
+    - match: PathPrefix(`/sse/`)
+      kind: Rule
+      services:
+        - name: aisecurity-mcp-service
+          port: 8000
+          sticky:
+            cookie:
+              name: aisecurity-session
+              httpOnly: true
+      middlewares:
+        - name: aisecurity-headers
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: aisecurity-headers
+  namespace: aisecurity
+spec:
+  headers:
+    customRequestHeaders:
+      X-Forwarded-Proto: "http"
+    customResponseHeaders:
+      X-Content-Type-Options: "nosniff"
+      X-Frame-Options: "DENY"
+      Cache-Control: "no-cache, no-store, must-revalidate"
+---
+apiVersion: traefik.io/v1alpha1
+kind: ServersTransport
+metadata:
+  name: aisecurity-transport
+  namespace: aisecurity
+spec:
+  serverName: aisecurity-mcp
+  insecureSkipVerify: true
+  forwardingTimeouts:
+    dialTimeout: 30s
+    responseHeaderTimeout: 0s
+    idleConnTimeout: 90s

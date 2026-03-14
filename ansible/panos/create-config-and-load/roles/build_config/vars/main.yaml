@@ -1,0 +1,4 @@
+configuration:
+  devices: True
+  mgt_config: True
+  shared: True
